@@ -67,16 +67,41 @@ def load_knowledge_files(knowledge_dir: pathlib.Path) -> List[dict]:
     return all_chunks
 
 
+def _extract_pdf_text(pdf_path: pathlib.Path) -> tuple:
+    """
+    Extract full text from a PDF using pdfplumber first, PyMuPDF as fallback.
+    Returns (text: str, page_count: int, method: str)
+    """
+    # --- Try pdfplumber first ---
+    try:
+        import pdfplumber
+        with pdfplumber.open(pdf_path) as pdf:
+            if len(pdf.pages) > 0:
+                parts = [p.extract_text() for p in pdf.pages if p.extract_text()]
+                if parts:
+                    return "\n".join(parts), len(pdf.pages), "pdfplumber"
+    except Exception:
+        pass
+
+    # --- Fallback: PyMuPDF (handles more PDF types) ---
+    try:
+        import pymupdf
+        doc = pymupdf.open(str(pdf_path))
+        parts = [doc[i].get_text() for i in range(doc.page_count) if doc[i].get_text().strip()]
+        if parts:
+            return "\n".join(parts), doc.page_count, "pymupdf"
+    except ImportError:
+        print("[Indexer] pymupdf not installed. Run: pip install pymupdf")
+    except Exception as e:
+        print(f"[Indexer]   PyMuPDF error on {pdf_path.name}: {e}")
+
+    return "", 0, "none"
+
+
 def load_textbooks(textbooks_dir: pathlib.Path) -> List[dict]:
     """Extract text from PDF textbooks in rag_textbooks/ directory."""
     all_chunks = []
     if not textbooks_dir.exists():
-        return all_chunks
-
-    try:
-        import pdfplumber
-    except ImportError:
-        print("[Indexer] pdfplumber not installed — skipping textbook indexing. Run: pip install pdfplumber")
         return all_chunks
 
     pdf_paths = list(textbooks_dir.glob("*.pdf"))
@@ -88,29 +113,19 @@ def load_textbooks(textbooks_dir: pathlib.Path) -> List[dict]:
     for pdf_path in pdf_paths:
         subject_code = _detect_subject(pdf_path.name)
         subject_label = f" [{subject_code}]" if subject_code else ""
-        try:
-            text_parts = []
-            with pdfplumber.open(pdf_path) as pdf:
-                total_pages = len(pdf.pages)
-                for i, page in enumerate(pdf.pages, 1):
-                    page_text = page.extract_text()
-                    if page_text and page_text.strip():
-                        text_parts.append(page_text)
-            full_text = "\n".join(text_parts)
-            if full_text.strip():
-                chunks = chunk_text(
-                    full_text,
-                    source=f"Textbook: {pdf_path.stem}",
-                    subject_code=subject_code,
-                )
-                all_chunks.extend(chunks)
-                print(f"[Indexer]   Textbook{subject_label}: {pdf_path.name} "
-                      f"({total_pages} pages → {len(chunks)} chunks)")
-            else:
-                print(f"[Indexer]   WARNING: No text extracted from {pdf_path.name} "
-                      f"(may be a scanned/image PDF)")
-        except Exception as e:
-            print(f"[Indexer]   ERROR reading {pdf_path.name}: {e}")
+        full_text, total_pages, method = _extract_pdf_text(pdf_path)
+        if full_text.strip():
+            chunks = chunk_text(
+                full_text,
+                source=f"Textbook: {pdf_path.stem}",
+                subject_code=subject_code,
+            )
+            all_chunks.extend(chunks)
+            print(f"[Indexer]   Textbook{subject_label}: {pdf_path.name} "
+                  f"({total_pages} pages → {len(chunks)} chunks) via {method}")
+        else:
+            print(f"[Indexer]   WARNING: No text extracted from {pdf_path.name} "
+                  f"(may be a scanned/image-only PDF)")
 
     return all_chunks
 
@@ -118,31 +133,16 @@ def load_textbooks(textbooks_dir: pathlib.Path) -> List[dict]:
 def load_pdf_materials(media_dir: pathlib.Path) -> List[dict]:
     """Extract text from uploaded PDF study materials."""
     all_chunks = []
-    try:
-        import pdfplumber
-    except ImportError:
-        print("[Indexer] pdfplumber not installed, skipping PDF indexing.")
-        return all_chunks
-
     pdf_paths = list(media_dir.rglob("*.pdf"))
     print(f"[Indexer] Found {len(pdf_paths)} PDF(s) to index...")
-
     for pdf_path in pdf_paths:
-        try:
-            text_parts = []
-            with pdfplumber.open(pdf_path) as pdf:
-                for page in pdf.pages:
-                    page_text = page.extract_text()
-                    if page_text:
-                        text_parts.append(page_text)
-            full_text = "\n".join(text_parts)
-            if full_text.strip():
-                chunks = chunk_text(full_text, source=f"Study Material: {pdf_path.name}")
-                all_chunks.extend(chunks)
-                print(f"[Indexer]   Indexed {len(chunks)} chunks from {pdf_path.name}")
-        except Exception as e:
-            print(f"[Indexer]   Failed to read {pdf_path.name}: {e}")
-
+        full_text, total_pages, method = _extract_pdf_text(pdf_path)
+        if full_text.strip():
+            chunks = chunk_text(full_text, source=f"Study Material: {pdf_path.name}")
+            all_chunks.extend(chunks)
+            print(f"[Indexer]   Indexed {len(chunks)} chunks from {pdf_path.name} via {method}")
+        else:
+            print(f"[Indexer]   WARNING: No text from {pdf_path.name}")
     return all_chunks
 
 
