@@ -7,6 +7,15 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Load .env file if present (keeps secrets out of source control)
+_env_file = BASE_DIR / '.env'
+if _env_file.exists():
+    for _line in _env_file.read_text().splitlines():
+        _line = _line.strip()
+        if _line and not _line.startswith('#') and '=' in _line:
+            _k, _v = _line.split('=', 1)
+            os.environ.setdefault(_k.strip(), _v.strip())
+
 SECRET_KEY = 'django-insecure-flipped-classroom-cse-ml-uttam-bhise-mtech-2026'
 
 DEBUG = True
@@ -96,7 +105,7 @@ LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/login/'
 
 # ── RAG Chatbot Settings ──────────────────────────────────
-# Set GROQ_API_KEY as an environment variable or in a .env file (never commit the key)
+# API key is loaded from .env file (see BASE_DIR/.env) — never hardcode here
 GROQ_API_KEY = os.environ.get('GROQ_API_KEY', '')
 RAG_INDEX_PATH = BASE_DIR / 'rag_engine' / 'saved_index'
 RAG_KNOWLEDGE_PATH = BASE_DIR / 'rag_knowledge'
