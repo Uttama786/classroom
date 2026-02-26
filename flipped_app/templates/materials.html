@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Study Materials – FlipLearn{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h4 class="fw-bold mb-0"><i class="bi bi-file-earmark-text-fill text-success me-2"></i>Study Materials</h4>
+  {% if request.user.is_staff or request.user.teacher_profile %}
+  <a href="{% url 'upload_material' %}" class="btn btn-success btn-sm">
+    <i class="bi bi-plus-circle me-1"></i>Upload Material
+  </a>
+  {% endif %}
+</div>
+
+<!-- Filter -->
+<div class="mb-4 d-flex flex-wrap gap-2">
+  <a href="{% url 'materials' %}" class="btn btn-sm {% if not subject %}btn-success{% else %}btn-outline-secondary{% endif %}">All</a>
+  {% for s in subjects %}
+  <a href="{% url 'materials_by_subject' s.id %}" class="btn btn-sm {% if subject and subject.id == s.id %}btn-success{% else %}btn-outline-secondary{% endif %}">
+    {{ s.name }}
+  </a>
+  {% endfor %}
+</div>
+
+<div class="row g-3">
+  {% for material in materials %}
+  <div class="col-md-6 col-lg-4">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-start gap-3">
+          <div class="text-danger" style="font-size: 2.5rem;"><i class="bi bi-file-earmark-pdf-fill"></i></div>
+          <div class="flex-grow-1">
+            <span class="badge bg-success mb-1">{{ material.subject.name }}</span>
+            <h6 class="fw-bold mb-1">{{ material.title }}</h6>
+            <p class="text-muted small mb-2">{{ material.description|truncatechars:80 }}</p>
+            <div class="text-muted small mb-3">
+              <i class="bi bi-calendar me-1"></i>{{ material.uploaded_at|date:"d M Y" }}
+            </div>
+            <a href="{{ material.file.url }}" class="btn btn-sm btn-outline-success" download>
+              <i class="bi bi-download me-1"></i>Download PDF
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <div class="col-12 text-center py-5 text-muted">
+    <i class="bi bi-file-earmark fs-1 d-block mb-3 opacity-50"></i>
+    <h5>No study materials yet</h5>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

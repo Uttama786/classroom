@@ -1,0 +1,208 @@
+# Data Structures - Complete Study Notes
+
+## 1. Arrays
+An array is a collection of elements stored at contiguous memory locations.
+- Fixed size, same data type
+- Access: O(1), Search: O(n), Insert/Delete: O(n)
+- 1D, 2D, and multidimensional arrays
+- Row major vs Column major order
+- Static arrays vs Dynamic arrays (ArrayList)
+
+## 2. Linked Lists
+A linked list is a linear data structure where elements are stored in nodes, each pointing to the next.
+
+### Singly Linked List
+- Node: data + next pointer
+- Traversal: O(n), Insertion at head: O(1), Deletion: O(n)
+
+### Doubly Linked List
+- Node: data + prev + next pointers
+- Traversal in both directions
+- More memory, easier deletion
+
+### Circular Linked List
+- Last node points to first node
+- Used in round-robin scheduling
+
+## 3. Stacks
+A stack is a LIFO (Last In First Out) data structure.
+- Operations: push, pop, peek, isEmpty
+- Applications: expression evaluation, backtracking, function call stack, undo operations
+- Implementation: array or linked list
+- Time complexity: All operations O(1)
+
+### Stack Applications
+- Infix to Postfix/Prefix conversion
+- Parenthesis matching
+- Tower of Hanoi
+- DFS traversal
+
+## 4. Queues
+A queue is a FIFO (First In First Out) data structure.
+- Operations: enqueue, dequeue, front, rear, isEmpty
+- Applications: BFS, CPU scheduling, printer spooler
+
+### Types of Queues
+- Simple Queue
+- Circular Queue: rear = (rear + 1) % size
+- Priority Queue: elements dequeued by priority
+- Double Ended Queue (Deque): insert/delete at both ends
+
+## 5. Trees
+
+### Binary Tree
+- Each node has at most 2 children (left, right)
+- Height of tree: max depth from root
+- Full Binary Tree: every node has 0 or 2 children
+- Complete Binary Tree: all levels filled except possibly last
+- Perfect Binary Tree: all leaf nodes at same level
+
+### Binary Search Tree (BST)
+- Left child < parent < right child
+- Search, Insert, Delete: O(h) where h = height
+- In-order traversal gives sorted sequence
+
+### Tree Traversals
+- Inorder (Left, Root, Right)
+- Preorder (Root, Left, Right)
+- Postorder (Left, Right, Root)
+- Level Order (BFS)
+
+### AVL Tree
+- Self-balancing BST
+- Balance factor = height(left) - height(right) must be -1, 0, or 1
+- Rotations: Left, Right, Left-Right, Right-Left
+
+### Red-Black Tree
+- Self-balancing BST with color property
+- Root is black, no two consecutive red nodes
+- Used in Java TreeMap, TreeSet
+
+## 6. Heaps
+A heap is a complete binary tree satisfying heap property.
+- Max Heap: parent >= children
+- Min Heap: parent <= children
+- Insert: O(log n), Extract-min/max: O(log n)
+- Build heap: O(n)
+- Used in priority queue, heap sort
+
+### Heap Sort
+- Build max heap: O(n)
+- Extract max n times: O(n log n)
+- In-place, not stable
+
+## 7. Graphs
+
+### Representation
+- Adjacency Matrix: O(V²) space, O(1) edge check
+- Adjacency List: O(V+E) space, O(degree) edge check
+
+### Graph Traversals
+**BFS (Breadth First Search)**:
+- Uses queue
+- Finds shortest path in unweighted graph
+- Time: O(V+E)
+
+**DFS (Depth First Search)**:
+- Uses stack/recursion
+- Detects cycles, topological sort
+- Time: O(V+E)
+
+### Shortest Path Algorithms
+**Dijkstra's Algorithm**:
+- Single source shortest path
+- Non-negative weights only
+- Time: O((V+E) log V) with priority queue
+
+**Bellman-Ford**:
+- Handles negative weights
+- Detects negative cycles
+- Time: O(VE)
+
+**Floyd-Warshall**:
+- All pairs shortest path
+- Time: O(V³)
+
+### Minimum Spanning Tree
+**Kruskal's Algorithm**: Sort edges, add if no cycle (Union-Find). O(E log E)
+**Prim's Algorithm**: Greedy, grow tree from source. O(E log V)
+
+### Topological Sort
+- For DAG (Directed Acyclic Graph)
+- Using DFS or Kahn's algorithm (BFS with in-degree)
+
+## 8. Hashing
+- Hash function maps key to index
+- Collision resolution:
+  - Chaining (linked list at each bucket)
+  - Open Addressing: Linear probing, Quadratic probing, Double hashing
+- Load factor: n/m (n=elements, m=buckets)
+- Average O(1) for search, insert, delete
+
+## 9. Sorting Algorithms
+
+| Algorithm      | Best    | Average  | Worst   | Space  | Stable |
+|---------------|---------|----------|---------|--------|--------|
+| Bubble Sort   | O(n)    | O(n²)    | O(n²)   | O(1)   | Yes    |
+| Selection Sort| O(n²)   | O(n²)    | O(n²)   | O(1)   | No     |
+| Insertion Sort| O(n)    | O(n²)    | O(n²)   | O(1)   | Yes    |
+| Merge Sort    | O(n log n)| O(n log n)| O(n log n)| O(n)| Yes  |
+| Quick Sort    | O(n log n)| O(n log n)| O(n²) | O(log n)| No  |
+| Heap Sort     | O(n log n)| O(n log n)| O(n log n)| O(1)| No  |
+| Counting Sort | O(n+k)  | O(n+k)   | O(n+k)  | O(k)   | Yes    |
+| Radix Sort    | O(nk)   | O(nk)    | O(nk)   | O(n+k) | Yes    |
+
+## 10. Searching Algorithms
+**Linear Search**: O(n) - unsorted array
+**Binary Search**: O(log n) - sorted array only
+  - Iterative and recursive implementations
+
+## 11. Dynamic Programming
+- Optimal substructure + Overlapping subproblems
+- Memoization (top-down) vs Tabulation (bottom-up)
+
+### Classic DP Problems
+- Fibonacci sequence: O(n) time, O(1) space
+- 0/1 Knapsack: dp[i][w] = max profit using i items and weight w
+- Longest Common Subsequence (LCS): dp[i][j]
+- Longest Increasing Subsequence (LIS): O(n log n) with patience sorting
+- Matrix Chain Multiplication: Parenthesization
+- Coin Change: Minimum coins for given amount
+- Edit Distance: Min operations to transform string
+
+## 12. Greedy Algorithms
+- Make locally optimal choice at each step
+- Activity Selection Problem
+- Huffman Coding: Variable length prefix codes
+- Fractional Knapsack: O(n log n)
+- Job Sequencing with Deadlines
+
+## 13. Tries (Prefix Trees)
+- Each node represents a character
+- Root represents empty string
+- Used for autocomplete, spell check
+- Search/Insert: O(m) where m = word length
+
+## 14. Segment Trees
+- Range queries in O(log n)
+- Point updates in O(log n)
+- Build: O(n log n)
+- Applications: Range sum, Range min/max
+
+## 15. Union-Find (Disjoint Set)
+- Find: which set does element belong to
+- Union: merge two sets
+- Path compression + Union by rank → O(α(n)) ≈ O(1)
+- Used in Kruskal's, cycle detection
+
+## Common Interview Questions - Data Structures
+1. Reverse a linked list (iterative and recursive)
+2. Detect cycle in linked list (Floyd's algorithm)
+3. Find middle of linked list (two pointers)
+4. Implement LRU Cache (HashMap + Doubly Linked List)
+5. Check if binary tree is balanced
+6. Level order traversal of binary tree
+7. Find lowest common ancestor in BST
+8. Implement stack using queues and vice versa
+9. Next greater element using stack
+10. Implement trie for dictionary

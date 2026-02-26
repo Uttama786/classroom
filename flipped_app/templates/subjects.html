@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Subjects – FlipLearn{% endblock %}
+{% block content %}
+<h3 class="fw-bold mb-4"><i class="bi bi-book me-2 text-primary"></i>Subjects</h3>
+<div class="row g-3">
+  {% for subject in subjects %}
+  <div class="col-md-4">
+    <div class="card shadow-sm border-0 h-100">
+      <div class="card-body">
+        <h5 class="fw-bold">{{ subject.name }}</h5>
+        <p class="text-muted small">{{ subject.description|default:'Core CSE subject' }}</p>
+        {% if subject.id in enrolled %}
+          <span class="badge bg-success">Enrolled</span>
+        {% else %}
+          <a href="{% url 'enroll' subject.id %}" class="btn btn-sm btn-primary">Enroll</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <div class="col-12 text-muted">No subjects available.</div>
+  {% endfor %}
+</div>
+{% endblock %}

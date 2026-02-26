@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="none">
+  <defs>
+    <linearGradient id="g1" x1="0" y1="0" x2="80" y2="80" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#00c6ff"/>
+      <stop offset="100%" stop-color="#5b3fd6"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Circular refresh arrow -->
+  <path d="M58 22 A22 22 0 1 1 36 14" stroke="url(#g1)" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+  <!-- Arrow head -->
+  <polyline points="33,8 36,14 42,11" stroke="url(#g1)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <!-- Graduation cap body -->
+  <polygon points="40,24 56,31 40,38 24,31" fill="url(#g1)" opacity="0.9"/>
+  <!-- Cap top hat part -->
+  <rect x="37" y="23" width="6" height="4" rx="1" fill="url(#g1)" opacity="0.7"/>
+  <!-- Cap tassel / diploma side -->
+  <line x1="56" y1="31" x2="56" y2="40" stroke="url(#g1)" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="56" cy="42" r="2" fill="url(#g1)"/>
+
+  <!-- Books stack (bottom-left) -->
+  <rect x="10" y="48" width="22" height="5" rx="2" fill="url(#g1)" opacity="0.85"/>
+  <rect x="12" y="54" width="20" height="5" rx="2" fill="url(#g1)" opacity="0.65"/>
+  <rect x="14" y="60" width="18" height="5" rx="2" fill="url(#g1)" opacity="0.45"/>
+
+  <!-- Student figure (bottom-right) -->
+  <!-- Head -->
+  <circle cx="60" cy="51" r="4" stroke="url(#g1)" stroke-width="2.2" fill="none"/>
+  <!-- Body / raised hand -->
+  <path d="M60 55 L60 66 M60 58 L54 54 M60 58 L67 53" stroke="url(#g1)" stroke-width="2.2" stroke-linecap="round"/>
+  <!-- Legs -->
+  <path d="M60 66 L56 73 M60 66 L64 73" stroke="url(#g1)" stroke-width="2.2" stroke-linecap="round"/>
+</svg>

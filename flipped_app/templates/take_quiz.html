@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block title %}{{ quiz.title }} – Take Quiz{% endblock %}
+{% block extra_js %}
+<script>
+let timeLeft = {{ quiz.time_limit_minutes }} * 60;
+const timerEl = document.getElementById('timer');
+const timerInterval = setInterval(() => {
+  const m = Math.floor(timeLeft / 60);
+  const s = timeLeft % 60;
+  timerEl.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  if (timeLeft <= 60) timerEl.classList.add('text-danger', 'fw-bold');
+  if (timeLeft <= 0) {
+    clearInterval(timerInterval);
+    document.getElementById('quizForm').submit();
+  }
+  timeLeft--;
+}, 1000);
+</script>
+{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <!-- Quiz Header -->
+    <div class="card border-0 shadow-sm bg-warning text-dark rounded-4 mb-4">
+      <div class="card-body p-4 d-flex justify-content-between align-items-center">
+        <div>
+          <h4 class="fw-bold mb-1">{{ quiz.title }}</h4>
+          <span class="badge bg-dark">{{ quiz.subject.name }}</span>
+          <span class="ms-2 text-muted small">Total Marks: {{ quiz.total_marks }}</span>
+        </div>
+        <div class="text-center">
+          <div class="fs-1 fw-bold" id="timer">{{ quiz.time_limit_minutes }}:00</div>
+          <small>Time Remaining</small>
+        </div>
+      </div>
+    </div>
+
+    <form method="post" id="quizForm">
+      {% csrf_token %}
+      {% for question in questions %}
+      <div class="card border-0 shadow-sm mb-3">
+        <div class="card-body p-4">
+          <h6 class="fw-bold mb-3">
+            <span class="badge bg-primary me-2">Q{{ forloop.counter }}</span>
+            {{ question.question_text }}
+            <small class="text-muted ms-2">({{ question.marks }} mark{% if question.marks > 1 %}s{% endif %})</small>
+          </h6>
+          <div class="row g-2">
+            <div class="col-12 col-md-6">
+              <label class="option-label w-100 p-3 border rounded-3 d-block" style="cursor:pointer">
+                <input type="radio" name="q_{{ question.id }}" value="A" class="me-2" required/>
+                <strong>A.</strong> {{ question.option_a }}
+              </label>
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="option-label w-100 p-3 border rounded-3 d-block" style="cursor:pointer">
+                <input type="radio" name="q_{{ question.id }}" value="B" class="me-2"/>
+                <strong>B.</strong> {{ question.option_b }}
+              </label>
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="option-label w-100 p-3 border rounded-3 d-block" style="cursor:pointer">
+                <input type="radio" name="q_{{ question.id }}" value="C" class="me-2"/>
+                <strong>C.</strong> {{ question.option_c }}
+              </label>
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="option-label w-100 p-3 border rounded-3 d-block" style="cursor:pointer">
+                <input type="radio" name="q_{{ question.id }}" value="D" class="me-2"/>
+                <strong>D.</strong> {{ question.option_d }}
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+
+      <div class="d-grid mt-4">
+        <button type="submit" class="btn btn-success btn-lg py-3 fw-semibold shadow">
+          <i class="bi bi-check-circle-fill me-2"></i>Submit Quiz
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

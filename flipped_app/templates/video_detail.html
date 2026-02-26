@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block title %}{{ video.title }} – FlipLearn{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-9">
+    <nav aria-label="breadcrumb" class="mb-3">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'videos' %}">Videos</a></li>
+        <li class="breadcrumb-item active">{{ video.title }}</li>
+      </ol>
+    </nav>
+
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body p-0">
+        {% if video.youtube_url %}
+        <div class="ratio ratio-16x9 rounded-top">
+          <iframe src="{{ video.youtube_embed_url }}"
+                  title="{{ video.title }}"
+                  allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+                  class="rounded-top w-100 h-100 border-0">
+          </iframe>
+        </div>
+        {% elif video.video_file %}
+        <video controls class="w-100 rounded-top" style="max-height: 480px;">
+          <source src="{{ video.video_file.url }}">
+        </video>
+        {% else %}
+        <div class="bg-dark text-white text-center py-5 rounded-top">
+          <i class="bi bi-camera-video-off fs-1 mb-3 d-block opacity-50"></i>
+          <p>Video file not available</p>
+        </div>
+        {% endif %}
+      </div>
+      <!-- Video meta bar -->
+      <div class="card-body border-bottom pb-3">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+          <div>
+            <span class="badge bg-primary mb-2">{{ video.subject.name }}</span>
+            <h4 class="fw-bold mb-1">{{ video.title }}</h4>
+            <div class="d-flex flex-wrap gap-3 text-muted small mt-2">
+              <span><i class="bi bi-clock me-1"></i>{{ video.duration_minutes }} minutes</span>
+              <span><i class="bi bi-calendar me-1"></i>{{ video.uploaded_at|date:"d M Y" }}</span>
+              <span><i class="bi bi-person me-1"></i>{{ video.uploaded_by.get_full_name|default:"Teacher" }}</span>
+            </div>
+          </div>
+          {% if history.completed %}
+          <span class="badge bg-success fs-6 align-self-start"><i class="bi bi-check-circle-fill me-1"></i>Completed</span>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Description section -->
+      {% if video.description %}
+      <div class="card-body">
+        <h6 class="fw-semibold text-secondary text-uppercase tracking-wide mb-2" style="font-size:.75rem;letter-spacing:.08em;">
+          <i class="bi bi-info-circle me-1"></i>About this Video
+        </h6>
+        <p class="mb-0" style="line-height:1.75;white-space:pre-line;">{{ video.description }}</p>
+      </div>
+      {% endif %}
+    </div>
+
+    {% if just_completed %}
+    <div class="alert alert-success border-0 shadow-sm" role="alert">
+      <i class="bi bi-check-circle-fill me-2"></i>
+      <strong>Lecture marked as watched!</strong> This contributes to your engagement score.
+    </div>
+    {% elif history.completed %}
+    <div class="alert alert-info border-0 shadow-sm" role="alert">
+      <i class="bi bi-info-circle-fill me-2"></i>
+      You have already watched this lecture.
+    </div>
+    {% endif %}
+
+    <div class="d-flex gap-3">
+      <a href="{% url 'materials_by_subject' video.subject.id %}" class="btn btn-outline-primary">
+        <i class="bi bi-file-earmark-text me-1"></i>View Study Notes
+      </a>
+      <a href="{% url 'quizzes' %}" class="btn btn-warning">
+        <i class="bi bi-patch-question me-1"></i>Take Quiz
+      </a>
+      <a href="{% url 'videos' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i>Back to Videos
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

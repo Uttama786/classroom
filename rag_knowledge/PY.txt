@@ -1,0 +1,280 @@
+# Python Programming - Complete Study Notes
+
+## 1. Python Basics
+
+### Variables and Data Types
+- Dynamic typing: no explicit type declaration needed
+- int, float, complex, bool, str, bytes
+- None: represents null/absence of value
+- Multiple assignment: a, b, c = 1, 2, 3
+- Type checking: type(), isinstance()
+- Type conversion: int(), float(), str(), list(), tuple(), set(), dict()
+
+### Operators
+- Arithmetic: +, -, *, /, //, %, **
+- Comparison: ==, !=, <, >, <=, >=
+- Logical: and, or, not
+- Bitwise: &, |, ^, ~, <<, >>
+- Identity: is, is not
+- Membership: in, not in
+
+## 2. Strings
+- Immutable sequence of Unicode characters
+- Indexing: s[0], s[-1]
+- Slicing: s[start:stop:step]
+- String methods: upper(), lower(), strip(), split(), join(), replace(), find(), format()
+- f-strings: f"Hello {name}!"
+- Raw strings: r"\n is not newline"
+- Multi-line: triple quotes """..."""
+
+## 3. Lists
+- Mutable ordered sequence
+- list.append(x), list.extend(iter), list.insert(i, x)
+- list.remove(x), list.pop(i), list.clear()
+- list.index(x), list.count(x), list.sort(), list.reverse()
+- List comprehension: [x*2 for x in range(10) if x%2==0]
+- Nested lists: matrix operations
+
+## 4. Tuples
+- Immutable ordered sequence
+- Faster than lists, hashable
+- Tuple unpacking: a, b = (1, 2)
+- Named tuples: collections.namedtuple
+- Single element: (1,) - trailing comma required
+
+## 5. Dictionaries
+- Key-value pairs, unordered (Python 3.7+ maintains insertion order)
+- dict.get(key, default), dict.keys(), dict.values(), dict.items()
+- dict.update(), dict.pop(key), dict.setdefault()
+- Dict comprehension: {k: v for k, v in items}
+- defaultdict, OrderedDict, Counter from collections
+
+## 6. Sets
+- Unordered collection of unique elements
+- set.add(), set.remove(), set.discard(), set.union(), set.intersection()
+- set.difference(), set.symmetric_difference(), issubset(), issuperset()
+- Frozenset: immutable set (hashable)
+
+## 7. Control Flow
+- if/elif/else
+- for loop: for x in iterable
+- while loop: while condition
+- break, continue, pass
+- else clause on loops (executes if no break)
+- Ternary: value_if_true if condition else value_if_false
+
+## 8. Functions
+
+### Basics
+- def function_name(params): ...
+- Default arguments: def f(x, y=10)
+- *args: variable positional arguments (tuple)
+- **kwargs: variable keyword arguments (dict)
+- return statement (returns None if omitted)
+- Docstrings: """Description"""
+
+### Lambda Functions
+- Anonymous, single expression: lambda x: x*2
+- Used with map(), filter(), sorted()
+
+### Higher-Order Functions
+- map(func, iterable): applies func to each element
+- filter(func, iterable): filters elements where func is True
+- reduce(func, iterable): from functools, cumulative operation
+
+### Decorators
+```python
+def my_decorator(func):
+    def wrapper(*args, **kwargs):
+        # before
+        result = func(*args, **kwargs)
+        # after
+        return result
+    return wrapper
+
+@my_decorator
+def my_function():
+    pass
+```
+- Common decorators: @staticmethod, @classmethod, @property, @functools.wraps
+
+### Generators
+- yield instead of return
+- Lazy evaluation, memory efficient
+- Generator expression: (x*2 for x in range(10))
+- next(), StopIteration
+
+## 9. Object-Oriented Programming
+
+### Classes and Objects
+```python
+class Animal:
+    class_var = "animal"  # class variable
+    
+    def __init__(self, name):
+        self.name = name  # instance variable
+    
+    def speak(self):
+        pass
+```
+
+### Inheritance
+```python
+class Dog(Animal):
+    def speak(self):
+        return f"{self.name} says Woof!"
+    
+    def __str__(self):
+        return f"Dog({self.name})"
+```
+- Multiple inheritance: class C(A, B)
+- super() to call parent methods
+- MRO (Method Resolution Order): C3 linearization
+
+### Magic Methods (Dunder Methods)
+- __init__, __str__, __repr__, __len__, __getitem__
+- __add__, __eq__, __lt__, __hash__
+- __enter__, __exit__ (context managers)
+- __iter__, __next__ (iterables)
+
+### Properties
+```python
+@property
+def age(self):
+    return self._age
+
+@age.setter
+def age(self, value):
+    if value < 0:
+        raise ValueError("Age cannot be negative")
+    self._age = value
+```
+
+### Abstract Classes
+```python
+from abc import ABC, abstractmethod
+
+class Shape(ABC):
+    @abstractmethod
+    def area(self):
+        pass
+```
+
+## 10. Exception Handling
+```python
+try:
+    result = 10 / 0
+except ZeroDivisionError as e:
+    print(f"Error: {e}")
+except (TypeError, ValueError):
+    pass
+else:
+    print("No exception")
+finally:
+    print("Always runs")
+```
+- Raising exceptions: raise ValueError("message")
+- Custom exceptions: class MyError(Exception): pass
+
+## 11. File I/O
+```python
+# Reading
+with open('file.txt', 'r') as f:
+    content = f.read()       # entire file
+    lines = f.readlines()    # list of lines
+    for line in f:           # iterate line by line
+
+# Writing
+with open('file.txt', 'w') as f:
+    f.write("Hello\n")
+    f.writelines(["line1\n", "line2\n"])
+```
+- Modes: r, w, a, x, rb, wb, r+
+- os.path, pathlib.Path for path operations
+
+## 12. Modules and Packages
+- import module, from module import name
+- __name__ == "__main__" guard
+- __init__.py makes directory a package
+- pip install package_name
+- Virtual environments: python -m venv env
+- requirements.txt for dependencies
+
+## 13. Standard Library Highlights
+- **os**: file/directory operations
+- **sys**: interpreter info, command line args
+- **json**: JSON encode/decode
+- **datetime**: date/time operations
+- **re**: regular expressions
+- **collections**: deque, Counter, defaultdict, namedtuple
+- **itertools**: chain, combinations, permutations, product
+- **functools**: reduce, partial, lru_cache, wraps
+- **math**: sqrt, ceil, floor, log, pi, inf
+- **random**: random, randint, choice, shuffle, sample
+- **threading**: Thread, Lock, Semaphore
+- **multiprocessing**: Process, Pool
+- **socket**: network programming
+- **urllib**: HTTP requests
+
+## 14. List/Dict/Set Comprehensions
+```python
+# List comprehension
+squares = [x**2 for x in range(10)]
+even_squares = [x**2 for x in range(10) if x%2 == 0]
+
+# Dict comprehension
+word_lengths = {word: len(word) for word in words}
+
+# Set comprehension
+unique_lengths = {len(word) for word in words}
+
+# Nested
+matrix = [[i*j for j in range(3)] for i in range(3)]
+```
+
+## 15. Python Memory Model
+- Everything is an object
+- Variables are references to objects
+- Mutable vs Immutable objects
+- Reference counting + garbage collection (cyclic)
+- id() returns memory address
+- is checks identity, == checks equality
+- Small integer cache: -5 to 256
+- String interning
+
+## 16. Iterators and Iterables
+- Iterable: has __iter__() method
+- Iterator: has __iter__() and __next__() methods
+- iter() converts iterable to iterator
+- Lazy evaluation with generators
+
+## 17. Context Managers
+```python
+class ManagedFile:
+    def __init__(self, name):
+        self.name = name
+    def __enter__(self):
+        self.file = open(self.name, 'r')
+        return self.file
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.file.close()
+        return False  # don't suppress exceptions
+```
+- contextlib.contextmanager decorator
+
+## 18. Python Data Model
+- Protocols: iterable, comparable, hashable, callable
+- duck typing: "if it walks like a duck..."
+- EAFP vs LBYL coding styles
+
+## Common Interview Questions - Python
+1. Difference between list and tuple
+2. Mutable vs immutable objects
+3. How does GIL work in Python?
+4. Explain generators and their advantages
+5. What is a decorator?
+6. Difference between @staticmethod and @classmethod
+7. How does Python manage memory?
+8. What is *args and **kwargs?
+9. Explain list comprehension vs map/filter
+10. What is a closure in Python?

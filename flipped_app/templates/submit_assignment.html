@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Submit Assignment – FlipLearn{% endblock %}
+{% block content %}
+<div class="row justify-content-center mt-3">
+  <div class="col-md-7">
+    <div class="card shadow-sm border-0 rounded-4">
+      <div class="card-header bg-success text-white rounded-top-4">
+        <h5 class="mb-0"><i class="bi bi-cloud-upload me-2"></i>Submit Assignment</h5>
+      </div>
+      <div class="card-body p-4">
+        <h6 class="fw-bold">{{ assignment.title }}</h6>
+        <p class="text-muted small">{{ assignment.subject.name }} | Due {{ assignment.due_date|date:"d M Y" }}</p>
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{ form|crispy }}
+          <div class="d-flex gap-2 mt-3">
+            <button type="submit" class="btn btn-success"><i class="bi bi-upload me-1"></i>Submit</button>
+            <a href="{% url 'assignments' %}" class="btn btn-outline-secondary">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

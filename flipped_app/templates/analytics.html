@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}Analytics – FlipLearn{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="fw-bold"><i class="bi bi-graph-up me-2 text-primary"></i>Performance Analytics</h3>
+  <div class="d-flex gap-2">
+    <a href="{% url 'run_ml' %}" class="btn btn-warning btn-sm"><i class="bi bi-robot me-1"></i>Run ML</a>
+    <a href="{% url 'export_csv' %}" class="btn btn-outline-success btn-sm"><i class="bi bi-download me-1"></i>Export CSV</a>
+  </div>
+</div>
+
+<form method="get" class="row g-2 mb-3">
+  <div class="col-md-4">
+    <select name="subject" class="form-select" onchange="this.form.submit()">
+      <option value="">All Subjects</option>
+      {% for s in subjects %}
+      <option value="{{ s.id }}" {% if selected_subject == s.id|stringformat:"s" %}selected{% endif %}>{{ s.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+</form>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-3"><div class="stat-card bg-success">Avg Score<br><span>{{ avg_score }}</span></div></div>
+  <div class="col-md-3"><div class="stat-card bg-danger">At-Risk<br><span>{{ at_risk|length }}</span></div></div>
+  <div class="col-md-3"><div class="stat-card bg-primary">Flipped Avg<br><span>{{ flipped_avg }}</span></div></div>
+  <div class="col-md-3"><div class="stat-card bg-secondary">Traditional Avg<br><span>{{ traditional_avg }}</span></div></div>
+</div>
+
+<div class="row g-4">
+  <div class="col-md-5">
+    <div class="card shadow-sm border-0">
+      <div class="card-body">
+        <h6 class="fw-bold">Performance Labels</h6>
+        <canvas id="labelChart"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-7">
+    <div class="card shadow-sm border-0">
+      <div class="card-body">
+        <h6 class="fw-bold">Student Records</h6>
+        <div class="table-responsive">
+          <table class="table table-sm align-middle">
+            <thead class="table-light">
+              <tr><th>Student</th><th>Subject</th><th>Score</th><th>Label</th><th>Risk</th><th></th></tr>
+            </thead>
+            <tbody>
+              {% for p in performances %}
+              <tr>
+                <td>{{ p.student.get_full_name|default:p.student.username }}</td>
+                <td>{{ p.subject.name }}</td>
+                <td>{{ p.final_exam_score }}</td>
+                <td>{{ p.performance_label }}</td>
+                <td>{% if p.is_at_risk %}<span class="badge bg-danger">At-Risk</span>{% else %}<span class="badge bg-success">OK</span>{% endif %}</td>
+                <td><a href="{% url 'student_analytics' p.student.id %}" class="btn btn-sm btn-outline-primary">View</a></td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="6" class="text-muted">No records.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const labelData = {{ label_counts|safe }};
+const ctx = document.getElementById('labelChart');
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: Object.keys(labelData),
+    datasets: [{
+      data: Object.values(labelData),
+      backgroundColor: ['#28a745','#0d6efd','#fd7e14','#dc3545']
+    }]
+  }
+});
+</script>
+{% endblock %}
