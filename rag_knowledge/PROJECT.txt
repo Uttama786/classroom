@@ -1,0 +1,244 @@
+# FlipLearn — Flipped Classroom Platform: Complete User Guide
+
+## What Is This Platform?
+FlipLearn is a **Flipped Classroom web application** built for M.Tech CSE students and teachers.
+In a flipped classroom model, students study instructional content (videos, notes) at home and use
+class time for discussion and problem-solving. This platform supports:
+
+- Video lecture hosting and watching
+- Study material uploads (PDFs, docs)
+- Quizzes and auto-grading
+- Assignments with file submission
+- Performance analytics powered by ML models
+- An AI-powered chatbot (FlipLearn AI) for academic help
+
+---
+
+## How to Access the Platform
+
+### Register (New Students)
+1. Go to the home page and click **Register**.
+2. Fill in your name, username, email, and password.
+3. Click **Sign Up** — you are logged in automatically and taken to your Dashboard.
+
+### Login (Existing Users)
+1. Go to the home page and click **Login**.
+2. Enter your username and password, then click **Login**.
+3. You are taken to your **Dashboard**.
+4. Note: The AI chatbot history is cleared on each login so every session starts fresh.
+
+### Logout
+- Click **Logout** from any page or the dashboard navigation bar.
+
+---
+
+## Dashboard
+After login, your dashboard shows:
+- Your enrolled subjects
+- Recent video lectures
+- Pending assignments
+- Upcoming or recently taken quizzes
+- Notifications
+- A shortcut to the AI Chatbot
+
+---
+
+## Subjects
+
+### How to View Subjects
+- Navigate to **Subjects** from the top menu.
+- All available subjects are listed (DS, PY, WD, CN, DSC, AIML).
+
+### How to Enroll in a Subject (Students)
+1. Go to **Subjects**.
+2. Click **Enroll** next to the subject you want to join.
+3. Once enrolled, you can see that subject's videos, materials, and quizzes.
+
+---
+
+## Videos
+
+### How to Watch a Video Lecture
+1. Go to **Videos** from the navigation menu.
+2. You can filter by subject.
+3. Click a video title to open the **Video Detail** page.
+4. The video player will load. Watch the lecture.
+5. Your watch history is automatically tracked.
+
+### How to Upload a Video (Teachers Only)
+1. Go to **Upload Video** from the teacher menu.
+2. Fill in the title, select the subject, and choose the video file.
+3. Click **Upload** — the video is saved and students can now see it.
+
+---
+
+## Study Materials
+
+### How to View Study Materials
+1. Go to **Materials** from the navigation menu.
+2. Filter by subject if needed.
+3. Click on a material to download or view it.
+
+### How to Upload a Study Material (Teachers Only)
+1. Go to **Upload Material**.
+2. Fill in the title, select the subject, and attach the file (PDF, DOCX, etc.).
+3. Click **Upload**.
+
+---
+
+## Quizzes
+
+### How to Take a Quiz (Students)
+1. Go to **Quizzes** from the navigation menu.
+2. Click **Start Quiz** next to any available quiz.
+3. Answer all multiple-choice questions.
+4. Click **Submit** when done.
+5. You are shown your **Quiz Result** with score, correct answers, and feedback.
+
+### How to Create a Quiz (Teachers Only)
+1. Go to **Create Quiz**.
+2. Enter the quiz title, select the subject, and set the time limit.
+3. Click **Save** to create the quiz.
+4. You are taken to **Add Question** — add as many MCQ questions as needed.
+5. Each question has: question text, option A/B/C/D, and the correct option.
+
+### How to Add Questions to a Quiz (Teachers Only)
+1. From the quiz list, click **Add Questions** for any quiz.
+2. Fill in: question, option A, B, C, D, and correct answer.
+3. Click **Add Question**. Repeat for more questions.
+
+---
+
+## Assignments
+
+### How to View Assignments
+1. Go to **Assignments** from the navigation menu.
+2. You will see all current assignments with due dates.
+
+### How to Submit an Assignment (Students)
+1. Click **Submit** next to an assignment.
+2. Upload your file and optionally add notes.
+3. Click **Submit Assignment**.
+4. Submission is recorded and the teacher is notified.
+
+### How to Create an Assignment (Teachers Only)
+1. Go to **Create Assignment**.
+2. Fill in the title, description, subject, and due date.
+3. Click **Create**.
+
+### How to Grade an Assignment (Teachers Only)
+1. Go to **Assignment Submissions** to see all submitted work.
+2. Click **Grade** next to a submission.
+3. Enter marks and feedback, then click **Submit Grade**.
+
+---
+
+## Analytics and Performance
+
+### Student: My Performance
+1. Go to **My Performance** from the navigation menu.
+2. See your quiz scores, assignment grades, and subject-wise progress charts.
+
+### Student Analytics (Teachers Only)
+1. Go to **Analytics** from the teacher menu.
+2. View class-wide statistics: average scores, quiz pass rates, assignment completion.
+3. The ML model predicts student performance and highlights at-risk students.
+
+### Analytics Page
+- Shows bar charts and graphs for quiz attempts, assignment scores, and video watch history.
+- Powered by a **Random Forest** ML model trained on classroom data.
+
+---
+
+## AI Chatbot (FlipLearn AI)
+
+### How to Use the Chatbot
+1. Click **AI Chat** or **FlipLearn AI** from the navigation menu or dashboard.
+2. Select a subject from the dropdown (optional — helps get more focused answers).
+3. Type your question in the input box and press **Send** or hit Enter.
+4. The AI responds with a formatted answer using context from subject notes.
+5. Suggested follow-up questions appear below each answer — click one to continue.
+
+### What Can the Chatbot Help With?
+- Explaining concepts from DS, PY, WD, CN, DSC, AIML subjects
+- How to use this platform (just ask!)
+- Step-by-step guides for any feature
+- Code examples and algorithm explanations
+- Quiz and assignment related academic questions
+
+### Chatbot Tips
+- The chat history resets every time you log in (fresh start).
+- You can ask "How do I upload a video?" or "How do I submit an assignment?" and the AI will guide you.
+- Typing in the subject box narrows down the answers.
+
+---
+
+## Roles: Student vs Teacher
+
+### Student Can:
+- Register and login
+- Enroll in subjects
+- Watch videos
+- Download study materials
+- Take quizzes and see results
+- Submit assignments
+- View own performance analytics
+- Use the AI chatbot
+
+### Teacher Can:
+- Login (account created by admin)
+- Upload video lectures
+- Upload study materials
+- Create quizzes and add questions
+- Create assignments
+- View and grade assignment submissions
+- View class-wide analytics
+
+---
+
+## Common Questions
+
+### Q: I forgot my password. How do I reset it?
+Contact your system administrator or teacher to reset your password from the Django admin panel.
+
+### Q: How do I know which subject a video belongs to?
+Each video shows its subject tag. You can also filter the video list by subject.
+
+### Q: Can I retake a quiz?
+Yes. Go to **Quizzes**, find the quiz, and click **Start Quiz** again.
+
+### Q: Where do I see my grade for an assignment?
+Go to **My Performance** or check **Assignments** — graded submissions show the score and teacher feedback.
+
+### Q: The chatbot is not answering about the platform. What do I do?
+Ask directly, for example: "How do I upload a video?" or "How do I view my assignment grades?" The chatbot is trained on this guide and will assist you.
+
+### Q: What subjects are available?
+- **DS** — Data Structures
+- **PY** — Python Programming
+- **WD** — Web Development
+- **CN** — Computer Networks
+- **DSC** — Data Science
+- **AIML** — Artificial Intelligence & Machine Learning
+
+### Q: How is my performance predicted?
+Your quiz scores, assignment grades, and attendance data are fed into a trained **Random Forest** machine learning model that predicts your academic performance and flags areas for improvement.
+
+---
+
+## Navigation Quick Reference
+
+| Page | How to Reach |
+|------|-------------|
+| Dashboard | After login or click Home |
+| Subjects | Top menu → Subjects |
+| Videos | Top menu → Videos |
+| Study Materials | Top menu → Materials |
+| Quizzes | Top menu → Quizzes |
+| Assignments | Top menu → Assignments |
+| My Performance | Top menu → My Performance |
+| AI Chatbot | Dashboard → FlipLearn AI or top menu |
+| Upload Video | Teacher menu → Upload Video |
+| Create Quiz | Teacher menu → Create Quiz |
+| Create Assignment | Teacher menu → Create Assignment |
+| Analytics | Teacher menu → Analytics |
