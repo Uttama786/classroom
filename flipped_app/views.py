@@ -49,6 +49,9 @@ def register_view(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
+            # No prior history for new accounts, but clear defensively
+            from .models import ChatMessage
+            ChatMessage.objects.filter(student=user).delete()
             messages.success(request, f'Welcome {user.first_name}! Your account has been created.')
             return redirect('dashboard')
         else:
@@ -67,6 +70,9 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user:
             login(request, user)
+            # Clear previous chatbot history so every login starts fresh
+            from .models import ChatMessage
+            ChatMessage.objects.filter(student=user).delete()
             return redirect('dashboard')
         else:
             messages.error(request, 'Invalid username or password.')
