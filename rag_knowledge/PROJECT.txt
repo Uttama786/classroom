@@ -256,3 +256,35 @@ Your quiz scores, assignment grades, and attendance data are fed into a trained 
 | Create Quiz | Teacher menu → Create Quiz |
 | Create Assignment | Teacher menu → Create Assignment |
 | Analytics | Teacher menu → Analytics |
+
+---
+
+## Adding Textbooks to the AI Chatbot
+
+The FlipLearn AI chatbot can be trained on any PDF textbook so it can answer questions from the book.
+
+### How to Add a Textbook (for administrators/teachers)
+1. Place the PDF textbook file in the `rag_textbooks/` folder inside the project.
+2. Name the file to include the subject code so the bot knows the subject:
+   - `DS_Introduction_to_Algorithms.pdf` → Data Structures
+   - `PY_Python_Crash_Course.pdf` → Python
+   - `WD_HTML_CSS_Guide.pdf` → Web Development
+   - `CN_Tanenbaum_Networks.pdf` → Computer Networks
+   - `DSC_Hands_On_ML.pdf` → Data Science
+   - `AIML_Deep_Learning.pdf` → AI & Machine Learning
+3. Run the following command to rebuild the chatbot knowledge index:
+   ```
+   python manage.py build_rag_index --force
+   ```
+4. Restart the Django server. The chatbot will now know the content of that textbook.
+
+### Which textbook formats work?
+- Only **PDF files with selectable text** work (digital/born-digital PDFs).
+- Scanned PDFs (photos of pages) do NOT work — the text must be copyable.
+- You can add multiple textbooks at once and run the indexer once.
+
+### Where is the rag_textbooks folder?
+Inside the main project folder: `flipped_classroom_project/rag_textbooks/`
+
+### Q: Can I train the chatbot on a textbook?
+Yes! Place the PDF in the `rag_textbooks/` folder and run `python manage.py build_rag_index --force`. The chatbot will learn from it immediately.

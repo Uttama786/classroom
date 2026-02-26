@@ -1,8 +1,9 @@
 """
 RAG Indexer — builds FAISS index from:
   1. Subject knowledge txt files (rag_knowledge/)
-  2. Uploaded study materials (PDFs in media/)
-  3. Quiz questions from the database
+  2. Textbook PDFs (rag_textbooks/)
+  3. Uploaded study materials (PDFs in media/)
+  4. Quiz questions from the database
 """
 
 import os
@@ -17,6 +18,18 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 CHUNK_SIZE = 400      # characters per chunk
 CHUNK_OVERLAP = 60    # overlap between consecutive chunks
+
+# Subject codes for auto-detection in textbook filenames
+SUBJECT_CODES = ['AIML', 'DSC', 'DS', 'CN', 'PY', 'WD']  # longer codes first
+
+
+def _detect_subject(filename: str) -> str:
+    """Detect subject code from a PDF filename (case-insensitive)."""
+    upper = filename.upper()
+    for code in SUBJECT_CODES:
+        if code in upper:
+            return code
+    return ""
 
 
 def chunk_text(text: str, source: str, subject_code: str = "") -> List[dict]:
@@ -50,6 +63,54 @@ def load_knowledge_files(knowledge_dir: pathlib.Path) -> List[dict]:
         chunks = chunk_text(text, source=f"Subject Notes: {subject_code}", subject_code=subject_code)
         all_chunks.extend(chunks)
         print(f"[Indexer] Loaded {len(chunks)} chunks from {txt_file.name}")
+
+    return all_chunks
+
+
+def load_textbooks(textbooks_dir: pathlib.Path) -> List[dict]:
+    """Extract text from PDF textbooks in rag_textbooks/ directory."""
+    all_chunks = []
+    if not textbooks_dir.exists():
+        return all_chunks
+
+    try:
+        import pdfplumber
+    except ImportError:
+        print("[Indexer] pdfplumber not installed — skipping textbook indexing. Run: pip install pdfplumber")
+        return all_chunks
+
+    pdf_paths = list(textbooks_dir.glob("*.pdf"))
+    if not pdf_paths:
+        print(f"[Indexer] No textbook PDFs found in {textbooks_dir}")
+        return all_chunks
+
+    print(f"[Indexer] Found {len(pdf_paths)} textbook(s) to index...")
+    for pdf_path in pdf_paths:
+        subject_code = _detect_subject(pdf_path.name)
+        subject_label = f" [{subject_code}]" if subject_code else ""
+        try:
+            text_parts = []
+            with pdfplumber.open(pdf_path) as pdf:
+                total_pages = len(pdf.pages)
+                for i, page in enumerate(pdf.pages, 1):
+                    page_text = page.extract_text()
+                    if page_text and page_text.strip():
+                        text_parts.append(page_text)
+            full_text = "\n".join(text_parts)
+            if full_text.strip():
+                chunks = chunk_text(
+                    full_text,
+                    source=f"Textbook: {pdf_path.stem}",
+                    subject_code=subject_code,
+                )
+                all_chunks.extend(chunks)
+                print(f"[Indexer]   Textbook{subject_label}: {pdf_path.name} "
+                      f"({total_pages} pages → {len(chunks)} chunks)")
+            else:
+                print(f"[Indexer]   WARNING: No text extracted from {pdf_path.name} "
+                      f"(may be a scanned/image PDF)")
+        except Exception as e:
+            print(f"[Indexer]   ERROR reading {pdf_path.name}: {e}")
 
     return all_chunks
 
@@ -128,6 +189,7 @@ def build_index():
         return
 
     knowledge_dir = PROJECT_ROOT / "rag_knowledge"
+    textbooks_dir = PROJECT_ROOT / "rag_textbooks"
     media_dir = PROJECT_ROOT / "media"
     save_dir = PROJECT_ROOT / "rag_engine" / "saved_index"
     save_dir.mkdir(parents=True, exist_ok=True)
@@ -135,6 +197,7 @@ def build_index():
     # Collect all chunks
     all_chunks = []
     all_chunks.extend(load_knowledge_files(knowledge_dir))
+    all_chunks.extend(load_textbooks(textbooks_dir))
     all_chunks.extend(load_pdf_materials(media_dir))
     all_chunks.extend(load_quiz_questions())
 
