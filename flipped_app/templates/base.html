@@ -733,17 +733,16 @@
           } else if (payload.type === 'token') {
             if (!streamStarted) { removeSearching(); streamStarted = true; }
             accumulated += payload.text;
+            // ChatGPT flow: stream raw text with a blinking cursor — no markdown until done
+            textDiv.innerHTML = escapeHtml(accumulated).replace(/\n/g, '<br>') + '<span class="chat-cursor"></span>';
+            scrollBottom();
+          } else if (payload.type === 'done') {
+            // Stream finished — now do the full markdown render (ChatGPT style)
             textDiv.innerHTML = renderMd(accumulated);
             if (typeof hljs !== 'undefined') {
               textDiv.querySelectorAll('pre code:not([data-highlighted])').forEach(el => {
                 hljs.highlightElement(el); el.setAttribute('data-highlighted','true');
               });
-            }
-            scrollBottom();
-          } else if (payload.type === 'done') {
-            textDiv.innerHTML = renderMd(accumulated);
-            if (typeof hljs !== 'undefined') {
-              textDiv.querySelectorAll('pre code:not([data-highlighted])').forEach(el => hljs.highlightElement(el));
             }
             addSourceCards(wrap, sourcesData);
             if (!isOpen) { unread++; badge.textContent = unread; badge.classList.remove('d-none'); }
@@ -826,22 +825,19 @@
           } else if (payload.type === 'token') {
             if (!streamStarted) { removeSearching(); streamStarted = true; }
             accumulated += payload.text;
+            // ChatGPT flow: stream raw text with a blinking cursor — no markdown until done
+            textDiv.innerHTML = escapeHtml(accumulated).replace(/\n/g, '<br>') + '<span class="chat-cursor"></span>';
+            scrollBottom();
+          } else if (payload.type === 'related') {
+            addRelatedQuestions(wrap, payload.questions);
+          } else if (payload.type === 'done') {
+            // Stream finished — now do the full markdown render (ChatGPT style)
             textDiv.innerHTML = renderMd(accumulated);
-            // apply syntax highlighting to new code blocks
             if (typeof hljs !== 'undefined') {
               textDiv.querySelectorAll('pre code:not([data-highlighted])').forEach(el => {
                 hljs.highlightElement(el);
                 el.setAttribute('data-highlighted', 'true');
               });
-            }
-            scrollBottom();
-          } else if (payload.type === 'related') {
-            addRelatedQuestions(wrap, payload.questions);
-          } else if (payload.type === 'done') {
-            // final render
-            textDiv.innerHTML = renderMd(accumulated);
-            if (typeof hljs !== 'undefined') {
-              textDiv.querySelectorAll('pre code:not([data-highlighted])').forEach(el => { hljs.highlightElement(el); });
             }
             addSourceCards(wrap, sourcesData);
             if (!isOpen) { unread++; badge.textContent = unread; badge.classList.remove('d-none'); }
