@@ -64,7 +64,16 @@
         {% endif %}
       </ul>
       <ul class="navbar-nav ms-auto align-items-center">
-        <!-- Notifications -->
+        <!-- AI Tutor Chat Button -->
+        {% if user.is_authenticated %}
+        <li class="nav-item me-1">
+          <button id="flipChatPip" class="btn btn-sm btn-warning fw-semibold d-flex align-items-center gap-1 px-3" title="Ask FlipLearn AI" aria-label="Open AI Tutor">
+            <i class="bi bi-robot"></i>
+            <span>AI Tutor</span>
+            <span id="chatUnreadBadge" class="badge bg-danger ms-1 d-none" style="font-size:0.6rem;">!</span>
+          </button>
+        </li>
+        {% endif %}
         {% if notifications %}
         <li class="nav-item dropdown me-2">
           <a class="nav-link position-relative" href="#" data-bs-toggle="dropdown">
@@ -300,18 +309,11 @@
 {% block extra_js %}{% endblock %}
 
 {% if user.is_authenticated %}
-<!-- ── FlipLearn AI Chat Widget — Perplexity style ─────── -->
+<!-- ── FlipLearn AI Chat Widget ─────── -->
 <!-- Backdrop -->
 <div id="chatBackdrop" class="chat-backdrop"></div>
 
 <div id="flipChatWidget">
-  <!-- PIP Button -->
-  <button id="flipChatPip" class="chat-pip" title="Ask FlipLearn AI" aria-label="Open AI Tutor">
-    <i class="bi bi-robot chat-pip-icon"></i>
-    <span class="chat-pip-label">AI Tutor</span>
-    <span id="chatUnreadBadge" class="chat-unread-badge d-none">!</span>
-  </button>
-
   <!-- Chat Panel (right sidebar) -->
   <div id="flipChatPanel" class="chat-panel" aria-live="polite" role="region" aria-label="FlipLearn AI Tutor">
     <!-- Header -->
