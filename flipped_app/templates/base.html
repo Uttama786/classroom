@@ -394,7 +394,27 @@
       </button>
     </div>
     <div class="chat-panel-footer">
-      Powered by <strong>Groq LLaMA-3</strong> + FAISS · <span id="chatCharCount">0</span>/1000
+      Powered by <strong>Groq LLaMA-3</strong> + FAISS &nbsp;&middot;&nbsp; <span id="chatCharCount">0</span>/1000
+      &nbsp;&middot;&nbsp;
+      <button id="chatShortcutsBtn" class="chat-shortcuts-btn" title="Keyboard shortcuts">
+        <i class="bi bi-keyboard"></i> Shortcuts
+      </button>
+    </div>
+
+    <!-- Keyboard Shortcuts Popover -->
+    <div id="chatShortcutsPopover" class="chat-shortcuts-popover d-none">
+      <div class="chat-shortcuts-popover-header">
+        <strong><i class="bi bi-keyboard me-1"></i>Keyboard Shortcuts</strong>
+        <button id="chatShortcutsClose" class="chat-shortcuts-popover-close">&times;</button>
+      </div>
+      <ul class="chat-shortcuts-list">
+        <li><kbd>Enter</kbd> Send message</li>
+        <li><kbd>Shift</kbd>+<kbd>Enter</kbd> New line</li>
+        <li><kbd>Ctrl</kbd>+<kbd>K</kbd> Open / close chat</li>
+        <li><kbd>Ctrl</kbd>+<kbd>L</kbd> Clear chat history</li>
+        <li><kbd>↑</kbd> Recall last message</li>
+        <li><kbd>Esc</kbd> Close chat</li>
+      </ul>
     </div>
   </div>
 </div>
@@ -466,6 +486,39 @@
   closeBtn.addEventListener('click', closePanel);
   backdrop.addEventListener('click', closePanel);
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && isOpen) closePanel(); });
+
+  /* ── Global shortcuts ── */
+  document.addEventListener('keydown', e => {
+    // Ctrl+K — toggle chat open/close
+    if (e.ctrlKey && e.key === 'k') {
+      e.preventDefault();
+      isOpen ? closePanel() : openPanel();
+    }
+    // Ctrl+L — clear chat (only when open)
+    if (e.ctrlKey && e.key === 'l' && isOpen) {
+      e.preventDefault();
+      clearBtn.click();
+    }
+  });
+
+  /* ── Up arrow: recall last sent message ── */
+  let lastSentMsg = '';
+  input.addEventListener('keydown', e => {
+    if (e.key === 'ArrowUp' && input.value === '' && lastSentMsg) {
+      e.preventDefault();
+      input.value = lastSentMsg;
+      charCount.textContent = lastSentMsg.length;
+      input.style.height = 'auto';
+      input.style.height = Math.min(input.scrollHeight, 140) + 'px';
+    }
+  });
+
+  /* ── Shortcuts popover toggle ── */
+  const shortcutsBtn     = document.getElementById('chatShortcutsBtn');
+  const shortcutsPopover = document.getElementById('chatShortcutsPopover');
+  const shortcutsClose   = document.getElementById('chatShortcutsClose');
+  shortcutsBtn.addEventListener('click', () => shortcutsPopover.classList.toggle('d-none'));
+  shortcutsClose.addEventListener('click', () => shortcutsPopover.classList.add('d-none'));
 
   /* ── input helpers ── */
   input.addEventListener('input', () => {
@@ -770,6 +823,9 @@
 
     const query = input.value.trim();
     if (!query || isLoading) return;
+
+    // Store for ↑ recall
+    lastSentMsg = query;
 
     const welcome = document.getElementById('chatWelcome');
     if (welcome) welcome.style.display = 'none';

@@ -1159,7 +1159,7 @@ main { animation: pageIn 0.45s cubic-bezier(0.22,1,0.36,1); }
   box-shadow: -8px 0 40px rgba(0,0,0,0.18);
   transform: translateX(100%);
   transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: hidden;
+  overflow: visible;
 }
 .chat-panel-open {
   transform: translateX(0);
@@ -1834,4 +1834,77 @@ main { animation: pageIn 0.45s cubic-bezier(0.22,1,0.36,1); }
     padding: 10px 14px;
     font-size: 0.82rem;
   }
+}
+
+/* ── Keyboard Shortcuts Button ──────────────────────── */
+.chat-shortcuts-btn {
+  background: none;
+  border: 1px solid var(--chat-border);
+  border-radius: 5px;
+  color: var(--chat-sub);
+  font-size: 0.67rem;
+  padding: 1px 6px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.chat-shortcuts-btn:hover {
+  background: var(--chat-user-bg);
+  color: var(--chat-text);
+}
+
+/* ── Shortcuts Popover ──────────────────────────────── */
+.chat-shortcuts-popover {
+  position: absolute;
+  bottom: 56px;
+  left: 12px;
+  right: 12px;
+  background: var(--chat-surface);
+  border: 1px solid var(--chat-border);
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.15);
+  z-index: 20;
+  padding: 10px 14px 12px;
+  font-size: 0.8rem;
+}
+.chat-shortcuts-popover-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  color: var(--chat-text);
+}
+.chat-shortcuts-popover-close {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  color: var(--chat-sub);
+  line-height: 1;
+  padding: 0 2px;
+}
+.chat-shortcuts-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 5px;
+}
+.chat-shortcuts-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--chat-text);
+  font-size: 0.78rem;
+}
+.chat-shortcuts-list kbd {
+  display: inline-block;
+  background: var(--chat-user-bg);
+  border: 1px solid var(--chat-border);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-family: 'Courier New', Consolas, monospace;
+  font-size: 0.72rem;
+  color: var(--chat-text);
+  white-space: nowrap;
 }

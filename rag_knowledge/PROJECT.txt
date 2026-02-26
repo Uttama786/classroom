@@ -159,6 +159,20 @@ After login, your dashboard shows:
 4. The AI responds with a formatted answer using context from subject notes.
 5. Suggested follow-up questions appear below each answer — click one to continue.
 
+### Chatbot Keyboard Shortcuts
+You can control the chatbot entirely from your keyboard:
+
+| Shortcut | Action |
+|----------|--------|
+| `Enter` | Send your message |
+| `Shift + Enter` | Insert a new line (multi-line messages) |
+| `Ctrl + K` | Open or close the chat panel from anywhere on the page |
+| `Ctrl + L` | Clear the entire chat history |
+| `↑ (Up Arrow)` | Recall your last sent message into the input box |
+| `Escape` | Close the chat panel |
+
+**How to see shortcuts in the chat:** Click the **⌨ Shortcuts** button in the bottom bar of the chat panel to view the shortcut reference.
+
 ### What Can the Chatbot Help With?
 - Explaining concepts from DS, PY, WD, CN, DSC, AIML subjects
 - How to use this platform (just ask!)
