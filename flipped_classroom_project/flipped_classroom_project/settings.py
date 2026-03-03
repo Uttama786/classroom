@@ -29,8 +29,12 @@ ALLOWED_HOSTS = [h.strip() for h in _raw_hosts.split(',') if h.strip()]
 
 # ── Production Security Settings (auto-enabled when DEBUG=False) ──────────
 if not DEBUG:
-    # Force HTTPS
-    SECURE_SSL_REDIRECT = True
+    # Railway (and most PaaS) terminate SSL at the proxy; the app receives plain HTTP.
+    # Tell Django to trust the X-Forwarded-Proto header so it knows the original
+    # request was HTTPS and won't keep redirecting.
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    # Do NOT set SECURE_SSL_REDIRECT=True — Railway handles HTTPS at the edge.
+    SECURE_SSL_REDIRECT = False
     SECURE_HSTS_SECONDS = 31536000          # 1 year
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
