@@ -4,6 +4,7 @@ quizzes (with questions), and assignments for each subject.
 Runs automatically via `python manage.py migrate` on first deploy.
 """
 
+from django.contrib.auth.hashers import make_password
 from django.db import migrations
 from django.utils import timezone
 import datetime
@@ -251,10 +252,10 @@ def seed_demo_data(apps, schema_editor):
             'last_name': 'Teacher',
             'email': 'teacher@fliplearn.edu',
             'is_staff': True,
+            'password': make_password('teacher1234'),
         }
     )
     if created:
-        teacher_user.set_password('teacher1234')
         teacher_user.save()
 
     if not TeacherProfile.objects.filter(user=teacher_user).exists():
