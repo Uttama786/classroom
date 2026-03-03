@@ -1,2 +1,2 @@
-web: gunicorn flipped_classroom_project.wsgi:application --workers 2 --threads 2 --timeout 120 --bind 0.0.0.0:$PORT
+web: python -m gunicorn flipped_classroom_project.wsgi:application --workers 1 --threads 4 --timeout 120 --bind 0.0.0.0:$PORT
 release: python manage.py migrate --noinput
