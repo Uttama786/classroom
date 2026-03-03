@@ -9,10 +9,8 @@ cmds = [
 
 [phases.build]
 cmds = [
-  "cd flipped_classroom_project && python manage.py collectstatic --noinput",
-  "cd flipped_classroom_project && python manage.py migrate --noinput",
-  "cd flipped_classroom_project && python manage.py create_admin"
+  "cd flipped_classroom_project && python manage.py collectstatic --noinput"
 ]
 
 [start]
-cmd = "cd flipped_classroom_project && python -m gunicorn flipped_classroom_project.wsgi:application --workers 1 --threads 4 --timeout 120 --bind 0.0.0.0:$PORT"
+cmd = "cd flipped_classroom_project && python manage.py migrate --noinput && python manage.py create_admin; python -m gunicorn flipped_classroom_project.wsgi:application --workers 1 --threads 4 --timeout 120 --bind 0.0.0.0:$PORT"
