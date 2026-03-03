@@ -19,9 +19,9 @@ services:
       - key: DEBUG
         value: "False"
       - key: ALLOWED_HOSTS
-        value: "fliplearn.onrender.com,flippedclassroom.com,www.flippedclassroom.com"
+        value: "classroom-production-cfa8.up.railway.app"
       - key: CSRF_TRUSTED_ORIGINS
-        value: "https://fliplearn.onrender.com,https://flippedclassroom.com,https://www.flippedclassroom.com"
+        value: "https://classroom-production-cfa8.up.railway.app"
       - key: GROQ_API_KEY
         sync: false
       - key: PYTHON_VERSION
