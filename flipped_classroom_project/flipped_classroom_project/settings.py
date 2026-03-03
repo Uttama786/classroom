@@ -23,9 +23,13 @@ SECRET_KEY = os.environ.get(
 
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-# In production set ALLOWED_HOSTS=yourdomain.com in .env
+# In production set ALLOWED_HOSTS=.up.railway.app in env vars
+# Converts *.domain to .domain (Django uses leading-dot for subdomain wildcard)
 _raw_hosts = os.environ.get('ALLOWED_HOSTS', '*')
-ALLOWED_HOSTS = [h.strip() for h in _raw_hosts.split(',') if h.strip()]
+ALLOWED_HOSTS = [
+    h.strip()[1:] if h.strip().startswith('*.') else h.strip()
+    for h in _raw_hosts.split(',') if h.strip()
+]
 
 # ── Production Security Settings (auto-enabled when DEBUG=False) ──────────
 if not DEBUG:
