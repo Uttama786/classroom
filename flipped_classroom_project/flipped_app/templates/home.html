@@ -1,0 +1,497 @@
+﻿{% extends 'base.html' %}
+{% block title %}Home – FlipLearn{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ── Hero ── */
+.hero-v4 {
+  position: relative;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 40%, #4f46e5 75%, #7c3aed 100%);
+  color: #fff;
+  padding: 4rem 3rem;
+  margin-bottom: 3rem;
+  box-shadow: 0 20px 60px rgba(30,58,138,0.35);
+}
+.hero-v4::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 600px 400px at 80% 50%, rgba(124,58,237,0.3) 0%, transparent 70%),
+    radial-gradient(ellipse 400px 300px at 20% 80%, rgba(29,78,216,0.25) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+.hero-v4 > * { position: relative; z-index: 1; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 50px;
+  padding: 5px 14px;
+  font-size: .78rem;
+  font-weight: 600;
+  backdrop-filter: blur(8px);
+  margin-bottom: 1.25rem;
+  animation: heroBadgePop .6s cubic-bezier(0.22,1,0.36,1) .1s both;
+}
+.hero-v4 h1 {
+  font-size: clamp(1.8rem, 4vw, 2.9rem);
+  font-weight: 900;
+  line-height: 1.2;
+  margin-bottom: .5rem;
+  animation: heroTitleIn .7s cubic-bezier(0.22,1,0.36,1) .2s both;
+}
+.hero-v4 .hero-sub {
+  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+  font-weight: 700;
+  color: #fbbf24;
+  margin-bottom: 1.25rem;
+  animation: heroTitleIn .7s cubic-bezier(0.22,1,0.36,1) .3s both;
+}
+.hero-v4 p.lead {
+  font-size: .95rem;
+  opacity: .88;
+  max-width: 560px;
+  line-height: 1.7;
+  margin-bottom: 1.75rem;
+  animation: heroTitleIn .7s cubic-bezier(0.22,1,0.36,1) .4s both;
+}
+.hero-btns { animation: heroTitleIn .7s cubic-bezier(0.22,1,0.36,1) .5s both; }
+.hero-graphic {
+  display: flex; align-items: center; justify-content: center;
+  animation: heroImgIn .9s cubic-bezier(0.22,1,0.36,1) .2s both;
+}
+.hero-icon-stack {
+  position: relative;
+  width: 220px; height: 220px;
+}
+.hero-icon-stack .hic {
+  position: absolute;
+  border-radius: 20px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #fff;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.2);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  animation: floatCard 4s ease-in-out infinite alternate;
+}
+.hic-1 { width:100px;height:100px; background:rgba(255,255,255,.15); top:0;left:60px; animation-delay:0s; }
+.hic-2 { width:80px;height:80px; background:rgba(251,191,36,.18); bottom:30px;left:0; animation-delay:.6s; }
+.hic-3 { width:80px;height:80px; background:rgba(167,139,250,.22); bottom:20px;right:0; animation-delay:1.2s; }
+@keyframes floatCard {
+  0%   { transform: translateY(0) rotate(-2deg); }
+  100% { transform: translateY(-12px) rotate(2deg); }
+}
+@keyframes heroBadgePop {
+  from { opacity:0; transform: scale(.8) translateY(-8px); }
+  to   { opacity:1; transform: scale(1) translateY(0); }
+}
+@keyframes heroTitleIn {
+  from { opacity:0; transform: translateY(20px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+@keyframes heroImgIn {
+  from { opacity:0; transform: scale(.85) translateY(20px); }
+  to   { opacity:1; transform: scale(1) translateY(0); }
+}
+[data-theme="dark"] .hero-v4 {
+  background: linear-gradient(135deg, #0d001a 0%, #1a003a 40%, #2a006a 75%, #4b00a0 100%);
+  box-shadow: 0 20px 60px rgba(120,40,255,0.35), 0 0 0 1px rgba(176,106,255,0.2);
+}
+
+/* ── Stat Cards ── */
+.stat-v4 {
+  border-radius: 16px;
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.22s, box-shadow 0.22s;
+}
+.stat-v4:hover { transform: translateY(-6px); }
+.stat-v4 .stat-icon {
+  width: 52px; height: 52px;
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem;
+  margin: 0 auto 10px;
+}
+.stat-v4 .stat-num { font-size: 1.5rem; font-weight: 800; }
+.stat-v4 .stat-lbl { font-size: .78rem; opacity: .75; margin-top: 2px; }
+.stat-v4 .stat-sublbl { font-size: .68rem; opacity: .55; }
+
+/* ── Subject Cards v4 ── */
+.subj-card-v4 {
+  border-radius: 16px;
+  padding: 1.4rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid rgba(0,0,0,0.05);
+  background: var(--bg-surface);
+}
+.subj-card-v4:hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+}
+[data-theme="dark"] .subj-card-v4 { border-color: rgba(176,106,255,0.12); }
+.subj-icon {
+  width: 56px; height: 56px;
+  border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem;
+  margin: 0 auto 10px;
+}
+
+/* ── Feature rows ── */
+.feature-chip {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 1.1rem;
+  border-radius: 14px;
+  background: var(--bg-surface);
+  border: 1px solid rgba(0,0,0,0.05);
+  transition: transform .2s, box-shadow .2s;
+  height: 100%;
+}
+.feature-chip:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+[data-theme="dark"] .feature-chip { border-color: rgba(176,106,255,0.1); }
+.feature-chip .fi {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; flex-shrink: 0;
+}
+.feature-chip h6 { font-size: .88rem; font-weight: 700; margin-bottom: 3px; }
+.feature-chip p { font-size: .78rem; color: var(--txt-muted); margin: 0; line-height: 1.5; }
+
+/* ── ML model cards ── */
+.ml-card {
+  border-radius: 14px;
+  padding: 1.25rem;
+  border: 1px solid rgba(0,0,0,0.05);
+  background: var(--bg-surface);
+  height: 100%;
+  transition: box-shadow .2s;
+}
+.ml-card:hover { box-shadow: 0 8px 28px rgba(0,0,0,0.1); }
+[data-theme="dark"] .ml-card { border-color: rgba(176,106,255,0.1); }
+.ml-card .ml-model-row {
+  display: flex; align-items: center; gap: 8px;
+  font-size: .82rem; padding: 6px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+.ml-card .ml-model-row:last-child { border-bottom: none; padding-bottom: 0; }
+[data-theme="dark"] .ml-card .ml-model-row { border-color: rgba(176,106,255,0.08); }
+.ml-card .ml-model-row i { font-size: .85rem; flex-shrink: 0; }
+
+/* ── Section heading ── */
+.sec-heading {
+  font-size: 1.5rem; font-weight: 800;
+  margin-bottom: .4rem;
+}
+.sec-sub {
+  font-size: .88rem;
+  color: var(--txt-muted);
+  margin-bottom: 1.75rem;
+}
+
+/* ── CTA section ── */
+.cta-section {
+  border-radius: 1.5rem;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  color: #fff;
+  padding: 3rem 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 16px 50px rgba(79,70,229,0.35);
+}
+.cta-section::before {
+  content:'';
+  position:absolute; inset:0;
+  background: radial-gradient(ellipse 500px 300px at 50% 100%, rgba(124,58,237,.4) 0%, transparent 70%);
+  pointer-events:none;
+}
+[data-theme="dark"] .cta-section {
+  background: linear-gradient(135deg, #2d006a 0%, #4b00a0 100%);
+  box-shadow: 0 16px 50px rgba(124,58,237,0.5);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ══ HERO ══════════════════════════════════════════════════════════ -->
+<div class="hero-v4 mb-4">
+  <div class="row align-items-center g-4">
+    <div class="col-lg-7">
+      <div class="hero-badge">
+        <i class="bi bi-mortarboard-fill text-warning"></i>
+        M.Tech CSE Research Project &nbsp;·&nbsp; 2025–2026
+      </div>
+      <h1>Performance Analysis of the<br><span style="color:#fbbf24">Flipped Classroom</span> Model</h1>
+      <p class="hero-sub">using AI &amp; Machine Learning in CSE Education</p>
+      <p class="lead">
+        An AI-powered learning platform where students learn before class and practise during class.
+        ML models analyse engagement data to predict academic performance and detect at-risk students early.
+      </p>
+      <div class="hero-btns d-flex gap-3 flex-wrap">
+        <a href="{% url 'register' %}" class="btn btn-warning btn-lg px-4 fw-bold shadow-sm">
+          <i class="bi bi-rocket-takeoff-fill me-2"></i>Get Started Free
+        </a>
+        <a href="{% url 'login' %}" class="btn btn-lg px-4 fw-semibold"
+           style="background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.4);color:#fff;backdrop-filter:blur(6px)">
+          <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+        </a>
+      </div>
+    </div>
+    <div class="col-lg-5 hero-graphic d-none d-lg-flex">
+      <div class="hero-icon-stack">
+        <div class="hic hic-1"><i class="bi bi-robot" style="font-size:2.5rem"></i></div>
+        <div class="hic hic-2"><i class="bi bi-graph-up-arrow" style="font-size:1.8rem"></i></div>
+        <div class="hic hic-3"><i class="bi bi-mortarboard-fill" style="font-size:1.8rem"></i></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ STATS ═════════════════════════════════════════════════════════ -->
+<div class="row g-3 mb-5">
+  <div class="col-6 col-md-3">
+    <div class="stat-v4 kpi-blue shadow-sm">
+      <div class="stat-icon" style="background:rgba(37,99,235,.12)">
+        <i class="bi bi-camera-video-fill text-primary"></i>
+      </div>
+      <div class="stat-num text-primary">Video</div>
+      <div class="stat-lbl fw-semibold">Lectures</div>
+      <div class="stat-sublbl">Watch before class</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-v4 kpi-green shadow-sm">
+      <div class="stat-icon" style="background:rgba(22,163,74,.12)">
+        <i class="bi bi-patch-question-fill text-success"></i>
+      </div>
+      <div class="stat-num text-success">Smart</div>
+      <div class="stat-lbl fw-semibold">Quizzes</div>
+      <div class="stat-sublbl">Test your knowledge</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-v4 kpi-yellow shadow-sm">
+      <div class="stat-icon" style="background:rgba(202,138,4,.12)">
+        <i class="bi bi-robot text-warning"></i>
+      </div>
+      <div class="stat-num text-warning">AI</div>
+      <div class="stat-lbl fw-semibold">ML Analytics</div>
+      <div class="stat-sublbl">Predict performance</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-v4 kpi-red shadow-sm">
+      <div class="stat-icon" style="background:rgba(220,38,38,.12)">
+        <i class="bi bi-shield-exclamation text-danger"></i>
+      </div>
+      <div class="stat-num text-danger">Early</div>
+      <div class="stat-lbl fw-semibold">Risk Detection</div>
+      <div class="stat-sublbl">Save struggling students</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FEATURES ══════════════════════════════════════════════════════ -->
+<div class="mb-5">
+  <h2 class="sec-heading"><i class="bi bi-stars text-warning me-2"></i>Platform Highlights</h2>
+  <p class="sec-sub">Everything you need for a modern flipped learning experience.</p>
+  <div class="row g-3">
+    {% for feat in features_list %}
+    <div class="col-md-6 col-lg-4">
+      <div class="feature-chip">
+        <div class="fi" style="background:{{ feat.bg }}"><i class="bi {{ feat.icon }}" style="color:{{ feat.color }}"></i></div>
+        <div>
+          <h6>{{ feat.title }}</h6>
+          <p>{{ feat.desc }}</p>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    {# Static fallback if context var not present #}
+    <div class="col-md-6 col-lg-4">
+      <div class="feature-chip">
+        <div class="fi" style="background:rgba(37,99,235,.1)"><i class="bi bi-play-circle-fill text-primary"></i></div>
+        <div><h6>Video Lectures</h6><p>Watch curated videos before class at your own pace, any time, any device.</p></div>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+      <div class="feature-chip">
+        <div class="fi" style="background:rgba(22,163,74,.1)"><i class="bi bi-patch-question-fill text-success"></i></div>
+        <div><h6>Adaptive Quizzes</h6><p>Test understanding with auto-graded quizzes tailored per subject.</p></div>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+      <div class="feature-chip">
+        <div class="fi" style="background:rgba(124,58,237,.1)"><i class="bi bi-robot" style="color:#7c3aed"></i></div>
+        <div><h6>AI Tutor (RAG)</h6><p>Ask any CSE question — get instant, grounded answers from your course materials.</p></div>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+      <div class="feature-chip">
+        <div class="fi" style="background:rgba(202,138,4,.1)"><i class="bi bi-graph-up-arrow text-warning"></i></div>
+        <div><h6>ML Performance Prediction</h6><p>RandomForest models predict your score and classify your performance category.</p></div>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+      <div class="feature-chip">
+        <div class="fi" style="background:rgba(220,38,38,.1)"><i class="bi bi-shield-exclamation text-danger"></i></div>
+        <div><h6>At-Risk Early Warning</h6><p>Detect struggling students early so teachers can intervene before it's too late.</p></div>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+      <div class="feature-chip">
+        <div class="fi" style="background:rgba(14,165,233,.1)"><i class="bi bi-bar-chart-line-fill text-info"></i></div>
+        <div><h6>Teacher Analytics</h6><p>Dashboards and charts showing class-wide and individual student progress.</p></div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- ══ SUBJECTS ══════════════════════════════════════════════════════ -->
+<div class="mb-5">
+  <h2 class="sec-heading"><i class="bi bi-book me-2 text-primary"></i>Subjects Covered</h2>
+  <p class="sec-sub">6 core CSE subjects with complete learning resources.</p>
+  <div class="row g-3">
+    <div class="col-6 col-md-4 col-lg-2">
+      <div class="subj-card-v4">
+        <div class="subj-icon" style="background:rgba(37,99,235,.1)"><i class="bi bi-diagram-3 text-primary" style="font-size:1.5rem"></i></div>
+        <div class="fw-semibold" style="font-size:.84rem">Data Structures</div>
+        <small class="text-muted" style="font-size:.7rem">DS</small>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+      <div class="subj-card-v4">
+        <div class="subj-icon" style="background:rgba(22,163,74,.1)"><i class="bi bi-filetype-py text-success" style="font-size:1.5rem"></i></div>
+        <div class="fw-semibold" style="font-size:.84rem">Python Programming</div>
+        <small class="text-muted" style="font-size:.7rem">PY</small>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+      <div class="subj-card-v4">
+        <div class="subj-icon" style="background:rgba(234,88,12,.1)"><i class="bi bi-globe2 text-warning" style="font-size:1.5rem"></i></div>
+        <div class="fw-semibold" style="font-size:.84rem">Web Development</div>
+        <small class="text-muted" style="font-size:.7rem">WD</small>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+      <div class="subj-card-v4">
+        <div class="subj-icon" style="background:rgba(14,165,233,.1)"><i class="bi bi-hdd-network-fill text-info" style="font-size:1.5rem"></i></div>
+        <div class="fw-semibold" style="font-size:.84rem">Computer Networks</div>
+        <small class="text-muted" style="font-size:.7rem">CN</small>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+      <div class="subj-card-v4">
+        <div class="subj-icon" style="background:rgba(124,58,237,.1)"><i class="bi bi-bar-chart-steps" style="color:#7c3aed;font-size:1.5rem"></i></div>
+        <div class="fw-semibold" style="font-size:.84rem">Data Science</div>
+        <small class="text-muted" style="font-size:.7rem">DSC</small>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+      <div class="subj-card-v4">
+        <div class="subj-icon" style="background:rgba(220,38,38,.1)"><i class="bi bi-robot text-danger" style="font-size:1.5rem"></i></div>
+        <div class="fw-semibold" style="font-size:.84rem">AI &amp; ML</div>
+        <small class="text-muted" style="font-size:.7rem">AIML</small>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ML MODELS ═════════════════════════════════════════════════════ -->
+<div class="mb-5">
+  <h2 class="sec-heading"><i class="bi bi-cpu me-2 text-warning"></i>Machine Learning Models</h2>
+  <p class="sec-sub">Trained on real engagement data to assess and predict student outcomes.</p>
+  <div class="row g-3">
+    <div class="col-md-6">
+      <div class="ml-card">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <div style="width:36px;height:36px;border-radius:10px;background:rgba(37,99,235,.1);display:flex;align-items:center;justify-content:center">
+            <i class="bi bi-graph-up text-primary"></i>
+          </div>
+          <h6 class="fw-bold mb-0">Regression Models</h6>
+          <span class="badge bg-primary ms-auto" style="font-size:.68rem">Score Prediction</span>
+        </div>
+        <div class="ml-model-row"><i class="bi bi-check-circle-fill text-primary"></i>Linear Regression – Predict final exam score</div>
+        <div class="ml-model-row"><i class="bi bi-check-circle-fill text-primary"></i>Random Forest Regressor – Non-linear score prediction</div>
+        <div class="ml-model-row border-0"><i class="bi bi-check-circle-fill text-primary"></i>Feature importance: quiz scores, video views, attendance</div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="ml-card">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <div style="width:36px;height:36px;border-radius:10px;background:rgba(22,163,74,.1);display:flex;align-items:center;justify-content:center">
+            <i class="bi bi-diagram-3 text-success"></i>
+          </div>
+          <h6 class="fw-bold mb-0">Classification Models</h6>
+          <span class="badge bg-success ms-auto" style="font-size:.68rem">Performance Label</span>
+        </div>
+        <div class="ml-model-row"><i class="bi bi-check-circle-fill text-success"></i>Logistic Regression – Performance classification</div>
+        <div class="ml-model-row"><i class="bi bi-check-circle-fill text-success"></i>Decision Tree – Interpretable performance labels</div>
+        <div class="ml-model-row border-0"><i class="bi bi-check-circle-fill text-success"></i>Random Forest Classifier – Highest accuracy labels</div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="ml-card">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <div style="width:36px;height:36px;border-radius:10px;background:rgba(220,38,38,.1);display:flex;align-items:center;justify-content:center">
+            <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+          </div>
+          <h6 class="fw-bold mb-0">At-Risk Detection</h6>
+          <span class="badge bg-danger ms-auto" style="font-size:.68rem">Early Intervention</span>
+        </div>
+        <div class="ml-model-row"><i class="bi bi-check-circle-fill text-danger"></i>Threshold-based risk classifier</div>
+        <div class="ml-model-row"><i class="bi bi-check-circle-fill text-danger"></i>Flags students with low engagement</div>
+        <div class="ml-model-row border-0"><i class="bi bi-check-circle-fill text-danger"></i>Teacher notified for targeted support</div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="ml-card">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <div style="width:36px;height:36px;border-radius:10px;background:rgba(124,58,237,.1);display:flex;align-items:center;justify-content:center">
+            <i class="bi bi-robot" style="color:#7c3aed"></i>
+          </div>
+          <h6 class="fw-bold mb-0">RAG AI Tutor</h6>
+          <span class="badge ms-auto" style="font-size:.68rem;background:rgba(124,58,237,.15);color:#7c3aed;border:1px solid rgba(124,58,237,.3)">Groq LLaMA-3</span>
+        </div>
+        <div class="ml-model-row"><i class="bi bi-check-circle-fill" style="color:#7c3aed"></i>FAISS vector index of course materials</div>
+        <div class="ml-model-row"><i class="bi bi-check-circle-fill" style="color:#7c3aed"></i>SentenceTransformer semantic retrieval</div>
+        <div class="ml-model-row border-0"><i class="bi bi-check-circle-fill" style="color:#7c3aed"></i>Groq LLaMA-3.1 streaming answers</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CTA ═══════════════════════════════════════════════════════════ -->
+<div class="cta-section mb-4">
+  <div style="position:relative;z-index:1">
+    <h2 class="fw-900 mb-2" style="font-size:1.8rem;font-weight:800">Ready to experience smarter learning?</h2>
+    <p class="mb-3 opacity-85" style="font-size:.95rem">
+      Join the FlipLearn platform and let AI predict your path to academic success.
+    </p>
+    <div class="d-flex gap-3 justify-content-center flex-wrap">
+      <a href="{% url 'register' %}" class="btn btn-warning btn-lg px-5 fw-bold shadow">
+        <i class="bi bi-rocket-takeoff-fill me-2"></i>Start Learning Now
+      </a>
+      <a href="{% url 'login' %}" class="btn btn-lg px-4 fw-semibold"
+         style="background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.4);color:#fff">
+        <i class="bi bi-box-arrow-in-right me-2"></i>Login
+      </a>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

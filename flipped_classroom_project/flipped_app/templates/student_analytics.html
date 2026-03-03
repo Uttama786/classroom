@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% block title %}Student Analytics – FlipLearn{% endblock %}
+{% block content %}
+<h3 class="fw-bold mb-3"><i class="bi bi-person-badge me-2 text-primary"></i>Student Analytics</h3>
+<div class="card shadow-sm border-0 mb-4">
+  <div class="card-body">
+    <h5 class="fw-bold">{{ student.get_full_name|default:student.username }}</h5>
+    <p class="text-muted small mb-0">Username: {{ student.username }} &nbsp;|&nbsp;
+      {% if student.student_profile %}
+        Roll No: {{ student.student_profile.roll_number }} &nbsp;|&nbsp;
+        Semester: {{ student.student_profile.semester }}
+      {% endif %}
+    </p>
+  </div>
+</div>
+
+<!-- KPI stats row -->
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="card border-0 shadow-sm text-center py-3 kpi-blue">
+      <i class="bi bi-camera-video-fill fs-3 text-primary d-block mb-1"></i>
+      <div class="fw-bold fs-4">{{ total_videos_watched }}</div>
+      <small class="text-muted">Videos Watched</small>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card border-0 shadow-sm text-center py-3 kpi-green">
+      <i class="bi bi-patch-question-fill fs-3 text-success d-block mb-1"></i>
+      <div class="fw-bold fs-4">{{ quiz_attempts|length }}</div>
+      <small class="text-muted">Quiz Attempts</small>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card border-0 shadow-sm text-center py-3 kpi-yellow">
+      <i class="bi bi-star-fill fs-3 text-warning d-block mb-1"></i>
+      <div class="fw-bold fs-4">{{ avg_quiz|floatformat:1 }}</div>
+      <small class="text-muted">Avg Quiz Score</small>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card border-0 shadow-sm text-center py-3 kpi-red">
+      <i class="bi bi-journal-check fs-3 text-danger d-block mb-1"></i>
+      <div class="fw-bold fs-4">{{ performances|length }}</div>
+      <small class="text-muted">Subject Records</small>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="card shadow-sm border-0">
+      <div class="card-body">
+        <h6 class="fw-bold"><i class="bi bi-bar-chart-fill me-2 text-primary"></i>Performance Records</h6>
+        <ul class="list-group list-group-flush">
+          {% for p in performances %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span>{{ p.subject.name }}</span>
+            <span>
+              <span class="badge bg-secondary me-1">{{ p.final_exam_score }}</span>
+              <span class="badge {% if p.performance_label == 'High' %}bg-success{% elif p.performance_label == 'Medium' %}bg-primary{% elif p.performance_label == 'Low' %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+                {{ p.performance_label|default:"—" }}
+              </span>
+            </span>
+          </li>
+          {% empty %}
+          <li class="list-group-item text-muted">No records.</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card shadow-sm border-0">
+      <div class="card-body">
+        <h6 class="fw-bold"><i class="bi bi-patch-question-fill me-2 text-warning"></i>Quiz Attempts</h6>
+        <ul class="list-group list-group-flush">
+          {% for q in quiz_attempts %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span class="small">{{ q.quiz.title|truncatechars:35 }}</span>
+            <span class="badge bg-info text-dark">{{ q.score }} / {{ q.quiz.total_marks }}</span>
+          </li>
+          {% empty %}
+          <li class="list-group-item text-muted">No quiz attempts.</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card shadow-sm border-0 mt-3">
+  <div class="card-body">
+    <h6 class="fw-bold"><i class="bi bi-camera-video me-2 text-info"></i>Video Watch History</h6>
+    <ul class="list-group list-group-flush">
+      {% for v in watch_history %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <span class="small">{{ v.video.title|truncatechars:50 }}</span>
+        <span class="text-muted small">{{ v.watch_duration_minutes }} min</span>
+      </li>
+      {% empty %}
+      <li class="list-group-item text-muted">No videos watched.</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}

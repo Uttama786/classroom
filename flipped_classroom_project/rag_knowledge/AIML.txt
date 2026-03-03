@@ -1,0 +1,250 @@
+# Artificial Intelligence and Machine Learning - Complete Study Notes
+
+## 1. AI Fundamentals
+
+### Types of AI
+- **Narrow AI (ANI)**: Task-specific (Siri, image recognition, chatbots)
+- **General AI (AGI)**: Human-level intelligence across all tasks (theoretical)
+- **Super AI (ASI)**: Surpasses human intelligence (speculative)
+
+### AI Approaches
+- **Symbolic AI**: Rules, logic, knowledge bases
+- **Machine Learning**: Learn from data
+- **Deep Learning**: Hierarchical feature learning with neural networks
+- **Evolutionary AI**: Genetic algorithms, evolutionary computation
+
+### Turing Test
+- Proposed by Alan Turing (1950)
+- A machine passes if indistinguishable from human in text conversation
+- Chinese Room argument (Searle): critique of Turing Test
+
+## 2. Search Algorithms in AI
+
+### Uninformed Search
+- **BFS**: Completeness, optimality for uniform costs
+- **DFS**: Not complete (infinite paths), not optimal
+- **Iterative Deepening DFS (IDDFS)**: Combines BFS completeness + DFS space
+- **Uniform Cost Search**: Optimal, expands lowest cost node
+
+### Informed Search (Heuristic)
+- **Greedy Best-First**: Uses h(n), fast but not optimal
+- **A* Search**: f(n) = g(n) + h(n), optimal if heuristic is admissible
+  - Admissible: never overestimates true cost
+  - Consistent: h(n) ≤ cost(n, n') + h(n')
+
+### Local Search
+- **Hill Climbing**: Move to better state, may get stuck in local maxima
+- **Simulated Annealing**: Accept worse solutions probabilistically
+- **Genetic Algorithms**: Population, selection, crossover, mutation
+
+## 3. Machine Learning Types
+
+### Supervised Learning
+Learning from labeled data: input X → output y
+- Classification: discrete output (cat/dog, spam/not-spam)
+- Regression: continuous output (house price, temperature)
+- Algorithms: Linear Reg, Logistic Reg, SVM, KNN, Decision Trees, Random Forest, XGBoost
+
+### Unsupervised Learning
+Finding patterns in unlabeled data
+- Clustering: K-Means, DBSCAN, Hierarchical
+- Dimensionality Reduction: PCA, t-SNE, UMAP, Autoencoders
+- Anomaly Detection: Isolation Forest, One-Class SVM
+- Density Estimation: GMM, KDE
+
+### Semi-Supervised Learning
+Small labeled + large unlabeled dataset
+- Self-training, label propagation
+- Applications: image classification, NLP
+
+### Reinforcement Learning
+Agent learns by interacting with environment
+- States, Actions, Rewards, Policy
+- Q-Learning, SARSA, DQN, PPO, A3C
+- Applications: games (AlphaGo), robotics, autonomous driving
+
+## 4. Neural Networks
+
+### Perceptron
+- Single neuron: output = activation(w·x + b)
+- Activation functions: Step, Sigmoid, Tanh, ReLU, Leaky ReLU, GeLU, Softmax
+
+### Multi-Layer Perceptron (MLP)
+- Layers: Input → Hidden₁ → ... → Output
+- Backpropagation: Compute gradients using chain rule
+- Gradient Descent: w = w - η × ∂L/∂w
+- Learning rate (η): too high = diverge, too low = slow
+
+### Activation Functions
+- **Sigmoid**: σ(x) = 1/(1+e^-x), range (0,1), vanishing gradient problem
+- **Tanh**: range (-1,1), zero-centered, still vanishing gradient
+- **ReLU**: max(0,x), simple, fast, dying ReLU problem
+- **Leaky ReLU**: max(αx, x), α=0.01, avoids dying ReLU
+- **Softmax**: multi-class output, probabilities sum to 1
+- **GeLU**: used in BERT/GPT, smooth, better for transformers
+
+### Loss Functions
+- **MSE**: Regression, penalizes large errors
+- **Cross-Entropy**: Classification, log probability loss
+- **Hinge Loss**: SVM, margin maximization
+- **Huber Loss**: Robust to outliers (regression)
+
+### Optimizers
+- **SGD**: Stochastic Gradient Descent, noisy but generalizes well
+- **Momentum**: Adds velocity term v = βv + η∇L
+- **Adam**: Adaptive Moment Estimation, combines momentum + RMSProp
+- **RMSProp**: Divides lr by moving average of squared gradients
+- **AdaGrad**: lr decreases over time for each parameter
+
+### Regularization in Neural Networks
+- **Dropout**: Randomly zero out neurons during training (p=0.5)
+- **Batch Normalization**: Normalize layer inputs, faster training
+- **L1/L2 Weight Decay**: Penalty on weights
+- **Early Stopping**: Stop when validation loss stops improving
+- **Data Augmentation**: Increase training data synthetically
+
+## 5. Convolutional Neural Networks (CNN)
+- Designed for grid-structured data (images)
+- **Convolution Layer**: Apply filters to extract features
+  - Filters: edge detectors → textures → complex patterns
+  - Stride, padding parameters
+  - Feature map output size: (W - F + 2P) / S + 1
+- **Pooling Layer**: Max pooling / Average pooling — reduce spatial dimensions
+- **Fully Connected Layer**: Final classification/regression
+
+### Famous CNN Architectures
+- LeNet (1998): First successful CNN for digits
+- AlexNet (2012): ImageNet winner, deep CNN with ReLU
+- VGG (2014): Simple 3×3 convolutions, very deep
+- InceptionNet (GoogLeNet): Multiple filter sizes in parallel
+- ResNet (2015): Residual connections, skip connections, 152 layers
+- DenseNet: Each layer connected to all subsequent layers
+- EfficientNet: Compound scaling
+
+## 6. Recurrent Neural Networks (RNN)
+- For sequential data (text, time series, audio)
+- Hidden state carries information across time steps
+- **Vanishing Gradient Problem**: Gradients shrink over long sequences
+
+### LSTM (Long Short-Term Memory)
+- Gates: Forget, Input, Output
+- Cell state: Long-term memory
+- Hidden state: Short-term memory
+- Solves vanishing gradient for moderate sequences
+
+### GRU (Gated Recurrent Unit)
+- Simplified LSTM: Update gate + Reset gate
+- Fewer parameters, comparable performance
+
+### Sequence-to-Sequence
+- Encoder-Decoder architecture
+- Input sequence → context vector → output sequence
+- Applications: translation, summarization, chatbots
+
+## 7. Transformers and Attention
+
+### Attention Mechanism
+- Allow model to focus on relevant parts of input
+- Attention score: A(Q, K, V) = softmax(QKᵀ/√d_k) × V
+- Q (Query), K (Key), V (Value)
+
+### Transformer Architecture
+- Encoder: Multi-head self-attention + FFN (stacked)
+- Decoder: Masked self-attention + cross-attention + FFN
+- Positional encoding: Add position info to embeddings
+- Layer normalization, residual connections
+- No recurrence → fully parallelizable
+
+### BERT (Bidirectional Encoder Representations from Transformers)
+- Pre-trained on MLM (Masked Language Model) + NSP
+- Fine-tuned for downstream tasks: QA, NER, classification
+- Bidirectional context
+
+### GPT (Generative Pre-trained Transformer)
+- Decoder-only transformer
+- Pre-trained on next token prediction
+- GPT-1 → GPT-2 → GPT-3 (175B params) → GPT-4
+- In-context learning (few-shot)
+
+### LLaMA (Large Language Model Meta AI)
+- Open-source LLM from Meta
+- LLaMA 3.1: 8B, 70B, 405B parameter models
+- Used in FlipLearn chatbot via Groq API
+- Efficient inference, good at instruction following
+
+## 8. Natural Language Processing (NLP)
+
+### Text Preprocessing
+- Tokenization: split text into tokens (words, subwords)
+- Stop word removal
+- Stemming (Porter): run → run, running → run
+- Lemmatization (spaCy): better, context-aware
+- Lowercase, punctuation removal
+
+### Text Representation
+- **Bag of Words (BoW)**: Word frequency vector
+- **TF-IDF**: Term Frequency × Inverse Document Frequency
+- **Word2Vec**: Dense vectors, captures semantic meaning (skip-gram, CBOW)
+- **GloVe**: Global Vectors, co-occurrence matrix factorization
+- **BERT embeddings**: Contextual representations
+
+### NLP Tasks
+- Sentiment Analysis: positive/negative/neutral
+- Named Entity Recognition (NER): persons, orgs, places
+- POS Tagging: noun, verb, adjective
+- Machine Translation
+- Text Summarization
+- Question Answering
+- Text Generation
+
+## 9. Retrieval Augmented Generation (RAG)
+- Combines information retrieval with neural text generation
+- Steps:
+  1. Index documents into vector store (FAISS, ChromaDB, Pinecone)
+  2. Embed query using same encoder model
+  3. Retrieve top-K most similar chunks
+  4. Inject retrieved context into LLM prompt
+  5. LLM generates answer grounded in retrieved facts
+- Benefits: Reduces hallucination, uses up-to-date knowledge, cites sources
+- Embedding models: all-MiniLM-L6-v2, text-embedding-ada-002
+- FAISS: Facebook AI Similarity Search, fast ANN search
+
+## 10. Reinforcement Learning
+
+### Key Concepts
+- **Agent**: Learner/decision maker
+- **Environment**: What agent interacts with
+- **State (s)**: Current situation
+- **Action (a)**: What agent can do
+- **Reward (r)**: Feedback from environment
+- **Policy (π)**: Mapping from state to action
+- **Value Function V(s)**: Expected cumulative reward from state
+- **Q-Function Q(s,a)**: Expected reward for action in state
+
+### Algorithms
+- **Q-Learning**: Off-policy, Bellman equation: Q(s,a) ← r + γ max Q(s',a')
+- **SARSA**: On-policy Q-learning
+- **DQN**: Deep Q-Network (DeepMind, Atari games)
+- **Policy Gradient**: Directly optimize policy
+- **Actor-Critic**: Separate policy (actor) and value (critic) networks
+- **PPO (Proximal Policy Optimization)**: Current state-of-the-art for robotics/games
+
+## 11. Ethics in AI
+- Bias and fairness: algorithmic bias (data bias, label bias)
+- Explainability: black-box vs interpretable models (LIME, SHAP)
+- Privacy: differential privacy, federated learning
+- Safety: robustness to adversarial attacks
+- Accountability: who is responsible for AI decisions?
+- AI governance, regulations (EU AI Act)
+
+## Common Interview Questions - AI/ML
+1. Explain backpropagation with the chain rule
+2. What is the vanishing gradient problem and how to solve it?
+3. Why use attention mechanisms in transformers?
+4. Explain RAG and its advantages over pure LLM generation
+5. What is the difference between CNN and RNN?
+6. How does Q-Learning work?
+7. What are the key components of BERT?
+8. Explain dropout and why it helps prevent overfitting
+9. What is transfer learning and fine-tuning?
+10. How does word2vec learn semantic relationships?

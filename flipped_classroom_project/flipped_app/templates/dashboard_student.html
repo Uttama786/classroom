@@ -1,0 +1,356 @@
+{% extends 'base.html' %}
+{% block title %}My Dashboard – FlipLearn{% endblock %}
+
+{% block extra_css %}
+<style>
+.dash-role-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: linear-gradient(135deg, #198754 0%, #20c997 100%);
+  color: #fff; padding: 4px 14px; border-radius: 20px;
+  font-size: 0.78rem; font-weight: 600; letter-spacing: .04em;
+}
+.section-divider {
+  display: flex; align-items: center; gap: 10px; margin: 2rem 0 1rem;
+}
+.section-divider span { white-space: nowrap; font-weight: 700; font-size: .95rem; }
+.section-divider::after { content:''; flex:1; height:1px; background: rgba(0,0,0,.1); }
+[data-theme="dark"] .section-divider::after { background: rgba(255,255,255,.1); }
+
+/* Subject card */
+.subject-study-card {
+  border-radius: 12px; border: 1px solid rgba(0,0,0,.07);
+  padding: 14px 16px; background: var(--card-bg, #fff);
+  box-shadow: 0 1px 4px rgba(0,0,0,.05);
+  transition: box-shadow .2s, transform .2s;
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+}
+.subject-study-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,.1); transform: translateY(-2px); }
+
+/* Quiz card */
+.quiz-avail-card {
+  border-radius: 12px; border: 1px solid rgba(0,0,0,.07);
+  padding: 14px; background: var(--card-bg, #fff);
+  box-shadow: 0 1px 4px rgba(0,0,0,.05);
+  transition: box-shadow .2s, transform .2s;
+}
+.quiz-avail-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,.1); transform: translateY(-2px); }
+
+/* Progress ring label */
+.score-ring {
+  width: 52px; height: 52px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: .85rem;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  /* ── Quiz score radar chart ── */
+  const radarCtx = document.getElementById('studentRadar');
+  if (radarCtx && typeof Chart !== 'undefined') {
+    new Chart(radarCtx, {
+      type: 'radar',
+      data: {
+        labels: ['Videos', 'Quizzes', 'Assignments', 'Avg Score', 'Subjects'],
+        datasets: [{
+          label: 'Your Activity',
+          data: [
+            Math.min({{ videos_watched }}, 10),
+            Math.min({{ quiz_count }}, 10),
+            Math.min({{ assignments_submitted }}, 10),
+            {{ avg_quiz_score|floatformat:1 }},
+            Math.min({{ subjects|length }}, 10),
+          ],
+          fill: true,
+          backgroundColor: 'rgba(25,135,84,0.18)',
+          borderColor: '#198754',
+          pointBackgroundColor: '#198754',
+          borderWidth: 2,
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: { r: { beginAtZero: true, max: 10, ticks: { stepSize: 2 } } },
+        plugins: { legend: { display: false } }
+      }
+    });
+  }
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<!-- ══ Header ══════════════════════════════════════════════════════ -->
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+  <div>
+    <div class="d-flex align-items-center gap-2 mb-1">
+      <span class="dash-role-badge"><i class="bi bi-mortarboard-fill"></i> Student</span>
+      <small class="text-muted">Sem {{ profile.semester }} &nbsp;·&nbsp; {{ profile.roll_number }}</small>
+    </div>
+    <h3 class="fw-bold mb-0"><i class="bi bi-grid-fill text-success me-2"></i>My Dashboard</h3>
+    <small class="text-muted">Welcome back, <strong>{{ user.get_full_name|default:user.username }}</strong> &nbsp;·&nbsp; {{ profile.department }}</small>
+  </div>
+  <a href="{% url 'my_performance' %}" class="btn btn-success btn-sm">
+    <i class="bi bi-bar-chart me-1"></i>My Performance
+  </a>
+</div>
+
+<!-- ══ KPI Cards ══════════════════════════════════════════════════ -->
+<div class="row g-3 mb-2">
+
+  <div class="col-6 col-md-3">
+    <div class="card border-0 shadow-sm kpi-card kpi-blue h-100">
+      <div class="card-body text-center py-4">
+        <i class="bi bi-play-circle-fill fs-2 text-primary mb-2 d-block"></i>
+        <div class="fs-2 fw-bold">{{ videos_watched }}</div>
+        <small class="text-muted">Videos Watched</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-6 col-md-3">
+    <div class="card border-0 shadow-sm kpi-card kpi-green h-100">
+      <div class="card-body text-center py-4">
+        <i class="bi bi-patch-check-fill fs-2 text-success mb-2 d-block"></i>
+        <div class="fs-2 fw-bold">{{ quiz_count }}</div>
+        <small class="text-muted">Quizzes Attempted</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-6 col-md-3">
+    <div class="card border-0 shadow-sm kpi-card kpi-yellow h-100">
+      <div class="card-body text-center py-4">
+        <i class="bi bi-percent fs-2 text-warning mb-2 d-block"></i>
+        <div class="fs-2 fw-bold">{{ avg_quiz_score|floatformat:1 }}</div>
+        <small class="text-muted">Avg Quiz Score</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-6 col-md-3">
+    <div class="card border-0 shadow-sm kpi-card kpi-purple h-100">
+      <div class="card-body text-center py-4">
+        <i class="bi bi-journal-check fs-2 text-info mb-2 d-block"></i>
+        <div class="fs-2 fw-bold">{{ assignments_submitted }}</div>
+        <small class="text-muted">Assignments Done</small>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ Subjects + Radar ═══════════════════════════════════════════ -->
+<div class="section-divider"><span><i class="bi bi-book-fill me-2 text-primary"></i>My Subjects & Activity</span></div>
+
+<div class="row g-4 mb-2">
+
+  <div class="col-md-7">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-header bg-transparent fw-semibold border-0 pt-3 d-flex justify-content-between">
+        <span><i class="bi bi-book me-2 text-primary"></i>Enrolled Subjects</span>
+        <a href="{% url 'subjects' %}" class="btn btn-sm btn-outline-primary">Browse All</a>
+      </div>
+      <div class="card-body d-flex flex-column gap-2">
+        {% for subject in subjects %}
+        <div class="subject-study-card">
+          <div>
+            <div class="fw-semibold">{{ subject.name }}</div>
+            <small class="text-muted">{{ subject.code }}</small>
+          </div>
+          <div class="d-flex gap-1">
+            <a href="{% url 'videos_by_subject' subject.id %}" class="btn btn-sm btn-outline-primary py-1">
+              <i class="bi bi-play-fill me-1"></i>Watch
+            </a>
+            <a href="{% url 'materials_by_subject' subject.id %}" class="btn btn-sm btn-outline-success py-1">
+              <i class="bi bi-file-pdf me-1"></i>Notes
+            </a>
+          </div>
+        </div>
+        {% empty %}
+        <div class="text-center text-muted py-4">
+          <i class="bi bi-book-fill fs-3 mb-2 d-block opacity-50"></i>
+          You haven't enrolled in any subjects yet.
+          <div class="mt-2"><a href="{% url 'subjects' %}" class="btn btn-primary btn-sm">Enroll Now</a></div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-5">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-header bg-transparent fw-semibold border-0 pt-3">
+        <i class="bi bi-activity me-2 text-success"></i>Activity Overview
+      </div>
+      <div class="card-body d-flex justify-content-center align-items-center">
+        <canvas id="studentRadar" style="max-height:250px;"></canvas>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ Performance Summary ════════════════════════════════════════ -->
+<div class="section-divider"><span><i class="bi bi-graph-up me-2 text-success"></i>Performance Summary</span></div>
+
+<div class="row g-4 mb-2">
+  <div class="col-lg-6">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-header bg-transparent fw-semibold border-0 pt-3 d-flex justify-content-between">
+        <span><i class="bi bi-award me-2 text-warning"></i>Subject Performance</span>
+        <a href="{% url 'my_performance' %}" class="btn btn-sm btn-outline-success">Details</a>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0 align-middle">
+            <thead class="table-light">
+              <tr><th>Subject</th><th>Label</th><th>Predicted</th><th>Risk</th></tr>
+            </thead>
+            <tbody>
+              {% for p in performance_records %}
+              <tr>
+                <td class="small fw-semibold">{{ p.subject.name|truncatechars:22 }}</td>
+                <td>
+                  {% if p.performance_label == 'High' %}<span class="badge bg-success">High</span>
+                  {% elif p.performance_label == 'Medium' %}<span class="badge bg-primary">Medium</span>
+                  {% elif p.performance_label == 'Low' %}<span class="badge bg-warning text-dark">Low</span>
+                  {% elif p.performance_label == 'At-Risk' %}<span class="badge bg-danger">At-Risk</span>
+                  {% else %}<span class="text-muted small">–</span>{% endif %}
+                </td>
+                <td>
+                  {% if p.predicted_label %}
+                    <span class="badge bg-secondary">{{ p.predicted_label }}</span>
+                  {% else %}<span class="text-muted small">–</span>{% endif %}
+                </td>
+                <td>
+                  {% if p.is_at_risk %}
+                    <i class="bi bi-exclamation-triangle-fill text-danger" title="At Risk"></i>
+                  {% else %}
+                    <i class="bi bi-check-circle-fill text-success" title="On Track"></i>
+                  {% endif %}
+                </td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="4" class="text-center text-muted py-4">No performance data yet</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card border-0 shadow-sm mb-3">
+      <div class="card-header bg-transparent fw-semibold border-0 pt-3 d-flex justify-content-between">
+        <span><i class="bi bi-patch-check me-2 text-warning"></i>Recent Quiz Results</span>
+        <a href="{% url 'quizzes' %}" class="btn btn-sm btn-outline-warning">All Quizzes</a>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0 align-middle">
+            <thead class="table-light"><tr><th>Quiz</th><th>Score</th><th>Date</th></tr></thead>
+            <tbody>
+              {% for a in recent_quiz_attempts %}
+              <tr>
+                <td class="small">{{ a.quiz.title|truncatechars:30 }}</td>
+                <td>
+                  {% widthratio a.score a.quiz.total_marks 100 as pct %}
+                  <span class="badge {% if pct|add:0 >= 75 %}bg-success{% elif pct|add:0 >= 50 %}bg-primary{% else %}bg-danger{% endif %}">
+                    {{ a.score }}/{{ a.quiz.total_marks }}
+                  </span>
+                </td>
+                <td class="text-muted small">{{ a.attempted_at|date:"d M" }}</td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="3" class="text-center text-muted py-3">No quiz attempts yet</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-transparent fw-semibold border-0 pt-3 d-flex justify-content-between">
+        <span><i class="bi bi-upload me-2 text-info"></i>Recent Submissions</span>
+        <a href="{% url 'assignments' %}" class="btn btn-sm btn-outline-info">All</a>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0 align-middle">
+            <thead class="table-light"><tr><th>Assignment</th><th>Status</th><th>Marks</th></tr></thead>
+            <tbody>
+              {% for s in recent_submissions %}
+              <tr>
+                <td class="small">{{ s.assignment.title|truncatechars:30 }}</td>
+                <td>
+                  {% if s.is_graded %}<span class="badge bg-success">Graded</span>
+                  {% else %}<span class="badge bg-warning text-dark">Pending</span>{% endif %}
+                </td>
+                <td class="small">
+                  {% if s.is_graded %}{{ s.marks_obtained }}/{{ s.assignment.total_marks }}
+                  {% else %}<span class="text-muted">–</span>{% endif %}
+                </td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="3" class="text-center text-muted py-3">No submissions yet</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ Available Quizzes ══════════════════════════════════════════ -->
+{% if available_quizzes %}
+<div class="section-divider"><span><i class="bi bi-patch-question-fill me-2 text-warning"></i>Quizzes You Haven't Tried</span></div>
+<div class="row g-3 mb-2">
+  {% for quiz in available_quizzes %}
+  <div class="col-sm-6 col-lg-3">
+    <div class="quiz-avail-card">
+      <div class="d-flex justify-content-between align-items-start mb-2">
+        <span class="badge bg-secondary">{{ quiz.subject.code }}</span>
+        <small class="text-muted">{{ quiz.time_limit_minutes }} min</small>
+      </div>
+      <div class="fw-semibold mb-1">{{ quiz.title|truncatechars:38 }}</div>
+      <small class="text-muted d-block mb-3">{{ quiz.total_marks }} marks</small>
+      <a href="{% url 'take_quiz' quiz.id %}" class="btn btn-warning btn-sm w-100">
+        <i class="bi bi-play-fill me-1"></i>Start Quiz
+      </a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- ══ Quick Access ═══════════════════════════════════════════════ -->
+<div class="section-divider"><span><i class="bi bi-lightning-fill text-warning me-2"></i>Quick Access</span></div>
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3">
+    <a href="{% url 'videos' %}" class="btn btn-outline-primary w-100 py-3 text-center">
+      <i class="bi bi-play-btn-fill d-block fs-3 mb-1"></i><span class="small fw-semibold">Watch Videos</span>
+    </a>
+  </div>
+  <div class="col-6 col-md-3">
+    <a href="{% url 'materials' %}" class="btn btn-outline-success w-100 py-3 text-center">
+      <i class="bi bi-file-earmark-pdf-fill d-block fs-3 mb-1"></i><span class="small fw-semibold">Study Materials</span>
+    </a>
+  </div>
+  <div class="col-6 col-md-3">
+    <a href="{% url 'quizzes' %}" class="btn btn-outline-warning w-100 py-3 text-center">
+      <i class="bi bi-patch-question-fill d-block fs-3 mb-1"></i><span class="small fw-semibold">Attempt Quiz</span>
+    </a>
+  </div>
+  <div class="col-6 col-md-3">
+    <a href="{% url 'assignments' %}" class="btn btn-outline-info w-100 py-3 text-center">
+      <i class="bi bi-upload d-block fs-3 mb-1"></i><span class="small fw-semibold">Submit Work</span>
+    </a>
+  </div>
+</div>
+{% endblock %}

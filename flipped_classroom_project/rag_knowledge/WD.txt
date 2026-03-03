@@ -1,0 +1,375 @@
+# Web Development - Complete Study Notes
+
+## 1. HTML Fundamentals
+
+### Document Structure
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Title</title>
+</head>
+<body>
+  <!-- content -->
+</body>
+</html>
+```
+
+### Semantic HTML5 Elements
+- <header>, <nav>, <main>, <article>, <section>, <aside>, <footer>
+- <figure>, <figcaption>, <time>, <mark>, <details>, <summary>
+- Improves accessibility, SEO, and code readability
+
+### Forms
+- <form action="/submit" method="POST">
+- Input types: text, password, email, number, date, file, checkbox, radio, range, color
+- <label for="id"> for accessibility
+- HTML5 validation: required, min, max, pattern, minlength
+- <fieldset> and <legend> for grouping
+
+### Media Elements
+- <img src="" alt="description"> - alt is required for accessibility
+- <video controls>, <audio controls>
+- <canvas> for programmatic drawing
+- <svg> for scalable vector graphics
+
+## 2. CSS Fundamentals
+
+### Selectors
+- Element: p, div, h1
+- Class: .className
+- ID: #idName
+- Attribute: [type="text"]
+- Pseudo-class: :hover, :focus, :nth-child(), :not(), :first-child
+- Pseudo-element: ::before, ::after, ::placeholder
+- Combinators: A B (descendant), A > B (child), A + B (adjacent), A ~ B (sibling)
+- Specificity: inline > ID > class > element
+
+### Box Model
+- content → padding → border → margin
+- box-sizing: border-box (recommended default)
+- margin collapsing in vertical direction
+
+### CSS Flexbox
+```css
+.container {
+  display: flex;
+  flex-direction: row | column;
+  justify-content: flex-start | center | space-between | space-around;
+  align-items: stretch | center | flex-start | flex-end;
+  flex-wrap: wrap | nowrap;
+  gap: 1rem;
+}
+.item {
+  flex: 1;  /* flex-grow flex-shrink flex-basis */
+  order: 1;
+  align-self: center;
+}
+```
+
+### CSS Grid
+```css
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto;
+  gap: 1rem;
+  grid-template-areas: 
+    "header header header"
+    "sidebar main main";
+}
+.header { grid-area: header; }
+```
+
+### CSS Custom Properties (Variables)
+```css
+:root {
+  --primary-color: #5b5ef4;
+  --font-size-base: 16px;
+}
+.button {
+  color: var(--primary-color);
+  font-size: var(--font-size-base);
+}
+```
+
+### Responsive Design
+- Media queries: @media (max-width: 768px) { ... }
+- Mobile-first approach
+- Viewport units: vw, vh, vmin, vmax
+- Fluid typography: clamp(min, preferred, max)
+- Image: max-width: 100%, object-fit: cover
+
+### CSS Animations
+```css
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.element {
+  animation: fadeIn 0.3s ease-in-out;
+}
+```
+
+## 3. JavaScript Fundamentals
+
+### Variables and Scope
+- var: function-scoped, hoisted (avoid)
+- let: block-scoped, not hoisted
+- const: block-scoped, must initialize, object properties mutable
+
+### Data Types
+- Primitive: string, number, boolean, null, undefined, symbol, bigint
+- Object: {}, [], function
+- typeof operator
+
+### Functions
+```javascript
+// Regular function
+function add(a, b) { return a + b; }
+
+// Arrow function
+const add = (a, b) => a + b;
+
+// Immediately Invoked Function Expression (IIFE)
+(function() { /* code */ })();
+```
+
+### DOM Manipulation
+```javascript
+// Selecting elements
+document.getElementById('id')
+document.querySelector('.class')
+document.querySelectorAll('div')
+
+// Modifying
+element.textContent = 'text'
+element.innerHTML = '<span>html</span>'
+element.classList.add('active')
+element.classList.toggle('dark')
+element.setAttribute('href', '/link')
+element.style.color = 'red'
+
+// Creating/Appending
+const el = document.createElement('div')
+parent.appendChild(el)
+parent.insertBefore(el, reference)
+element.remove()
+```
+
+### Events
+```javascript
+element.addEventListener('click', function(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  console.log(e.target);
+});
+
+// Event delegation
+document.body.addEventListener('click', e => {
+  if (e.target.matches('.btn')) {
+    // handle button click
+  }
+});
+```
+
+### Fetch API and AJAX
+```javascript
+// Fetch with async/await
+async function fetchData(url) {
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return await response.json();
+  } catch (error) {
+    console.error('Fetch error:', error);
+  }
+}
+
+// XMLHttpRequest (older)
+const xhr = new XMLHttpRequest();
+xhr.open('GET', '/api/data');
+xhr.onload = () => { if (xhr.status === 200) ... };
+xhr.send();
+```
+
+### Promises
+```javascript
+const promise = new Promise((resolve, reject) => {
+  setTimeout(() => resolve("done"), 1000);
+});
+
+promise
+  .then(result => console.log(result))
+  .catch(error => console.error(error))
+  .finally(() => console.log("cleanup"));
+
+// Promise.all, Promise.race, Promise.allSettled
+```
+
+### ES6+ Features
+- Destructuring: const {name, age} = person; const [a, b] = arr;
+- Spread/Rest: ...arr, ...obj
+- Template literals: `Hello ${name}`
+- Modules: import/export
+- Default parameters
+- Optional chaining: obj?.prop?.subprop
+- Nullish coalescing: value ?? defaultValue
+- Array methods: map, filter, reduce, find, some, every, flat, flatMap
+
+### Local Storage / Session Storage
+```javascript
+localStorage.setItem('key', JSON.stringify(data));
+const data = JSON.parse(localStorage.getItem('key'));
+localStorage.removeItem('key');
+localStorage.clear();
+```
+
+## 4. Django Web Framework
+
+### Project Structure
+```
+myproject/
+  manage.py
+  myproject/
+    settings.py
+    urls.py
+    wsgi.py
+  myapp/
+    models.py
+    views.py
+    urls.py
+    templates/
+    static/
+```
+
+### Models
+```python
+from django.db import models
+
+class Post(models.Model):
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    published = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-published']
+    
+    def __str__(self):
+        return self.title
+```
+
+### Views
+```python
+from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def post_detail(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    return render(request, 'post_detail.html', {'post': post})
+```
+
+### URLs
+```python
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.home, name='home'),
+    path('post/<int:pk>/', views.post_detail, name='post_detail'),
+]
+```
+
+### Templates
+```html
+{% extends 'base.html' %}
+{% block content %}
+  {% if user.is_authenticated %}
+    <h1>{{ post.title }}</h1>
+    {% for comment in post.comments.all %}
+      <p>{{ comment.text }}</p>
+    {% endfor %}
+  {% endif %}
+{% endblock %}
+```
+
+### Forms
+```python
+from django import forms
+
+class ContactForm(forms.Form):
+    name = forms.CharField(max_length=100)
+    email = forms.EmailField()
+    message = forms.Textarea()
+```
+
+### ORM Queries
+```python
+# Create
+Post.objects.create(title="Hello", content="World")
+
+# Read
+Post.objects.all()
+Post.objects.filter(title__contains="hello")
+Post.objects.get(pk=1)
+Post.objects.exclude(published=None)
+Post.objects.order_by('-published')[:10]
+
+# Update
+Post.objects.filter(pk=1).update(title="New Title")
+
+# Delete
+Post.objects.filter(pk=1).delete()
+```
+
+## 5. RESTful APIs
+- REST: Representational State Transfer
+- HTTP Methods: GET(read), POST(create), PUT(full update), PATCH(partial), DELETE
+- Status codes: 200 OK, 201 Created, 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found, 500 Server Error
+- JSON as data format
+- Stateless: no session state server-side
+- CRUD operations mapped to HTTP verbs
+
+## 6. HTTP Protocol
+- Request: method, URL, headers, body
+- Response: status code, headers, body
+- Headers: Content-Type, Authorization, Cookie, Cache-Control, CORS headers
+- HTTPS: HTTP over TLS/SSL
+- HTTP/2: multiplexing, server push
+- Cookies vs localStorage vs sessionStorage
+
+## 7. Security in Web Development
+- XSS (Cross-Site Scripting): escape user input, CSP headers
+- CSRF (Cross-Site Request Forgery): CSRF tokens (Django does this automatically)
+- SQL Injection: use ORM, parameterized queries
+- HTTPS: always use in production
+- Authentication: JWT, session-based, OAuth2
+- Password hashing: bcrypt, Argon2 (never store plain text)
+
+## 8. Web Performance
+- Minimize HTTP requests
+- Minify CSS/JS
+- Browser caching with Cache-Control headers
+- CDN for static assets
+- Lazy loading images
+- Code splitting
+- Lighthouse score, Core Web Vitals (LCP, FID, CLS)
+
+## Common Interview Questions - Web Development
+1. Difference between GET and POST
+2. What is CORS and how to handle it?
+3. Explain the box model in CSS
+4. What is the difference between == and === in JavaScript?
+5. How does Django's ORM work?
+6. What is a closure in JavaScript?
+7. Explain event bubbling and capturing
+8. What is REST and its principles?
+9. How do you optimize a website for performance?
+10. What is the difference between authentication and authorization?

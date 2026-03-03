@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Assignments – FlipLearn{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="fw-bold"><i class="bi bi-journal-code me-2 text-primary"></i>Assignments</h3>
+  {% if is_teacher %}
+    <a href="{% url 'create_assignment' %}" class="btn btn-primary btn-sm"><i class="bi bi-plus-circle me-1"></i>Create Assignment</a>
+  {% endif %}
+</div>
+
+{% if is_teacher and submissions_pending %}
+<div class="alert alert-warning">
+  <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ submissions_pending }} submissions pending grading.
+</div>
+{% endif %}
+
+<div class="row g-3">
+  {% for a in assignments %}
+  <div class="col-md-4">
+    <div class="card shadow-sm border-0 h-100">
+      <div class="card-body">
+        <h6 class="fw-bold">{{ a.title }}</h6>
+        <p class="text-muted small">{{ a.subject.name }} | Due: {{ a.due_date|date:"d M Y" }}</p>
+        <p class="small">{{ a.description|truncatechars:100 }}</p>
+        {% if is_teacher %}
+          <a href="{% url 'assignment_submissions' a.id %}" class="btn btn-outline-secondary btn-sm">View Submissions</a>
+        {% else %}
+          {% if a.submitted %}
+            <span class="badge bg-success">Submitted</span>
+          {% else %}
+            <a href="{% url 'submit_assignment' a.id %}" class="btn btn-primary btn-sm">Submit</a>
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <div class="col-12 text-muted">No assignments available.</div>
+  {% endfor %}
+</div>
+{% endblock %}

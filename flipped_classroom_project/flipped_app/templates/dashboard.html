@@ -1,0 +1,275 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard – FlipLearn{% endblock %}
+{% block extra_js %}
+<script>
+{% if is_teacher and perf_distribution %}
+const perfData = {{ perf_distribution|safe }};
+const ctx = document.getElementById('perfChart');
+if (ctx) {
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: Object.keys(perfData),
+      datasets: [{
+        data: Object.values(perfData),
+        backgroundColor: ['#198754','#0d6efd','#ffc107','#dc3545'],
+        borderWidth: 2,
+      }]
+    },
+    options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+  });
+}
+{% endif %}
+</script>
+{% endblock %}
+{% block content %}
+
+{% if is_teacher %}
+<!-- ══════════════ TEACHER DASHBOARD ══════════════ -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h3 class="fw-bold mb-0">
+      <i class="bi bi-grid-fill text-primary me-2"></i>Teacher Dashboard
+    </h3>
+    <small class="text-muted">Welcome, Prof. {{ user.get_full_name }}</small>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="{% url 'run_ml' %}" class="btn btn-warning btn-sm fw-semibold">
+      <i class="bi bi-robot me-1"></i>Run ML Analysis
+    </a>
+    <a href="{% url 'export_csv' %}" class="btn btn-outline-success btn-sm">
+      <i class="bi bi-download me-1"></i>Export CSV
+    </a>
+  </div>
+</div>
+
+<!-- KPI Cards -->
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-4 col-lg-2">
+    <div class="card border-0 shadow-sm kpi-card kpi-blue h-100">
+      <div class="card-body text-center py-4">
+        <i class="bi bi-people-fill fs-2 text-primary mb-2 d-block"></i>
+        <div class="fs-3 fw-bold">{{ total_students }}</div>
+        <small class="text-muted">Students</small>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-4 col-lg-2">
+    <div class="card border-0 shadow-sm kpi-card kpi-green h-100">
+      <div class="card-body text-center py-4">
+        <i class="bi bi-play-circle-fill fs-2 text-success mb-2 d-block"></i>
+        <div class="fs-3 fw-bold">{{ total_videos }}</div>
+        <small class="text-muted">Videos</small>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-4 col-lg-2">
+    <div class="card border-0 shadow-sm kpi-card kpi-yellow h-100">
+      <div class="card-body text-center py-4">
+        <i class="bi bi-patch-question-fill fs-2 text-warning mb-2 d-block"></i>
+        <div class="fs-3 fw-bold">{{ total_quizzes }}</div>
+        <small class="text-muted">Quizzes</small>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-4 col-lg-2">
+    <div class="card border-0 shadow-sm kpi-card kpi-purple h-100">
+      <div class="card-body text-center py-4">
+        <i class="bi bi-journal-code fs-2 text-info mb-2 d-block"></i>
+        <div class="fs-3 fw-bold">{{ total_assignments }}</div>
+        <small class="text-muted">Assignments</small>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-4 col-lg-2">
+    <div class="card border-0 shadow-sm kpi-card kpi-red h-100">
+      <div class="card-body text-center py-4">
+        <i class="bi bi-exclamation-triangle-fill fs-2 text-danger mb-2 d-block"></i>
+        <div class="fs-3 fw-bold text-danger">{{ at_risk_count }}</div>
+        <small class="text-muted">At-Risk</small>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-4 col-lg-2">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body text-center py-4">
+        <a href="{% url 'analytics' %}" class="btn btn-primary w-100 py-3">
+          <i class="bi bi-graph-up-arrow d-block fs-2 mb-1"></i>
+          <small>View Analytics</small>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Charts + Recent Submissions -->
+<div class="row g-4">
+  <div class="col-md-5">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-header bg-white fw-semibold border-0 pt-3">
+        <i class="bi bi-pie-chart me-2 text-primary"></i>Performance Distribution
+      </div>
+      <div class="card-body d-flex justify-content-center align-items-center">
+        <canvas id="perfChart" style="max-height: 260px;"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-7">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-header bg-white fw-semibold border-0 pt-3 d-flex justify-content-between">
+        <span><i class="bi bi-clock-history me-2 text-success"></i>Recent Submissions</span>
+        <a href="{% url 'assignments' %}" class="btn btn-sm btn-outline-primary">View All</a>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr><th>Student</th><th>Assignment</th><th>Submitted</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              {% for sub in recent_submissions %}
+              <tr>
+                <td>{{ sub.student.get_full_name|default:sub.student.username }}</td>
+                <td>{{ sub.assignment.title|truncatechars:30 }}</td>
+                <td class="text-muted small">{{ sub.submitted_at|date:"d M Y" }}</td>
+                <td>
+                  {% if sub.is_graded %}
+                  <span class="badge bg-success">Graded</span>
+                  {% else %}
+                  <a href="{% url 'grade_submission' sub.id %}" class="badge bg-warning text-dark text-decoration-none">Grade</a>
+                  {% endif %}
+                </td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="4" class="text-center text-muted py-4">No recent submissions</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row g-3 mt-2">
+  <div class="col-12"><h5 class="fw-bold"><i class="bi bi-lightning-fill text-warning me-2"></i>Quick Actions</h5></div>
+  <div class="col-6 col-md-3"><a href="{% url 'upload_video' %}" class="btn btn-outline-primary w-100 py-3"><i class="bi bi-camera-video-fill d-block fs-4 mb-1"></i>Upload Video</a></div>
+  <div class="col-6 col-md-3"><a href="{% url 'upload_material' %}" class="btn btn-outline-success w-100 py-3"><i class="bi bi-file-earmark-plus-fill d-block fs-4 mb-1"></i>Upload Material</a></div>
+  <div class="col-6 col-md-3"><a href="{% url 'create_quiz' %}" class="btn btn-outline-warning w-100 py-3"><i class="bi bi-plus-circle-fill d-block fs-4 mb-1"></i>Create Quiz</a></div>
+  <div class="col-6 col-md-3"><a href="{% url 'create_assignment' %}" class="btn btn-outline-info w-100 py-3"><i class="bi bi-journal-plus d-block fs-4 mb-1"></i>Create Assignment</a></div>
+</div>
+
+{% else %}
+<!-- ══════════════ STUDENT DASHBOARD ══════════════ -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h3 class="fw-bold mb-0">
+      <i class="bi bi-grid-fill text-primary me-2"></i>My Dashboard
+    </h3>
+    <small class="text-muted">Welcome, {{ user.get_full_name }} &nbsp;|&nbsp; Roll: {{ profile.roll_number }} &nbsp;|&nbsp; Sem {{ profile.semester }}</small>
+  </div>
+  <a href="{% url 'my_performance' %}" class="btn btn-primary btn-sm">
+    <i class="bi bi-bar-chart me-1"></i>My Performance
+  </a>
+</div>
+
+<!-- Student KPI Cards -->
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="card border-0 shadow-sm text-center py-4 kpi-card kpi-blue">
+      <i class="bi bi-play-circle-fill fs-2 text-primary mb-2 d-block"></i>
+      <div class="fs-3 fw-bold">{{ videos_watched }}</div>
+      <small class="text-muted">Videos Watched</small>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card border-0 shadow-sm text-center py-4 kpi-card kpi-green">
+      <i class="bi bi-patch-check-fill fs-2 text-success mb-2 d-block"></i>
+      <div class="fs-3 fw-bold">{{ quiz_count }}</div>
+      <small class="text-muted">Quizzes Attempted</small>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card border-0 shadow-sm text-center py-4 kpi-card kpi-yellow">
+      <i class="bi bi-percent fs-2 text-warning mb-2 d-block"></i>
+      <div class="fs-3 fw-bold">{{ avg_quiz_score|floatformat:1 }}</div>
+      <small class="text-muted">Avg Quiz Score</small>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card border-0 shadow-sm text-center py-4 kpi-card kpi-purple">
+      <i class="bi bi-journal-check fs-2 text-info mb-2 d-block"></i>
+      <div class="fs-3 fw-bold">{{ assignments_submitted }}</div>
+      <small class="text-muted">Assignments Done</small>
+    </div>
+  </div>
+</div>
+
+<!-- Enrolled Subjects + Performance -->
+<div class="row g-4">
+  <div class="col-md-6">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-header bg-white fw-semibold border-0 pt-3">
+        <i class="bi bi-book-fill me-2 text-primary"></i>Enrolled Subjects
+      </div>
+      <div class="card-body">
+        {% for subject in subjects %}
+        <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+          <span><i class="bi bi-circle-fill text-primary me-2" style="font-size:0.4rem;vertical-align:middle;"></i>{{ subject.name }}</span>
+          <a href="{% url 'videos_by_subject' subject.id %}" class="btn btn-sm btn-outline-primary">Study</a>
+        </div>
+        {% empty %}
+        <div class="text-center text-muted py-4">
+          <i class="bi bi-book-fill fs-2 mb-2 d-block text-primary opacity-50"></i>
+          <a href="{% url 'subjects' %}" class="btn btn-primary btn-sm">Enroll in Subjects</a>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-header bg-white fw-semibold border-0 pt-3">
+        <i class="bi bi-graph-up me-2 text-success"></i>My Performance Summary
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-light"><tr><th>Subject</th><th>Label</th><th>Predicted</th><th>Risk</th></tr></thead>
+            <tbody>
+              {% for p in performance_records %}
+              <tr>
+                <td class="small">{{ p.subject.name|truncatechars:20 }}</td>
+                <td>
+                  {% if p.performance_label == 'High' %}<span class="badge bg-success">High</span>
+                  {% elif p.performance_label == 'Medium' %}<span class="badge bg-primary">Medium</span>
+                  {% elif p.performance_label == 'Low' %}<span class="badge bg-warning text-dark">Low</span>
+                  {% else %}<span class="badge bg-danger">At-Risk</span>{% endif %}
+                </td>
+                <td>{% if p.predicted_label %}<span class="badge bg-secondary">{{ p.predicted_label }}</span>{% else %}<span class="text-muted small">–</span>{% endif %}</td>
+                <td>{% if p.is_at_risk %}<i class="bi bi-exclamation-triangle-fill text-danger"></i>{% else %}<i class="bi bi-check-circle-fill text-success"></i>{% endif %}</td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="4" class="text-center text-muted py-4">No performance records yet</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Student Quick Links -->
+<div class="row g-3 mt-2">
+  <div class="col-12"><h5 class="fw-bold"><i class="bi bi-lightning-fill text-warning me-2"></i>Quick Access</h5></div>
+  <div class="col-6 col-md-3"><a href="{% url 'videos' %}" class="btn btn-outline-primary w-100 py-3"><i class="bi bi-play-btn-fill d-block fs-4 mb-1"></i>Watch Videos</a></div>
+  <div class="col-6 col-md-3"><a href="{% url 'materials' %}" class="btn btn-outline-success w-100 py-3"><i class="bi bi-file-earmark-pdf-fill d-block fs-4 mb-1"></i>Study Materials</a></div>
+  <div class="col-6 col-md-3"><a href="{% url 'quizzes' %}" class="btn btn-outline-warning w-100 py-3"><i class="bi bi-patch-question-fill d-block fs-4 mb-1"></i>Attempt Quiz</a></div>
+  <div class="col-6 col-md-3"><a href="{% url 'assignments' %}" class="btn btn-outline-info w-100 py-3"><i class="bi bi-upload d-block fs-4 mb-1"></i>Submit Work</a></div>
+</div>
+{% endif %}
+
+{% endblock %}

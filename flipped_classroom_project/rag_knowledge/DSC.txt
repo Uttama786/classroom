@@ -1,0 +1,276 @@
+# Data Science - Complete Study Notes
+
+## 1. Data Science Overview
+Data Science combines statistics, mathematics, programming, and domain knowledge to extract insights from data.
+
+### Data Science Pipeline
+1. Problem Definition
+2. Data Collection
+3. Data Cleaning/Preprocessing
+4. Exploratory Data Analysis (EDA)
+5. Feature Engineering
+6. Model Building
+7. Model Evaluation
+8. Deployment & Monitoring
+
+## 2. Statistics Fundamentals
+
+### Descriptive Statistics
+- **Mean**: Average = Σx / n
+- **Median**: Middle value when sorted
+- **Mode**: Most frequent value
+- **Variance**: σ² = Σ(x - μ)² / n
+- **Standard Deviation**: σ = √variance
+- **Skewness**: Asymmetry of distribution (left/right skewed)
+- **Kurtosis**: Peakedness of distribution
+- **Percentiles/Quartiles**: Q1 (25%), Q2 (50%), Q3 (75%), IQR = Q3 - Q1
+
+### Probability
+- P(A) = favorable outcomes / total outcomes
+- P(A ∪ B) = P(A) + P(B) - P(A ∩ B)
+- P(A ∩ B) = P(A) × P(B) [if independent]
+- P(A | B) = P(A ∩ B) / P(B) [conditional probability]
+- Bayes' Theorem: P(A|B) = P(B|A) × P(A) / P(B)
+
+### Probability Distributions
+- **Normal**: Bell curve, defined by μ and σ. 68-95-99.7 rule.
+- **Binomial**: n trials, p success probability, k successes
+- **Poisson**: Events per interval (λ)
+- **Uniform**: Equal probability in range [a, b]
+- **Exponential**: Time between events
+- **Bernoulli**: Single trial with success probability p
+
+### Hypothesis Testing
+- Null Hypothesis (H₀): No effect/difference
+- Alternative Hypothesis (H₁): There is effect/difference
+- p-value: Probability of observing result if H₀ is true
+- Significance level (α): Typically 0.05
+- Reject H₀ if p-value < α
+- Type I Error: False Positive (reject true H₀)
+- Type II Error: False Negative (fail to reject false H₀)
+- Tests: t-test, chi-square, ANOVA, Mann-Whitney
+
+## 3. Data Preprocessing
+
+### Handling Missing Data
+- Drop rows/columns with too many nulls
+- Imputation: mean, median, mode, KNN impution
+- Forward/backward fill for time series
+- Indicator variable for missingness
+
+### Outlier Detection
+- Z-score method: |z| > 3 is outlier
+- IQR method: x < Q1 - 1.5*IQR or x > Q3 + 1.5*IQR
+- Isolation Forest, DBSCAN for multivariate
+
+### Feature Scaling
+- **Normalization (Min-Max)**: x' = (x - min) / (max - min) → [0, 1]
+- **Standardization (Z-score)**: x' = (x - μ) / σ → mean=0, std=1
+- When to use: Normalization for bounded algorithms (neural nets), Standardization for distance-based (KNN, SVM)
+
+### Encoding Categorical Variables
+- **Label Encoding**: 0, 1, 2, ... (ordinal data)
+- **One-Hot Encoding**: Binary columns for each category
+- **Target Encoding**: Replace category with mean of target
+- **Ordinal Encoding**: Map ordered categories to integers
+
+## 4. Exploratory Data Analysis (EDA)
+
+### Univariate Analysis
+- Histogram: distribution shape
+- Box plot: median, quartiles, outliers
+- Bar chart: categorical frequency
+- KDE (Kernel Density Estimation): smooth distribution
+
+### Bivariate Analysis
+- Scatter plot: relationship between two numeric
+- Correlation matrix (Pearson, Spearman)
+- Box plot by category
+- Pivot tables
+
+### Tools
+```python
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+df.head(), df.info(), df.describe()
+df.isnull().sum()
+df.value_counts()
+df.corr()
+sns.heatmap(df.corr(), annot=True)
+sns.pairplot(df)
+```
+
+## 5. Feature Engineering
+- Create new features from existing ones
+- Domain knowledge application
+- Polynomial features: x², x³, x*y
+- Log/sqrt transformation for skewed data
+- Date/time features: day of week, month, year, hour
+- Text features: TF-IDF, word count, sentiment
+- Interaction terms
+
+## 6. Machine Learning Algorithms
+
+### Supervised Learning
+
+**Linear Regression**:
+- y = w₀ + w₁x₁ + ... + wₙxₙ
+- Minimize MSE (Mean Squared Error)
+- Assumptions: linearity, independence, homoscedasticity, normality
+- Metrics: R², MSE, RMSE, MAE
+
+**Logistic Regression**:
+- Binary classification
+- P(y=1) = σ(w·x) where σ is sigmoid
+- Loss: Binary cross-entropy
+- Output probability (0-1)
+
+**Decision Trees**:
+- Split based on Information Gain (ID3) or Gini Impurity (CART)
+- Gini = 1 - Σp²
+- Entropy = -Σp·log₂(p)
+- Prone to overfitting
+
+**Random Forest**:
+- Ensemble of decision trees (bagging)
+- Random feature subset at each split
+- Reduces variance, more robust
+- Feature importance via impurity decrease
+
+**Gradient Boosting (XGBoost, LightGBM)**:
+- Ensemble: trees built sequentially, each corrects errors of previous
+- Reduces bias and variance
+- Regularization terms to prevent overfitting
+
+**Support Vector Machine (SVM)**:
+- Finds hyperplane maximizing margin between classes
+- Kernel trick: RBF, polynomial for non-linear
+- C parameter: trade-off between margin and misclassification
+- SVC for classification, SVR for regression
+
+**K-Nearest Neighbors (KNN)**:
+- Classify based on k nearest neighbors
+- Distance metrics: Euclidean, Manhattan, Minkowski
+- k is hyperparameter (odd values for binary)
+- Computationally expensive at prediction time
+
+**Naive Bayes**:
+- Probabilistic, assumes feature independence
+- P(class|features) ∝ P(class) × Π P(feature|class)
+- Works well for text classification (Gaussian, Multinomial, Bernoulli)
+
+### Unsupervised Learning
+
+**K-Means Clustering**:
+- Partition n points into k clusters
+- Minimize within-cluster sum of squares (WCSS)
+- Elbow method to choose k
+- Sensitive to outliers and initialization
+
+**DBSCAN**:
+- Density-based clustering
+- Finds arbitrarily shaped clusters
+- ε (epsilon): neighborhood radius, MinPts: minimum points
+- Labels: Core, Border, Noise (outlier)
+
+**Hierarchical Clustering**:
+- Agglomerative (bottom-up) or Divisive (top-down)
+- Dendrogram visualization
+- Linkage: single, complete, average, Ward
+
+**PCA (Principal Component Analysis)**:
+- Dimensionality reduction
+- Finds principal components (orthogonal directions of maximum variance)
+- Explained variance ratio
+- Preprocessing for ML algorithms
+
+**t-SNE**:
+- Non-linear dimensionality reduction for visualization
+- Preserves local structure
+- Not suitable as preprocessing (non-deterministic)
+
+## 7. Model Evaluation
+
+### Classification Metrics
+- **Accuracy**: (TP+TN) / (TP+TN+FP+FN) — misleading for imbalanced
+- **Precision**: TP / (TP + FP) — of predicted positives, how many are correct
+- **Recall (Sensitivity)**: TP / (TP + FN) — of actual positives, how many caught
+- **F1-Score**: 2 × (Precision × Recall) / (Precision + Recall)
+- **ROC-AUC**: Area Under ROC Curve (FPR vs TPR)
+- **Confusion Matrix**
+
+### Regression Metrics
+- **MAE (Mean Absolute Error)**: Σ|y - ŷ| / n
+- **MSE (Mean Squared Error)**: Σ(y - ŷ)² / n
+- **RMSE**: √MSE
+- **R² (R-squared)**: 1 - SS_res/SS_tot (1 = perfect)
+- **MAPE**: Mean Absolute Percentage Error
+
+### Cross-Validation
+- K-Fold: split data into k folds, train on k-1, test on 1
+- Stratified K-Fold: maintain class proportions
+- Leave-One-Out: k = n (expensive)
+- Time-series: use TimeSeriesSplit
+
+## 8. Bias-Variance Tradeoff
+- **Bias**: Underfitting, model too simple, high training error
+- **Variance**: Overfitting, model too complex, high test-train gap
+- **Total Error** = Bias² + Variance + Irreducible Noise
+- Regularization: L1 (Lasso), L2 (Ridge) to reduce variance
+- L1 promotes sparsity (feature selection)
+- L2 penalizes large weights
+
+## 9. Data Science Libraries
+
+### NumPy
+```python
+import numpy as np
+arr = np.array([1,2,3])
+matrix = np.zeros((3,3)), np.ones((3,3)), np.eye(3)
+np.mean(arr), np.std(arr), np.sum(arr)
+arr.reshape(3,1), arr.T, np.dot(a, b)
+```
+
+### Pandas
+```python
+import pandas as pd
+df = pd.read_csv('data.csv')
+df.shape, df.head(), df.info(), df.describe()
+df['col'].value_counts()
+df.groupby('col').agg({'val': 'mean'})
+df.merge(other, on='key', how='left')
+df.pivot_table(values='v', index='i', columns='c')
+```
+
+### Scikit-learn
+```python
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.preprocessing import StandardScaler, LabelEncoder
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, classification_report
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+model = RandomForestClassifier(n_estimators=100)
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+print(accuracy_score(y_test, y_pred))
+```
+
+## Common Interview Questions - Data Science
+1. Difference between bias and variance?
+2. What is cross-validation and why use it?
+3. How do you handle imbalanced datasets?
+4. Explain precision vs recall and when to use each
+5. What is regularization in ML?
+6. How does gradient boosting work?
+7. What is PCA and when would you use it?
+8. How do you handle missing data?
+9. What is the curse of dimensionality?
+10. Explain the difference between bagging and boosting

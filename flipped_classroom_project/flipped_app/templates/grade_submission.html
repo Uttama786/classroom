@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Grade Submission – FlipLearn{% endblock %}
+{% block content %}
+<div class="row justify-content-center mt-3">
+  <div class="col-md-7">
+    <div class="card shadow-sm border-0 rounded-4">
+      <div class="card-header bg-warning rounded-top-4">
+        <h5 class="mb-0"><i class="bi bi-check2-square me-2"></i>Grade Submission</h5>
+      </div>
+      <div class="card-body p-4">
+        <p class="small text-muted">Student: {{ submission.student.get_full_name }} | Assignment: {{ submission.assignment.title }}</p>
+        {% if submission.submitted_file %}
+        <div class="mb-3">
+          <a href="{{ submission.submitted_file.url }}" class="btn btn-sm btn-outline-primary" download>
+            <i class="bi bi-download me-1"></i>Download Submitted File
+          </a>
+        </div>
+        {% endif %}
+        {% if total_marks %}
+        <div class="alert alert-info py-2 small mb-3">
+          <i class="bi bi-info-circle me-1"></i>Maximum marks for this assignment: <strong>{{ total_marks }}</strong>
+        </div>
+        {% endif %}
+        <form method="post">
+          {% csrf_token %}
+          {{ form|crispy }}
+          <div class="d-flex gap-2 mt-3">
+            <button type="submit" class="btn btn-warning"><i class="bi bi-check-circle me-1"></i>Save Grade</button>
+            <a href="{% url 'assignment_submissions' submission.assignment.id %}" class="btn btn-outline-secondary">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

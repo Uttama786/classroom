@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}Quizzes – FlipLearn{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h4 class="fw-bold mb-0"><i class="bi bi-patch-question-fill text-warning me-2"></i>Quizzes</h4>
+  {% if request.user.is_staff or request.user.teacher_profile %}
+  <a href="{% url 'create_quiz' %}" class="btn btn-warning btn-sm text-dark fw-semibold">
+    <i class="bi bi-plus-circle me-1"></i>Create Quiz
+  </a>
+  {% endif %}
+</div>
+
+<div class="row g-4">
+  {% for quiz in quizzes %}
+  <div class="col-md-6 col-lg-4">
+    <div class="card border-0 shadow-sm h-100 quiz-card">
+      <div class="card-header bg-warning text-dark py-3">
+        <div class="d-flex justify-content-between align-items-center">
+          <span class="fw-semibold">{{ quiz.subject.name }}</span>
+          {% if not request.user.is_staff and quiz.attempted %}
+          <span class="badge bg-success">Attempted</span>
+          {% elif quiz.is_active %}
+          <span class="badge bg-dark">Active</span>
+          {% endif %}
+        </div>
+      </div>
+      <div class="card-body">
+        <h6 class="fw-bold mb-2">{{ quiz.title }}</h6>
+        <p class="text-muted small mb-3">{{ quiz.description|truncatechars:80 }}</p>
+        <div class="row text-center g-2 mb-3">
+          <div class="col-4">
+            <div class="bg-light rounded p-2">
+              <div class="fw-bold text-primary">{{ quiz.total_marks }}</div>
+              <small class="text-muted">Marks</small>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="bg-light rounded p-2">
+              <div class="fw-bold text-warning">{{ quiz.time_limit_minutes }}</div>
+              <small class="text-muted">Minutes</small>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="bg-light rounded p-2">
+              <div class="fw-bold text-success">{{ quiz.questions.count }}</div>
+              <small class="text-muted">Questions</small>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer bg-white border-0 pb-3">
+        {% if request.user.is_staff or request.user.teacher_profile %}
+        <div class="d-flex gap-2">
+          <a href="{% url 'add_question' quiz.id %}" class="btn btn-sm btn-outline-warning flex-fill">
+            <i class="bi bi-plus me-1"></i>Add Questions
+          </a>
+        </div>
+        {% elif quiz.attempted %}
+        <a href="{% url 'quiz_result' quiz.id %}" class="btn btn-sm btn-success w-100">
+          <i class="bi bi-eye me-1"></i>View Result
+        </a>
+        {% else %}
+        <a href="{% url 'take_quiz' quiz.id %}" class="btn btn-sm btn-warning text-dark w-100 fw-semibold">
+          <i class="bi bi-play-fill me-1"></i>Start Quiz
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <div class="col-12 text-center py-5 text-muted">
+    <i class="bi bi-patch-question fs-1 d-block mb-3 opacity-50"></i>
+    <h5>No quizzes available yet</h5>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

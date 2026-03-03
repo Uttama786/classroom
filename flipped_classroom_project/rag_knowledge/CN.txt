@@ -1,0 +1,230 @@
+# Computer Networks - Complete Study Notes
+
+## 1. OSI Model (7 Layers)
+
+| Layer | Name         | Protocol/Technology                     | Function                        |
+|-------|--------------|----------------------------------------|---------------------------------|
+| 7     | Application  | HTTP, HTTPS, FTP, SMTP, DNS, SSH       | User interface, network services|
+| 6     | Presentation | SSL/TLS, JPEG, MPEG, ASCII             | Data format, encryption         |
+| 5     | Session      | NetBIOS, RPC, PPTP                     | Session management              |
+| 4     | Transport    | TCP, UDP                               | End-to-end communication        |
+| 3     | Network      | IP, ICMP, ARP, OSPF, BGP               | Routing, addressing             |
+| 2     | Data Link    | Ethernet, Wi-Fi (802.11), PPP, ARP     | Framing, error detection        |
+| 1     | Physical     | Ethernet cable, fiber, radio           | Bit transmission                |
+
+## 2. TCP/IP Model (4 Layers)
+- Application Layer (HTTP, FTP, DNS, SMTP)
+- Transport Layer (TCP, UDP)
+- Internet Layer (IP, ICMP, ARP)
+- Network Access / Link Layer (Ethernet, Wi-Fi)
+
+## 3. TCP vs UDP
+
+| Feature           | TCP                          | UDP                      |
+|-------------------|------------------------------|--------------------------|
+| Connection        | Connection-oriented (3-way)  | Connectionless           |
+| Reliability       | Guaranteed delivery          | No guarantee             |
+| Order             | In-order delivery            | No ordering              |
+| Flow control      | Yes (sliding window)         | No                       |
+| Congestion control| Yes                          | No                       |
+| Speed             | Slower                       | Faster                   |
+| Header size       | 20-60 bytes                  | 8 bytes                  |
+| Use cases         | HTTP, email, FTP             | DNS, VoIP, streaming, gaming |
+
+### TCP Three-Way Handshake
+1. SYN: Client sends SYN (seq=x)
+2. SYN-ACK: Server sends SYN+ACK (seq=y, ack=x+1)
+3. ACK: Client sends ACK (ack=y+1)
+Connection established!
+
+### TCP Termination (Four-Way)
+FIN → FIN-ACK → FIN → FIN-ACK
+
+## 4. IP Addressing
+
+### IPv4
+- 32-bit address, written as 4 octets: 192.168.1.1
+- Classes (historical):
+  - Class A: 1.0.0.0 – 126.255.255.255 (/8)
+  - Class B: 128.0.0.0 – 191.255.255.255 (/16)
+  - Class C: 192.0.0.0 – 223.255.255.255 (/24)
+  - Class D: 224.0.0.0 – 239.255.255.255 (Multicast)
+  - Class E: 240.0.0.0 – 255.255.255.255 (Reserved)
+
+### Subnetting / CIDR
+- CIDR notation: 192.168.1.0/24 (24 bits for network)
+- Subnet mask: /24 = 255.255.255.0
+- Number of hosts: 2^(32-prefix) - 2
+- Example: 192.168.1.0/26 → 2^6 - 2 = 62 hosts
+- Network address: first IP, Broadcast: last IP
+
+### Private IP Ranges
+- 10.0.0.0/8
+- 172.16.0.0/12
+- 192.168.0.0/16
+- Loopback: 127.0.0.1
+
+### IPv6
+- 128-bit address, written as 8 groups of hex: 2001:0db8::1
+- No NAT needed (enough addresses for everything)
+- Auto-configuration (SLAAC)
+- No broadcast (uses multicast)
+
+## 5. DNS (Domain Name System)
+- Translates domain names to IP addresses
+- Hierarchical: root → TLD (.com, .org) → domain → subdomain
+- DNS Record Types:
+  - A: IPv4 address
+  - AAAA: IPv6 address
+  - CNAME: alias to another name
+  - MX: mail server
+  - NS: name server
+  - TXT: text records (SPF, DKIM)
+  - PTR: reverse lookup
+- Recursive resolver → Root server → TLD server → Authoritative server
+- TTL (Time To Live): caching duration
+
+## 6. HTTP and HTTPS
+
+### HTTP Methods
+- GET: retrieve resource (idempotent, safe)
+- POST: create resource
+- PUT: update/replace resource
+- PATCH: partial update
+- DELETE: remove resource
+- HEAD: headers only
+- OPTIONS: CORS preflight
+
+### HTTP Status Codes
+- 1xx: Informational (100 Continue)
+- 2xx: Success (200 OK, 201 Created, 204 No Content)
+- 3xx: Redirection (301 Moved Permanently, 302 Found, 304 Not Modified)
+- 4xx: Client Error (400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found, 429 Rate Limited)
+- 5xx: Server Error (500 Internal Server Error, 502 Bad Gateway, 503 Service Unavailable)
+
+### HTTPS
+- HTTP over TLS (Transport Layer Security)
+- TLS Handshake:
+  1. Client Hello (cipher suites, random)
+  2. Server Hello (chosen cipher, certificate)
+  3. Certificate verification
+  4. Key exchange (pre-master secret)
+  5. Session keys derived
+  6. Finished
+
+## 7. Routing Protocols
+
+### Interior Gateway Protocols (IGP)
+**RIP (Routing Information Protocol)**:
+- Distance vector, hop count metric (max 15)
+- Bellman-Ford algorithm
+- Periodic updates every 30 seconds
+- RIPv1 (classful), RIPv2 (classless with CIDR)
+
+**OSPF (Open Shortest Path First)**:
+- Link state protocol
+- Dijkstra's algorithm (SPF)
+- Areas (Area 0 = backbone)
+- Convergence faster than RIP
+- Metric: cost (based on bandwidth)
+
+**EIGRP (Enhanced Interior Gateway Routing Protocol)**:
+- Cisco proprietary (hybrid)
+- DUAL algorithm
+- Fast convergence, supports VLSM
+
+### Exterior Gateway Protocols
+**BGP (Border Gateway Protocol)**:
+- Used between autonomous systems (Internet)
+- Path vector protocol
+- Attributes: AS-PATH, NEXT-HOP, MED, LOCAL-PREF
+- eBGP (external) vs iBGP (internal)
+
+## 8. Network Devices
+- **Hub**: Layer 1, broadcasts to all ports
+- **Switch**: Layer 2, forwards based on MAC address (MAC table)
+- **Router**: Layer 3, forwards based on IP address (routing table)
+- **Firewall**: Filters traffic based on rules
+- **Load Balancer**: Distributes traffic across servers
+- **NAT (Network Address Translation)**: Maps private to public IPs
+- **Proxy Server**: Intermediary for client requests
+
+## 9. Wireless Networking
+- IEEE 802.11 standards:
+  - 802.11a: 5 GHz, 54 Mbps
+  - 802.11b: 2.4 GHz, 11 Mbps
+  - 802.11g: 2.4 GHz, 54 Mbps
+  - 802.11n (Wi-Fi 4): 2.4/5 GHz, 300+ Mbps, MIMO
+  - 802.11ac (Wi-Fi 5): 5 GHz, 1+ Gbps, MU-MIMO
+  - 802.11ax (Wi-Fi 6): 2.4/5/6 GHz, OFDMA
+- Security: WPA2 (AES/CCMP), WPA3
+- SSID: network name
+- BSSID: MAC of access point
+
+## 10. Network Security
+
+### Attacks
+- **DoS/DDoS**: Overwhelm server/network
+- **Man-in-the-Middle**: Intercept communication
+- **Phishing**: Fake websites/emails
+- **Spoofing**: IP/MAC/DNS spoofing
+- **ARP Poisoning**: Link wrong IP to attacker's MAC
+- **Port Scanning**: Discover open ports (nmap)
+- **SQL Injection, XSS**: Application-layer
+
+### Defenses
+- Firewall: ACLs, stateful inspection
+- IDS/IPS: Intrusion Detection/Prevention Systems
+- VPN: Virtual Private Network (IPSec, SSL)
+- DMZ: Demilitarized Zone for public-facing servers
+- Encryption: TLS, SSH, IPSec
+- ACLs: Access Control Lists
+- Network segmentation / VLANs
+
+## 11. Application Layer Protocols
+
+### Email Protocols
+- SMTP (port 25/587): Sending email
+- POP3 (port 110): Download email, delete from server
+- IMAP (port 143): Sync email, keep on server
+
+### File Transfer
+- FTP (port 21): File Transfer Protocol (unencrypted)
+- SFTP: FTP over SSH (encrypted)
+- FTPS: FTP over SSL
+
+### Remote Access
+- SSH (port 22): Secure Shell, encrypted terminal
+- Telnet (port 23): Unencrypted terminal (deprecated)
+- RDP (port 3389): Windows Remote Desktop
+
+### Other
+- DHCP (port 67/68): Dynamic IP assignment
+- NTP (port 123): Network Time Protocol
+- SNMP (port 161): Network management
+
+## 12. Network Topologies
+- **Bus**: All devices on single cable (collision domain)
+- **Star**: All devices connect to central switch/hub (most common)
+- **Ring**: Devices in circular chain (token ring)
+- **Mesh**: Every device connected to every other
+- **Tree/Hierarchical**: Star of stars (enterprise networks)
+
+## 13. VLANs
+- Virtual LANs: logical segmentation of network
+- Tagged (802.1Q) vs Untagged ports
+- Trunk ports carry multiple VLANs
+- Improves security and broadcast domain control
+- Inter-VLAN routing via Layer 3 switch or router
+
+## Common Interview Questions - Computer Networks
+1. Explain the OSI model layers with examples
+2. What is the difference between TCP and UDP?
+3. How does DNS work?
+4. What is subnetting? Calculate hosts for /26 subnet
+5. Explain the TCP three-way handshake
+6. What is NAT and why is it used?
+7. Difference between hub, switch, and router
+8. What is OSPF and how does it work?
+9. Explain HTTPS and TLS handshake
+10. What is ARP and how does ARP poisoning work?

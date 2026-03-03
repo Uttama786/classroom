@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Login – FlipLearn{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Auth page: full-viewport split screen */
+.auth-page {
+  min-height: calc(100vh - 56px);
+  display: flex;
+  align-items: stretch;
+}
+.auth-left {
+  flex: 1;
+  background: linear-gradient(135deg, #3a3fb5 0%, #1a73e8 50%, #5b5ef4 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2.5rem;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+.auth-left::before {
+  content: '';
+  position: absolute;
+  width: 400px; height: 400px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  top: -80px; left: -80px;
+  pointer-events: none;
+}
+.auth-left::after {
+  content: '';
+  position: absolute;
+  width: 260px; height: 260px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+  bottom: -60px; right: -60px;
+  pointer-events: none;
+}
+[data-theme="dark"] .auth-left {
+  background: linear-gradient(135deg, #1a003a 0%, #2d006a 50%, #4b00a0 100%);
+  border-right: 1px solid rgba(176,106,255,0.25);
+}
+.auth-right {
+  flex: 0 0 440px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 2rem;
+  background: var(--bg-page);
+}
+.auth-form-card {
+  width: 100%;
+  max-width: 380px;
+}
+.auth-brand-logo {
+  width: 72px; height: 72px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.2rem;
+  margin-bottom: 1.5rem;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.25);
+}
+.auth-left h2 {
+  font-size: 1.9rem;
+  font-weight: 800;
+  margin-bottom: .75rem;
+}
+.auth-left p {
+  font-size: .92rem;
+  opacity: .82;
+  line-height: 1.6;
+  max-width: 320px;
+  text-align: center;
+}
+.auth-features {
+  display: flex; flex-direction: column; gap: 12px;
+  margin-top: 2rem;
+  width: 100%;
+  max-width: 320px;
+}
+.auth-feature-row {
+  display: flex; align-items: center; gap: 12px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 12px;
+  padding: 10px 14px;
+  backdrop-filter: blur(6px);
+  transition: background .2s;
+}
+.auth-feature-row:hover { background: rgba(255,255,255,0.16); }
+.auth-feature-row i { font-size: 1.2rem; flex-shrink: 0; }
+.auth-feature-row span { font-size: .82rem; font-weight: 500; opacity: .92; }
+
+/* Form styling */
+.auth-form-title { font-size: 1.6rem; font-weight: 800; margin-bottom: .25rem; }
+.auth-input-wrap { position: relative; }
+.auth-input-wrap .auth-icon {
+  position: absolute;
+  left: 13px; top: 50%; transform: translateY(-50%);
+  color: var(--txt-muted); font-size: .95rem; z-index: 5; pointer-events: none;
+  transition: color .2s;
+}
+.auth-input-wrap .form-control {
+  padding-left: 38px;
+  border-radius: 12px !important;
+  height: 48px;
+  font-size: .93rem;
+}
+.auth-input-wrap .form-control:focus + .auth-icon,
+.auth-input-wrap .form-control:focus ~ .auth-icon { color: var(--primary); }
+.auth-label { font-size: .8rem; font-weight: 600; color: var(--txt-muted); margin-bottom: 5px; display: block; }
+
+.btn-auth {
+  height: 50px;
+  border-radius: 12px !important;
+  font-size: .95rem;
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+
+@media (max-width: 768px) {
+  .auth-left { display: none; }
+  .auth-right { flex: 1; padding: 2rem 1rem; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+  <!-- Left branding panel -->
+  <div class="auth-left">
+    <div class="text-center d-flex flex-column align-items-center">
+      <div class="auth-brand-logo">
+        <i class="bi bi-mortarboard-fill"></i>
+      </div>
+      <h2>FlipLearn <span style="color:#ffc107">CSE</span></h2>
+      <p>Your AI-powered flipped classroom platform for M.Tech Computer Science &amp; Engineering.</p>
+
+      <div class="auth-features">
+        <div class="auth-feature-row">
+          <i class="bi bi-robot text-warning"></i>
+          <span>AI Tutor powered by Groq LLaMA-3</span>
+        </div>
+        <div class="auth-feature-row">
+          <i class="bi bi-camera-video-fill text-info"></i>
+          <span>Watch lecture videos anytime</span>
+        </div>
+        <div class="auth-feature-row">
+          <i class="bi bi-patch-question-fill" style="color:#c084fc"></i>
+          <span>Adaptive quizzes &amp; assignments</span>
+        </div>
+        <div class="auth-feature-row">
+          <i class="bi bi-graph-up-arrow text-success"></i>
+          <span>ML-predicted performance tracking</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right form panel -->
+  <div class="auth-right">
+    <div class="auth-form-card">
+      <div class="mb-4">
+        <h1 class="auth-form-title">Welcome back</h1>
+        <p class="text-muted" style="font-size:.88rem">Sign in to your FlipLearn account to continue.</p>
+      </div>
+
+      {% if messages %}
+      {% for msg in messages %}
+      <div class="alert alert-{{ msg.tags|default:'info' }} alert-dismissible fade show mb-3" role="alert" style="border-radius:12px;font-size:.86rem">
+        <i class="bi bi-exclamation-circle me-2"></i>{{ msg }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+      {% endfor %}
+      {% endif %}
+
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="auth-label" for="id_login_user">Username</label>
+          <div class="auth-input-wrap">
+            <input type="text" name="username" id="id_login_user"
+                   class="form-control" placeholder="your_username" autocomplete="username" required/>
+            <i class="auth-icon bi bi-person"></i>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="auth-label" for="id_login_pass">Password</label>
+          <div class="auth-input-wrap" id="passWrap">
+            <input type="password" name="password" id="id_login_pass"
+                   class="form-control" placeholder="••••••••" autocomplete="current-password" required/>
+            <i class="auth-icon bi bi-lock"></i>
+            <button type="button" id="togglePass"
+              style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--txt-muted);cursor:pointer;font-size:.9rem;z-index:5;padding:0">
+              <i class="bi bi-eye" id="togglePassIcon"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="d-grid mt-4">
+          <button type="submit" class="btn btn-primary btn-auth">
+            <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+          </button>
+        </div>
+      </form>
+
+      <div class="d-flex align-items-center gap-2 my-3">
+        <hr class="flex-grow-1 m-0">
+        <small class="text-muted px-2">or</small>
+        <hr class="flex-grow-1 m-0">
+      </div>
+
+      <div class="text-center">
+        <p class="text-muted mb-0" style="font-size:.88rem">
+          Don't have an account?
+          <a href="{% url 'register' %}" class="fw-semibold text-primary">Create Account</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const btn = document.getElementById('togglePass');
+  const inp = document.getElementById('id_login_pass');
+  const icon = document.getElementById('togglePassIcon');
+  if(btn && inp) {
+    btn.addEventListener('click',()=>{
+      const show = inp.type === 'password';
+      inp.type = show ? 'text' : 'password';
+      icon.className = show ? 'bi bi-eye-slash' : 'bi bi-eye';
+    });
+  }
+})();
+</script>
+{% endblock %}

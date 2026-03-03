@@ -1,0 +1,334 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard – FlipLearn{% endblock %}
+
+{% block extra_css %}
+<style>
+.dash-role-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: linear-gradient(135deg, #dc3545 0%, #6f1920 100%);
+  color: #fff; padding: 4px 14px; border-radius: 20px;
+  font-size: .78rem; font-weight: 600; letter-spacing: .04em;
+}
+.section-divider {
+  display: flex; align-items: center; gap: 10px; margin: 2rem 0 1rem;
+}
+.section-divider span { white-space: nowrap; font-weight: 700; font-size: .95rem; }
+.section-divider::after { content:''; flex:1; height:1px; background: rgba(0,0,0,.1); }
+[data-theme="dark"] .section-divider::after { background: rgba(255,255,255,.1); }
+
+.admin-kpi { border-radius: 14px; padding: 20px 16px; text-align: center; }
+.admin-kpi .kpi-val { font-size: 2.1rem; font-weight: 800; line-height: 1; }
+.admin-kpi .kpi-lbl { font-size: .78rem; color: rgba(255,255,255,.85); margin-top: 4px; }
+.admin-kpi i { font-size: 1.8rem; opacity: .85; }
+
+.admin-action-btn {
+  border-radius: 12px; padding: 18px 10px; text-align: center;
+  transition: transform .18s, box-shadow .18s;
+}
+.admin-action-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,.12); }
+
+.status-dot {
+  width: 8px; height: 8px; border-radius: 50%; display: inline-block;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  /* ── Performance doughnut ── */
+  const pd = {{ perf_distribution|safe }};
+  const dCtx = document.getElementById('adminPerfDonut');
+  if (dCtx && pd && typeof Chart !== 'undefined') {
+    new Chart(dCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['High', 'Medium', 'Low', 'At-Risk'],
+        datasets: [{
+          data: [pd.High||0, pd.Medium||0, pd.Low||0, pd['At-Risk']||0],
+          backgroundColor: ['#198754','#0d6efd','#ffc107','#dc3545'],
+          borderWidth: 2,
+          borderColor: document.documentElement.getAttribute('data-theme')==='dark'?'#1e1e2e':'#fff'
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false, cutout: '65%',
+        plugins: {
+          legend: { position: 'bottom', labels: { boxWidth: 12, padding: 12 } }
+        }
+      }
+    });
+  }
+
+  /* ── Subject bar chart ── */
+  const ss = {{ subject_stats_json|safe }};
+  const bCtx = document.getElementById('adminSubjectBar');
+  if (bCtx && ss && typeof Chart !== 'undefined') {
+    new Chart(bCtx, {
+      type: 'bar',
+      data: {
+        labels: ss.map(x=>x.name),
+        datasets: [
+          { label: 'Videos',      data: ss.map(x=>x.videos),      backgroundColor: '#0d6efd88' },
+          { label: 'Quizzes',     data: ss.map(x=>x.quizzes),     backgroundColor: '#ffc10788' },
+          { label: 'Assignments', data: ss.map(x=>x.assignments),  backgroundColor: '#19875488' },
+          { label: 'Enrolled',    data: ss.map(x=>x.enrolled),     backgroundColor: '#dc354588' }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, padding: 10 } } },
+        scales: { x: { stacked: false }, y: { beginAtZero: true } }
+      }
+    });
+  }
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<!-- ══ Header ══════════════════════════════════════════════════════ -->
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+  <div>
+    <div class="d-flex align-items-center gap-2 mb-1">
+      <span class="dash-role-badge"><i class="bi bi-shield-fill-check"></i> Platform Administrator</span>
+    </div>
+    <h3 class="fw-bold mb-0"><i class="bi bi-speedometer2 text-danger me-2"></i>Admin Dashboard</h3>
+    <small class="text-muted">Full system control &nbsp;·&nbsp; {{ user.get_full_name|default:user.username }}</small>
+  </div>
+  <div class="d-flex gap-2 flex-wrap">
+    <a href="/admin/" class="btn btn-sm btn-danger"><i class="bi bi-gear-fill me-1"></i>Django Admin</a>
+    <a href="{% url 'analytics' %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-bar-chart-line me-1"></i>Analytics</a>
+  </div>
+</div>
+
+<!-- ══ KPI Cards (8 items) ════════════════════════════════════════ -->
+<div class="row g-3 mb-2">
+
+  <div class="col-6 col-md-3">
+    <div class="admin-kpi bg-primary text-white shadow-sm">
+      <i class="bi bi-people-fill d-block mb-2"></i>
+      <div class="kpi-val">{{ total_students }}</div>
+      <div class="kpi-lbl">Total Students</div>
+    </div>
+  </div>
+
+  <div class="col-6 col-md-3">
+    <div class="admin-kpi bg-success text-white shadow-sm">
+      <i class="bi bi-person-badge-fill d-block mb-2"></i>
+      <div class="kpi-val">{{ total_teachers }}</div>
+      <div class="kpi-lbl">Total Teachers</div>
+    </div>
+  </div>
+
+  <div class="col-6 col-md-3">
+    <div class="admin-kpi bg-info text-white shadow-sm">
+      <i class="bi bi-camera-video-fill d-block mb-2"></i>
+      <div class="kpi-val">{{ total_videos }}</div>
+      <div class="kpi-lbl">Video Lectures</div>
+    </div>
+  </div>
+
+  <div class="col-6 col-md-3">
+    <div class="admin-kpi bg-secondary text-white shadow-sm">
+      <i class="bi bi-file-earmark-text-fill d-block mb-2"></i>
+      <div class="kpi-val">{{ total_materials }}</div>
+      <div class="kpi-lbl">Study Materials</div>
+    </div>
+  </div>
+
+  <div class="col-6 col-md-3">
+    <div class="admin-kpi bg-dark text-white shadow-sm">
+      <i class="bi bi-patch-question-fill d-block mb-2"></i>
+      <div class="kpi-val">{{ total_quizzes }}</div>
+      <div class="kpi-lbl">Active Quizzes</div>
+    </div>
+  </div>
+
+  <div class="col-6 col-md-3">
+    <div class="admin-kpi text-white shadow-sm" style="background:linear-gradient(135deg,#6610f2,#0d6efd)">
+      <i class="bi bi-journal-richtext d-block mb-2"></i>
+      <div class="kpi-val">{{ total_assignments }}</div>
+      <div class="kpi-lbl">Assignments</div>
+    </div>
+  </div>
+
+  <div class="col-6 col-md-3">
+    <div class="admin-kpi text-white shadow-sm" style="background:linear-gradient(135deg,#e67e22,#f39c12)">
+      <i class="bi bi-clock-history d-block mb-2"></i>
+      <div class="kpi-val">{{ pending_grades }}</div>
+      <div class="kpi-lbl">Pending Grades</div>
+    </div>
+  </div>
+
+  <div class="col-6 col-md-3">
+    <div class="admin-kpi bg-danger text-white shadow-sm">
+      <i class="bi bi-exclamation-triangle-fill d-block mb-2"></i>
+      <div class="kpi-val">{{ at_risk_count }}</div>
+      <div class="kpi-lbl">At-Risk Students</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ Charts Row ════════════════════════════════════════════════ -->
+<div class="section-divider"><span><i class="bi bi-graph-up-arrow me-2 text-danger"></i>Platform Analytics</span></div>
+<div class="row g-4 mb-2">
+
+  <div class="col-md-4">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-header bg-transparent fw-semibold border-0 pt-3">
+        <i class="bi bi-pie-chart-fill me-2 text-primary"></i>Performance Distribution
+      </div>
+      <div class="card-body" style="height:260px;">
+        <canvas id="adminPerfDonut" style="max-height:240px;"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-8">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-header bg-transparent fw-semibold border-0 pt-3">
+        <i class="bi bi-bar-chart-fill me-2 text-success"></i>Content & Enrollment by Subject
+      </div>
+      <div class="card-body" style="height:260px;">
+        <canvas id="adminSubjectBar" style="max-height:240px;"></canvas>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ Tables Row ════════════════════════════════════════════════ -->
+<div class="section-divider"><span><i class="bi bi-table me-2 text-primary"></i>Platform Data</span></div>
+<div class="row g-4 mb-2">
+
+  <!-- Subject Content Stats -->
+  <div class="col-lg-7">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-header bg-transparent fw-semibold border-0 pt-3 d-flex justify-content-between">
+        <span><i class="bi bi-grid-3x3 me-2 text-info"></i>Subject Content Stats</span>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0 align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Subject</th>
+                <th class="text-center"><i class="bi bi-camera-video" title="Videos"></i></th>
+                <th class="text-center"><i class="bi bi-file-text" title="Materials"></i></th>
+                <th class="text-center"><i class="bi bi-patch-question" title="Quizzes"></i></th>
+                <th class="text-center"><i class="bi bi-journal" title="Assignments"></i></th>
+                <th class="text-center"><i class="bi bi-people" title="Enrolled"></i></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for s in subject_stats %}
+              <tr>
+                <td class="fw-semibold small">{{ s.name }}</td>
+                <td class="text-center"><span class="badge bg-info text-dark">{{ s.videos }}</span></td>
+                <td class="text-center"><span class="badge bg-secondary">{{ s.materials }}</span></td>
+                <td class="text-center"><span class="badge bg-warning text-dark">{{ s.quizzes }}</span></td>
+                <td class="text-center"><span class="badge bg-dark">{{ s.assignments }}</span></td>
+                <td class="text-center"><span class="badge bg-primary">{{ s.enrolled }}</span></td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="6" class="text-center text-muted py-4">No subjects found</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent User Registrations -->
+  <div class="col-lg-5">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-header bg-transparent fw-semibold border-0 pt-3">
+        <i class="bi bi-person-plus-fill me-2 text-success"></i>Recent Registrations
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0 align-middle">
+            <thead class="table-light">
+              <tr><th>User</th><th>Role</th><th>Joined</th></tr>
+            </thead>
+            <tbody>
+              {% for u in recent_users %}
+              <tr>
+                <td>
+                  <div class="fw-semibold small">{{ u.get_full_name|default:u.username }}</div>
+                  <small class="text-muted">@{{ u.username }}</small>
+                </td>
+                <td>
+                  {% if u.is_superuser %}
+                    <span class="badge bg-danger">Admin</span>
+                  {% elif u.teacher_profile %}
+                    <span class="badge bg-primary">Teacher</span>
+                  {% else %}
+                    <span class="badge bg-success">Student</span>
+                  {% endif %}
+                </td>
+                <td class="text-muted small">{{ u.date_joined|date:"d M Y" }}</td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="3" class="text-center text-muted py-4">No users yet</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ System Quick Actions ══════════════════════════════════════ -->
+<div class="section-divider"><span><i class="bi bi-lightning-charge-fill me-2 text-warning"></i>System Actions</span></div>
+<div class="row g-3 mb-4">
+
+  <div class="col-6 col-md-2">
+    <a href="/admin/" class="btn btn-danger admin-action-btn w-100">
+      <i class="bi bi-gear-wide-connected d-block fs-2 mb-1"></i>
+      <small class="fw-semibold">Django Admin</small>
+    </a>
+  </div>
+
+  <div class="col-6 col-md-2">
+    <a href="{% url 'analytics' %}" class="btn btn-outline-primary admin-action-btn w-100">
+      <i class="bi bi-bar-chart-line d-block fs-2 mb-1"></i>
+      <small class="fw-semibold">Analytics</small>
+    </a>
+  </div>
+
+  <div class="col-6 col-md-2">
+    <a href="{% url 'analytics' %}" class="btn btn-outline-info admin-action-btn w-100">
+      <i class="bi bi-person-lines-fill d-block fs-2 mb-1"></i>
+      <small class="fw-semibold">Student Analytics</small>
+    </a>
+  </div>
+
+  <div class="col-6 col-md-2">
+    <a href="{% url 'upload_video' %}" class="btn btn-outline-success admin-action-btn w-100">
+      <i class="bi bi-camera-video-fill d-block fs-2 mb-1"></i>
+      <small class="fw-semibold">Upload Video</small>
+    </a>
+  </div>
+
+  <div class="col-6 col-md-2">
+    <a href="{% url 'create_quiz' %}" class="btn btn-outline-warning admin-action-btn w-100">
+      <i class="bi bi-patch-plus d-block fs-2 mb-1"></i>
+      <small class="fw-semibold">Create Quiz</small>
+    </a>
+  </div>
+
+  <div class="col-6 col-md-2">
+    <a href="{% url 'create_assignment' %}" class="btn btn-outline-dark admin-action-btn w-100">
+      <i class="bi bi-journal-plus d-block fs-2 mb-1"></i>
+      <small class="fw-semibold">New Assignment</small>
+    </a>
+  </div>
+
+</div>
+{% endblock %}

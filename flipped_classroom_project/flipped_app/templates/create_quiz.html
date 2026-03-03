@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Create Quiz – FlipLearn{% endblock %}
+{% block content %}
+<div class="row justify-content-center mt-3">
+  <div class="col-md-7">
+    <div class="card border-0 shadow-sm rounded-4">
+      <div class="card-header bg-warning text-dark rounded-top-4 py-3">
+        <h5 class="mb-0"><i class="bi bi-plus-circle me-2"></i>Create New Quiz</h5>
+      </div>
+      <div class="card-body p-4">
+        <form method="post">
+          {% csrf_token %}
+          {{ form|crispy }}
+          <div class="d-flex gap-2 mt-3">
+            <button type="submit" class="btn btn-warning px-4 text-dark fw-semibold">
+              <i class="bi bi-check-circle me-1"></i>Create Quiz
+            </button>
+            <a href="{% url 'quizzes' %}" class="btn btn-outline-secondary">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

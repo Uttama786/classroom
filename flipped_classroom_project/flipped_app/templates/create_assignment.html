@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Create Assignment – FlipLearn{% endblock %}
+{% block content %}
+<div class="row justify-content-center mt-3">
+  <div class="col-md-8">
+    <div class="card shadow-sm border-0 rounded-4">
+      <div class="card-header bg-primary text-white rounded-top-4">
+        <h5 class="mb-0"><i class="bi bi-journal-plus me-2"></i>Create Assignment</h5>
+      </div>
+      <div class="card-body p-4">
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{ form|crispy }}
+          <div class="d-flex gap-2 mt-3">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-check2-circle me-1"></i>Create</button>
+            <a href="{% url 'assignments' %}" class="btn btn-outline-secondary">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
