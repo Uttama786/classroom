@@ -1,0 +1,14 @@
+[phases.setup]
+nixPkgs = ["python311", "python311Packages.pip", "gcc", "libffi"]
+
+[phases.install]
+cmds = ["pip install -r flipped_classroom_project/requirements.txt"]
+
+[phases.build]
+cmds = [
+  "cd flipped_classroom_project && python manage.py collectstatic --noinput",
+  "cd flipped_classroom_project && python manage.py migrate --noinput"
+]
+
+[start]
+cmd = "cd flipped_classroom_project && gunicorn flipped_classroom_project.wsgi:application --workers 2 --threads 2 --timeout 120 --bind 0.0.0.0:$PORT"
