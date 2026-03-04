@@ -40,7 +40,28 @@ def is_student(user):
 def home_view(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
-    return render(request, 'home.html')
+    from .models import StudentProfile, VideoLecture, Quiz, StudyMaterial, QuizAttempt, StudentPerformance
+    stats = {
+        'total_students': StudentProfile.objects.count(),
+        'total_videos':   VideoLecture.objects.count(),
+        'total_quizzes':  Quiz.objects.count(),
+        'total_materials': StudyMaterial.objects.count(),
+        'total_quiz_attempts': QuizAttempt.objects.count(),
+        'at_risk_count': StudentPerformance.objects.filter(is_at_risk=True).count(),
+        'total_subjects': Subject.objects.count(),
+        'total_assignments': Assignment.objects.count(),
+    }
+    features_list = [
+        {'icon': 'bi-play-circle-fill', 'bg': 'rgba(37,99,235,.1)',   'color': '#2563eb', 'title': 'Video Lectures',           'desc': 'Watch curated videos before class at your own pace, any time, any device.'},
+        {'icon': 'bi-patch-question-fill','bg':'rgba(22,163,74,.1)',  'color': '#16a34a', 'title': 'Adaptive Quizzes',          'desc': 'Test understanding with auto-graded quizzes tailored per subject.'},
+        {'icon': 'bi-robot',              'bg': 'rgba(124,58,237,.1)','color': '#7c3aed', 'title': 'AI Tutor (RAG)',            'desc': 'Ask any CSE question — get instant, grounded answers from your course materials.'},
+        {'icon': 'bi-graph-up-arrow',     'bg': 'rgba(202,138,4,.1)', 'color': '#ca8a04', 'title': 'ML Performance Prediction', 'desc': 'RandomForest models predict your score and classify your performance category.'},
+        {'icon': 'bi-shield-exclamation', 'bg': 'rgba(220,38,38,.1)', 'color': '#dc2626', 'title': 'At-Risk Early Warning',     'desc': 'Detect struggling students early so teachers can intervene before it\'s too late.'},
+        {'icon': 'bi-bar-chart-line-fill','bg': 'rgba(14,165,233,.1)','color': '#0ea5e9', 'title': 'Teacher Analytics',         'desc': 'Dashboards and charts showing class-wide and individual student progress.'},
+        {'icon': 'bi-journal-code',       'bg': 'rgba(234,88,12,.1)', 'color': '#ea580c', 'title': 'Assignments',               'desc': 'Submit and grade coding assignments with inline feedback from teachers.'},
+        {'icon': 'bi-file-earmark-text',  'bg': 'rgba(15,118,110,.1)','color': '#0f766e', 'title': 'Study Materials',           'desc': 'Download lecture notes, PDFs, and reference documents anytime.'},
+    ]
+    return render(request, 'home.html', {'stats': stats, 'features_list': features_list})
 
 
 def register_view(request):

@@ -236,8 +236,9 @@
       <h1>Performance Analysis of the<br><span style="color:#fbbf24">Flipped Classroom</span> Model</h1>
       <p class="hero-sub">using AI &amp; Machine Learning in CSE Education</p>
       <p class="lead">
-        An AI-powered learning platform where students learn before class and practise during class.
-        ML models analyse engagement data to predict academic performance and detect at-risk students early.
+        A full-stack research platform built to compare traditional vs flipped classroom outcomes using
+        real student engagement data. Multiple ML models — trained on quiz scores, video watch-time &amp;
+        attendance — predict final exam scores and classify performance, with early warning for at-risk students.
       </p>
       <div class="hero-btns d-flex gap-3 flex-wrap">
         <a href="{% url 'register' %}" class="btn btn-warning btn-lg px-4 fw-bold shadow-sm">
@@ -264,45 +265,78 @@
   <div class="col-6 col-md-3">
     <div class="stat-v4 kpi-blue shadow-sm">
       <div class="stat-icon" style="background:rgba(37,99,235,.12)">
-        <i class="bi bi-camera-video-fill text-primary"></i>
+        <i class="bi bi-people-fill text-primary"></i>
       </div>
-      <div class="stat-num text-primary">Video</div>
-      <div class="stat-lbl fw-semibold">Lectures</div>
-      <div class="stat-sublbl">Watch before class</div>
+      <div class="stat-num text-primary" data-target="{{ stats.total_students }}">{{ stats.total_students }}</div>
+      <div class="stat-lbl fw-semibold">Students Enrolled</div>
+      <div class="stat-sublbl">Registered learners</div>
     </div>
   </div>
   <div class="col-6 col-md-3">
     <div class="stat-v4 kpi-green shadow-sm">
       <div class="stat-icon" style="background:rgba(22,163,74,.12)">
-        <i class="bi bi-patch-question-fill text-success"></i>
+        <i class="bi bi-camera-video-fill text-success"></i>
       </div>
-      <div class="stat-num text-success">Smart</div>
-      <div class="stat-lbl fw-semibold">Quizzes</div>
-      <div class="stat-sublbl">Test your knowledge</div>
+      <div class="stat-num text-success" data-target="{{ stats.total_videos }}">{{ stats.total_videos }}</div>
+      <div class="stat-lbl fw-semibold">Video Lectures</div>
+      <div class="stat-sublbl">Watch before class</div>
     </div>
   </div>
   <div class="col-6 col-md-3">
     <div class="stat-v4 kpi-yellow shadow-sm">
       <div class="stat-icon" style="background:rgba(202,138,4,.12)">
-        <i class="bi bi-robot text-warning"></i>
+        <i class="bi bi-patch-question-fill text-warning"></i>
       </div>
-      <div class="stat-num text-warning">AI</div>
-      <div class="stat-lbl fw-semibold">ML Analytics</div>
-      <div class="stat-sublbl">Predict performance</div>
+      <div class="stat-num text-warning" data-target="{{ stats.total_quizzes }}">{{ stats.total_quizzes }}</div>
+      <div class="stat-lbl fw-semibold">Quizzes Available</div>
+      <div class="stat-sublbl">{{ stats.total_quiz_attempts }} attempts made</div>
     </div>
   </div>
   <div class="col-6 col-md-3">
     <div class="stat-v4 kpi-red shadow-sm">
       <div class="stat-icon" style="background:rgba(220,38,38,.12)">
-        <i class="bi bi-shield-exclamation text-danger"></i>
+        <i class="bi bi-file-earmark-text-fill text-danger"></i>
       </div>
-      <div class="stat-num text-danger">Early</div>
-      <div class="stat-lbl fw-semibold">Risk Detection</div>
-      <div class="stat-sublbl">Save struggling students</div>
+      <div class="stat-num text-danger" data-target="{{ stats.total_materials }}">{{ stats.total_materials }}</div>
+      <div class="stat-lbl fw-semibold">Study Materials</div>
+      <div class="stat-sublbl">{{ stats.total_subjects }} subjects · {{ stats.total_assignments }} assignments</div>
     </div>
   </div>
 </div>
-
+<!-- ══ HOW IT WORKS ════════════════════════════════════════════════════ -->
+<div class="mb-5">
+  <h2 class="sec-heading"><i class="bi bi-signpost-2-fill me-2 text-primary"></i>How It Works</h2>
+  <p class="sec-sub">The three-phase flipped learning cycle — before, during, and after class.</p>
+  <div class="row g-3">
+    <div class="col-md-4">
+      <div class="feature-chip h-100" style="border-left:3px solid #2563eb">
+        <div class="fi" style="background:rgba(37,99,235,.12);min-width:44px"><span style="font-size:1.4rem;font-weight:900;color:#2563eb">1</span></div>
+        <div>
+          <h6>Before Class &mdash; Pre-learning</h6>
+          <p>Students watch video lectures &amp; download study materials before class. The platform records watch-time, completion % and access patterns per subject.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="feature-chip h-100" style="border-left:3px solid #16a34a">
+        <div class="fi" style="background:rgba(22,163,74,.12);min-width:44px"><span style="font-size:1.4rem;font-weight:900;color:#16a34a">2</span></div>
+        <div>
+          <h6>During Class &mdash; Active Practice</h6>
+          <p>Students take auto-graded quizzes, submit assignments, and chat with the RAG AI Tutor. Teachers see live dashboards and give inline feedback.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="feature-chip h-100" style="border-left:3px solid #7c3aed">
+        <div class="fi" style="background:rgba(124,58,237,.12);min-width:44px"><span style="font-size:1.4rem;font-weight:900;color:#7c3aed">3</span></div>
+        <div>
+          <h6>After Class &mdash; ML Analysis</h6>
+          <p>Random Forest models analyse engagement data to predict final exam scores, label performance (Good / Average / Poor) &amp; flag at-risk students for early intervention.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- ══ FEATURES ══════════════════════════════════════════════════════ -->
 <div class="mb-5">
   <h2 class="sec-heading"><i class="bi bi-stars text-warning me-2"></i>Platform Highlights</h2>
@@ -363,7 +397,7 @@
 <!-- ══ SUBJECTS ══════════════════════════════════════════════════════ -->
 <div class="mb-5">
   <h2 class="sec-heading"><i class="bi bi-book me-2 text-primary"></i>Subjects Covered</h2>
-  <p class="sec-sub">6 core CSE subjects with complete learning resources.</p>
+  <p class="sec-sub">{{ stats.total_subjects }} core M.Tech CSE subjects with complete learning resources.</p>
   <div class="row g-3">
     <div class="col-6 col-md-4 col-lg-2">
       <div class="subj-card-v4">
@@ -409,7 +443,65 @@
     </div>
   </div>
 </div>
-
+<!-- ══ TECH STACK ═════════════════════════════════════════════════════════ -->
+<div class="mb-5">
+  <h2 class="sec-heading"><i class="bi bi-layers-fill me-2 text-info"></i>Technology Stack</h2>
+  <p class="sec-sub">Production-grade open-source tools across web, ML, and AI layers.</p>
+  <div class="row g-3">
+    <div class="col-md-6 col-lg-3">
+      <div class="ml-card h-100">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <div style="width:34px;height:34px;border-radius:9px;background:rgba(37,99,235,.1);display:flex;align-items:center;justify-content:center"><i class="bi bi-server text-primary fs-6"></i></div>
+          <h6 class="fw-bold mb-0">Web &amp; Backend</h6>
+        </div>
+        <div class="ml-model-row"><i class="bi bi-check2-circle text-primary"></i><strong>Django 4.2</strong> &mdash; Python web framework</div>
+        <div class="ml-model-row"><i class="bi bi-check2-circle text-primary"></i><strong>Python 3.11</strong> &mdash; Core language</div>
+        <div class="ml-model-row"><i class="bi bi-check2-circle text-primary"></i><strong>Gunicorn</strong> &mdash; WSGI production server</div>
+        <div class="ml-model-row"><i class="bi bi-check2-circle text-primary"></i><strong>WhiteNoise</strong> &mdash; Static file serving</div>
+        <div class="ml-model-row border-0"><i class="bi bi-check2-circle text-primary"></i><strong>PostgreSQL / SQLite</strong> &mdash; Database</div>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+      <div class="ml-card h-100">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <div style="width:34px;height:34px;border-radius:9px;background:rgba(22,163,74,.1);display:flex;align-items:center;justify-content:center"><i class="bi bi-graph-up-arrow text-success fs-6"></i></div>
+          <h6 class="fw-bold mb-0">ML &amp; Data Science</h6>
+        </div>
+        <div class="ml-model-row"><i class="bi bi-check2-circle text-success"></i><strong>scikit-learn 1.3</strong> &mdash; ML algorithms</div>
+        <div class="ml-model-row"><i class="bi bi-check2-circle text-success"></i><strong>pandas 2.1</strong> &mdash; Data wrangling</div>
+        <div class="ml-model-row"><i class="bi bi-check2-circle text-success"></i><strong>NumPy 1.26</strong> &mdash; Numerical computing</div>
+        <div class="ml-model-row"><i class="bi bi-check2-circle text-success"></i><strong>matplotlib / seaborn</strong> &mdash; Visualisation</div>
+        <div class="ml-model-row border-0"><i class="bi bi-check2-circle text-success"></i><strong>joblib</strong> &mdash; Model persistence (.pkl)</div>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+      <div class="ml-card h-100">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <div style="width:34px;height:34px;border-radius:9px;background:rgba(124,58,237,.1);display:flex;align-items:center;justify-content:center"><i class="bi bi-robot" style="color:#7c3aed;font-size:1rem"></i></div>
+          <h6 class="fw-bold mb-0">AI &amp; RAG</h6>
+        </div>
+        <div class="ml-model-row"><i class="bi bi-check2-circle" style="color:#7c3aed"></i><strong>FAISS</strong> &mdash; Vector similarity search</div>
+        <div class="ml-model-row"><i class="bi bi-check2-circle" style="color:#7c3aed"></i><strong>sentence-transformers</strong> &mdash; all-MiniLM-L6-v2</div>
+        <div class="ml-model-row"><i class="bi bi-check2-circle" style="color:#7c3aed"></i><strong>Groq LLaMA-3.1-8B</strong> &mdash; LLM backend</div>
+        <div class="ml-model-row"><i class="bi bi-check2-circle" style="color:#7c3aed"></i><strong>PyMuPDF / pdfplumber</strong> &mdash; PDF parsing</div>
+        <div class="ml-model-row border-0"><i class="bi bi-check2-circle" style="color:#7c3aed"></i><strong>SSE streaming</strong> &mdash; Real-time chat output</div>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+      <div class="ml-card h-100">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <div style="width:34px;height:34px;border-radius:9px;background:rgba(14,165,233,.1);display:flex;align-items:center;justify-content:center"><i class="bi bi-palette-fill text-info fs-6"></i></div>
+          <h6 class="fw-bold mb-0">Frontend</h6>
+        </div>
+        <div class="ml-model-row"><i class="bi bi-check2-circle text-info"></i><strong>Bootstrap 5.3</strong> &mdash; UI framework</div>
+        <div class="ml-model-row"><i class="bi bi-check2-circle text-info"></i><strong>Bootstrap Icons</strong> &mdash; Icon library</div>
+        <div class="ml-model-row"><i class="bi bi-check2-circle text-info"></i><strong>Chart.js</strong> &mdash; Interactive charts</div>
+        <div class="ml-model-row"><i class="bi bi-check2-circle text-info"></i><strong>CSS Variables</strong> &mdash; Dual-theme system</div>
+        <div class="ml-model-row border-0"><i class="bi bi-check2-circle text-info"></i><strong>django-crispy-forms</strong> &mdash; Form rendering</div>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- ══ ML MODELS ═════════════════════════════════════════════════════ -->
 <div class="mb-5">
   <h2 class="sec-heading"><i class="bi bi-cpu me-2 text-warning"></i>Machine Learning Models</h2>
@@ -494,4 +586,37 @@
 </div>
 
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+  function countUp(el, target, duration) {
+    if (target === 0) return;
+    const start = performance.now();
+    function step(now) {
+      const progress = Math.min((now - start) / duration, 1);
+      const ease = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.floor(ease * target);
+      if (progress < 1) requestAnimationFrame(step);
+      else el.textContent = target;
+    }
+    requestAnimationFrame(step);
+  }
+  const observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const target = parseInt(el.dataset.target, 10);
+        if (!isNaN(target)) countUp(el, target, 1200);
+        observer.unobserve(el);
+      }
+    });
+  }, { threshold: 0.4 });
+  document.querySelectorAll('.stat-num[data-target]').forEach(function (el) {
+    el.textContent = '0';
+    observer.observe(el);
+  });
+})();
+</script>
 {% endblock %}

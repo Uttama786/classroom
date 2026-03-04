@@ -110,6 +110,16 @@ DATABASES = {
     }
 }
 
+# Use PostgreSQL in production when DATABASE_URL env var is set (Railway / Render)
+_db_url = os.environ.get('DATABASE_URL')
+if _db_url:
+    import dj_database_url
+    DATABASES['default'] = dj_database_url.config(
+        default=_db_url,
+        conn_max_age=600,
+        ssl_require=not DEBUG,
+    )
+
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},

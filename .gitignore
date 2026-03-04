@@ -33,6 +33,7 @@ dist/
 build/
 *.egg-info/
 
-# ML model artifacts (optional: remove these lines if you want to include them)
-ml_model/saved_models/
+# ML plots (generated output, not needed in repo)
 ml_model/plots/
+# Trained model binaries ARE committed so deployment works without a training step
+# ml_model/saved_models/

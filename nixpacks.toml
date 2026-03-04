@@ -9,7 +9,8 @@ cmds = [
 
 [phases.build]
 cmds = [
-  "cd flipped_classroom_project && python manage.py collectstatic --noinput"
+  "cd flipped_classroom_project && python manage.py collectstatic --noinput",
+  "cd flipped_classroom_project && python manage.py build_rag_index"
 ]
 
 [start]
