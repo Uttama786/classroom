@@ -45,10 +45,17 @@ if not DEBUG:
     # Secure cookies
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    # Trusted origins for CSRF when behind a proxy / HTTPS
+    # Trusted origins for CSRF when behind a proxy / HTTPS.
+    # Build from env var, or fall back to https:// prefix of every ALLOWED_HOST.
     _csrf_origins = os.environ.get('CSRF_TRUSTED_ORIGINS', '')
     if _csrf_origins:
         CSRF_TRUSTED_ORIGINS = [o.strip() for o in _csrf_origins.split(',') if o.strip()]
+    else:
+        # Auto-build from ALLOWED_HOSTS so POST requests work without manual config
+        CSRF_TRUSTED_ORIGINS = [
+            f'https://{h}' for h in ALLOWED_HOSTS
+            if h not in ('*', 'localhost', '127.0.0.1')
+        ] or ['https://*.up.railway.app', 'https://*.onrender.com']
     # Prevent browsers from sniffing MIME types
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SECURE_BROWSER_XSS_FILTER = True
