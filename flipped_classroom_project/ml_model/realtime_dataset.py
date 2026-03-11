@@ -66,8 +66,17 @@ def _row_from_performance(perf) -> dict:
     except Exception:
         prev_gpa = perf.previous_gpa
 
+    try:
+        usn = student.student_profile.roll_number
+    except Exception:
+        usn = f"USN_{student.id}"
+
+    student_name = student.get_full_name().strip() or student.username
+
     return {
         'student_id':               f"DB_{student.id}_{subject.code}",
+        'usn':                      usn,
+        'student_name':             student_name,
         'videos_watched':           int(perf.videos_watched),
         'total_video_time_minutes': round(float(perf.total_video_time_minutes), 1),
         'quiz_avg_score':           round(float(perf.quiz_avg_score), 2),
@@ -83,14 +92,20 @@ def _row_from_performance(perf) -> dict:
 def _read_csv() -> pd.DataFrame:
     """Read dataset.csv; return empty DataFrame with correct columns if missing."""
     columns = [
-        'student_id', 'videos_watched', 'total_video_time_minutes',
-        'quiz_avg_score', 'assignment_avg_marks', 'attendance_percentage',
-        'participation_score', 'previous_gpa', 'final_exam_score',
-        'performance_label'
+        'student_id', 'usn', 'student_name', 'videos_watched',
+        'total_video_time_minutes', 'quiz_avg_score', 'assignment_avg_marks',
+        'attendance_percentage', 'participation_score', 'previous_gpa',
+        'final_exam_score', 'performance_label'
     ]
     if DATASET_CSV.exists():
         try:
-            return pd.read_csv(DATASET_CSV)
+            df = pd.read_csv(DATASET_CSV)
+            # Back-fill usn/student_name columns if the CSV pre-dates this feature
+            if 'usn' not in df.columns:
+                df.insert(1, 'usn', '')
+            if 'student_name' not in df.columns:
+                df.insert(2, 'student_name', '')
+            return df
         except Exception:
             pass
     return pd.DataFrame(columns=columns)
@@ -122,16 +137,42 @@ def _set_counter(n: int) -> None:
 def upsert_performance_row(perf) -> bool:
     """
     Insert or update the dataset.csv row for this StudentPerformance.
-    Only processes rows where final_exam_score > 0 (teacher has graded).
+
+    Writes to CSV whenever there is ANY meaningful engagement activity
+    (quiz taken, video watched, assignment submitted, chat participation)
+    even if the teacher has not yet assigned a final_exam_score.
+
+    - Rows with final_exam_score > 0  → true label from _derive_label()
+    - Rows with final_exam_score == 0 → label from predicted_label (ML) or 'Pending'
+
+    Retraining is triggered only when rows with a real final_exam_score > 0
+    are newly inserted (to avoid training on unconfirmed labels).
 
     Returns True if a new row was INSERTED (not just updated).
     """
-    if float(perf.final_exam_score) <= 0:
+    has_final = float(perf.final_exam_score) > 0
+    has_engagement = (
+        int(perf.videos_watched) > 0
+        or float(perf.quiz_avg_score) > 0
+        or float(perf.assignment_avg_marks) > 0
+        or float(perf.participation_score) > 0
+        or float(perf.total_video_time_minutes) > 0
+        or float(perf.attendance_percentage) > 0
+    )
+
+    # Skip rows with absolutely no data at all
+    if not has_final and not has_engagement:
         return False
 
     new_row = _row_from_performance(perf)
-    key     = str(new_row['student_id'])
-    is_new  = False
+
+    # If no final score yet, use the ML predicted label (or 'Pending')
+    if not has_final:
+        predicted = getattr(perf, 'predicted_label', None) or 'Pending'
+        new_row['performance_label'] = predicted
+
+    key    = str(new_row['student_id'])
+    is_new = False
 
     with _csv_lock:
         df = _read_csv()
@@ -149,11 +190,10 @@ def upsert_performance_row(perf) -> bool:
                         f"(total={len(df)})")
             is_new = True
 
-        # Keep student_id clean and sequential for synthetic rows;
-        # real DB rows keep their 'DB_<id>_<code>' string ID.
         _write_csv(df)
 
-    if is_new:
+    # Only count toward retraining when a confirmed final score is present
+    if is_new and has_final:
         count = _get_counter() + 1
         _set_counter(count)
         logger.info(f"[RealTime] New real rows since last retrain: {count}")

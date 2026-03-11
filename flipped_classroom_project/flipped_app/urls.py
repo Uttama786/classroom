@@ -53,6 +53,9 @@ urlpatterns = [
     # Notifications
     path('notifications/read/<int:notif_id>/', views.mark_notification_read, name='mark_read'),
 
+    # RAG
+    path('rag/rebuild/', views.rebuild_rag_view, name='rebuild_rag'),
+
     # RAG Chatbot
     path('chat/ask/', views.chat_ask_view, name='chat_ask'),
     path('chat/history/', views.chat_history_view, name='chat_history'),

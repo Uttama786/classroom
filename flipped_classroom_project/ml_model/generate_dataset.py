@@ -159,8 +159,18 @@ def pull_real_records() -> pd.DataFrame:
         else:
             label = 'At-Risk'
 
+        # ── USN and student name ──
+        try:
+            usn = student.student_profile.roll_number
+        except Exception:
+            usn = f"USN_{student.id}"
+
+        student_name = student.get_full_name().strip() or student.username
+
         records.append({
             'student_id':              f"DB_{student.id}_{subject.code}",
+            'usn':                     usn,
+            'student_name':            student_name,
             'videos_watched':          int(videos_watched),
             'total_video_time_minutes': round(float(total_video_minutes), 1),
             'quiz_avg_score':          round(quiz_avg, 2),
@@ -292,7 +302,9 @@ def generate_synthetic_records(n: int, start_id: int = 1) -> pd.DataFrame:
     rows = []
     for i in range(n):
         rows.append({
-            'student_id':               start_id + i,
+            'student_id':               f"SYN_{start_id + i:04d}",
+            'usn':                      f"SYN_{start_id + i:04d}",
+            'student_name':             f"Synthetic Student {start_id + i}",
             'videos_watched':           int(videos_watched[i]),
             'total_video_time_minutes': float(total_video_time[i]),
             'quiz_avg_score':           float(quiz_avg[i]),
@@ -396,16 +408,15 @@ def generate_dataset(
 
     df['performance_label'] = df.apply(correct_label, axis=1)
 
-    # Step 4: Clean up internal column, reset student_id
+    # Step 4: Clean up internal column; preserve real student_ids, assign for synthetic
     df = df.drop(columns=['_source'], errors='ignore')
-    df['student_id'] = range(1, len(df) + 1)
 
     # Step 5: Reorder columns to match training script expectation
     df = df[[
-        'student_id', 'videos_watched', 'total_video_time_minutes',
-        'quiz_avg_score', 'assignment_avg_marks', 'attendance_percentage',
-        'participation_score', 'previous_gpa', 'final_exam_score',
-        'performance_label'
+        'student_id', 'usn', 'student_name', 'videos_watched',
+        'total_video_time_minutes', 'quiz_avg_score', 'assignment_avg_marks',
+        'attendance_percentage', 'participation_score', 'previous_gpa',
+        'final_exam_score', 'performance_label'
     ]]
 
     # Step 6: Validate and report

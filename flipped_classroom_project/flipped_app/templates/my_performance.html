@@ -1,38 +1,227 @@
 {% extends 'base.html' %}
 {% block title %}My Performance – FlipLearn{% endblock %}
-{% block content %}
-<h3 class="fw-bold mb-3"><i class="bi bi-bar-chart me-2 text-primary"></i>My Performance</h3>
 
+{% block content %}
+<h3 class="fw-bold mb-1"><i class="bi bi-bar-chart-line me-2 text-primary"></i>My Performance</h3>
+<p class="text-muted mb-4 small">ML predictions update automatically after every quiz, video, assignment, or AI Tutor session.</p>
+
+<!-- ── KPI row ─────────────────────────────────────────────────── -->
 <div class="row g-3 mb-4">
-  <div class="col-6 col-md-3"><div class="stat-card bg-primary">Quizzes<br><span>{{ quiz_attempts|length }}</span></div></div>
-  <div class="col-6 col-md-3"><div class="stat-card bg-success">Videos Watched<br><span>{{ total_watched }}</span></div></div>
-  <div class="col-6 col-md-3"><div class="stat-card bg-warning">Avg Quiz Score<br><span>{{ avg_quiz|floatformat:1 }}</span></div></div>
-  <div class="col-6 col-md-3"><div class="stat-card bg-info">Graded Submissions<br><span>{{ submissions|length }}</span></div></div>
+  <div class="col-6 col-md-3">
+    <div class="card border-0 shadow-sm text-center py-3">
+      <i class="bi bi-patch-question-fill fs-3 text-primary d-block mb-1"></i>
+      <div class="fw-bold fs-4">{{ quiz_attempts|length }}</div>
+      <small class="text-muted">Quizzes Attempted</small>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card border-0 shadow-sm text-center py-3">
+      <i class="bi bi-camera-video-fill fs-3 text-success d-block mb-1"></i>
+      <div class="fw-bold fs-4">{{ total_watched }}</div>
+      <small class="text-muted">Videos Completed</small>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card border-0 shadow-sm text-center py-3">
+      <i class="bi bi-star-fill fs-3 text-warning d-block mb-1"></i>
+      <div class="fw-bold fs-4">{{ avg_quiz|floatformat:1 }}</div>
+      <small class="text-muted">Avg Quiz Score</small>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card border-0 shadow-sm text-center py-3">
+      <i class="bi bi-journal-check fs-3 text-info d-block mb-1"></i>
+      <div class="fw-bold fs-4">{{ submissions|length }}</div>
+      <small class="text-muted">Graded Submissions</small>
+    </div>
+  </div>
 </div>
 
-<div class="card shadow-sm border-0">
-  <div class="card-body">
-    <h6 class="fw-bold">Performance Records</h6>
+{% if not enriched %}
+<div class="alert alert-info">
+  <i class="bi bi-info-circle me-2"></i>
+  No performance data yet. Start watching videos, taking quizzes, and using the AI Tutor to see your ML predictions here.
+</div>
+{% endif %}
+
+<!-- ── Per-subject ML prediction cards ──────────────────────────── -->
+<div class="row g-4">
+{% for e in enriched %}
+{% with p=e.record %}
+<div class="col-12 col-lg-6">
+  <div class="card border-0 shadow-sm h-100">
+
+    <!-- Card header -->
+    <div class="card-header border-0 d-flex align-items-center justify-content-between rounded-top
+      {% if e.is_at_risk %}bg-danger bg-opacity-10
+      {% elif e.predicted_label == 'High' %}bg-success bg-opacity-10
+      {% elif e.predicted_label == 'Medium' %}bg-primary bg-opacity-10
+      {% else %}bg-warning bg-opacity-10{% endif %}">
+      <div>
+        <h6 class="fw-bold mb-0">{{ p.subject.name }}</h6>
+        <small class="text-muted">{{ p.subject.code }}</small>
+      </div>
+      <div class="d-flex gap-2 align-items-center flex-wrap justify-content-end">
+        <span class="badge fs-6
+          {% if e.predicted_label == 'High' %}bg-success
+          {% elif e.predicted_label == 'Medium' %}bg-primary
+          {% elif e.predicted_label == 'Low' %}bg-warning text-dark
+          {% else %}bg-danger{% endif %}">
+          {% if e.predicted_label %}{{ e.predicted_label }}{% else %}—{% endif %}
+        </span>
+        {% if e.confidence %}
+        <span class="badge bg-secondary" title="ML confidence">{{ e.confidence }}%</span>
+        {% endif %}
+        {% if e.is_at_risk %}
+        <i class="bi bi-exclamation-triangle-fill text-danger fs-5" title="At-Risk"></i>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="card-body">
+
+      <!-- Score metrics row -->
+      <div class="d-flex gap-3 mb-3 flex-wrap border-bottom pb-3">
+        <div class="text-center">
+          <div class="text-muted small">Final Score</div>
+          <div class="fw-bold fs-5">{{ p.final_exam_score|default:"—" }}</div>
+        </div>
+        <div class="text-center">
+          <div class="text-muted small">ML Predicted</div>
+          <div class="fw-bold fs-5 text-primary">
+            {{ e.predicted_score|floatformat:1|default:"—" }}
+            <small class="text-muted fw-normal">/100</small>
+          </div>
+        </div>
+        <div class="text-center">
+          <div class="text-muted small">Attendance</div>
+          <div class="fw-bold fs-5">{{ p.attendance_percentage|floatformat:0 }}%</div>
+        </div>
+        <div class="text-center">
+          <div class="text-muted small">AI Questions</div>
+          <div class="fw-bold fs-5">{{ p.participation_score|floatformat:0 }}<small class="text-muted fw-normal">/10</small></div>
+        </div>
+      </div>
+
+      <!-- Feature progress bars -->
+      <div class="mb-3">
+        <div class="small text-muted fw-semibold mb-2">
+          <i class="bi bi-speedometer2 me-1"></i>Feature Breakdown
+        </div>
+        {% for key, val in e.features.items %}
+        <div class="d-flex align-items-center mb-1 gap-2">
+          <span class="small" style="width:95px;flex-shrink:0;
+            {% if key == e.weakest %}color:#dc3545;font-weight:600{% else %}color:#6c757d{% endif %}">
+            {{ key }}{% if key == e.weakest %} ⚠{% endif %}
+          </span>
+          <div class="progress flex-grow-1" style="height:7px">
+            <div class="progress-bar
+              {% if val >= 70 %}bg-success
+              {% elif val >= 40 %}bg-warning
+              {% else %}bg-danger{% endif %}"
+              style="width:{{ val }}%" title="{{ val }}%"></div>
+          </div>
+          <span class="small text-muted" style="width:34px;text-align:right">{{ val }}%</span>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Radar chart -->
+      <div style="max-height:200px">
+        <canvas id="radar_{{ p.subject.code }}" height="180"></canvas>
+      </div>
+
+      <!-- Recommendation -->
+      <div class="alert border-0 mt-3 mb-0 py-2 px-3 small
+        {% if e.is_at_risk %}alert-danger{% else %}alert-warning{% endif %}">
+        <strong>Focus: {{ e.weakest }}</strong><br>
+        {{ e.recommendation }}
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endwith %}
+{% endfor %}
+</div>
+
+<!-- ── Recent quiz attempts ──────────────────────────────────────── -->
+{% if quiz_attempts %}
+<div class="card shadow-sm border-0 mt-4">
+  <div class="card-header border-0 fw-bold">
+    <i class="bi bi-patch-question-fill me-2 text-warning"></i>Recent Quiz Attempts
+  </div>
+  <div class="card-body p-0">
     <div class="table-responsive">
-      <table class="table table-sm align-middle">
+      <table class="table table-sm align-middle mb-0">
         <thead class="table-light">
-          <tr><th>Subject</th><th>Final Score</th><th>Label</th><th>Predicted</th><th>Risk</th></tr>
+          <tr><th>Quiz</th><th>Subject</th><th>Score</th><th>Max</th><th>%</th><th>Date</th></tr>
         </thead>
         <tbody>
-          {% for p in performance_records %}
+          {% for q in quiz_attempts|slice:":10" %}
           <tr>
-            <td>{{ p.subject.name }}</td>
-            <td>{{ p.final_exam_score }}</td>
-            <td>{{ p.performance_label }}</td>
-            <td>{{ p.predicted_score|default:'-' }}</td>
-            <td>{% if p.is_at_risk %}<span class="badge bg-danger">At-Risk</span>{% else %}<span class="badge bg-success">OK</span>{% endif %}</td>
+            <td class="small">{{ q.quiz.title|truncatechars:40 }}</td>
+            <td class="small text-muted">{{ q.quiz.subject.code }}</td>
+            <td class="fw-bold">{{ q.score }}</td>
+            <td class="text-muted">{{ q.quiz.total_marks }}</td>
+            <td>
+              {% if q.quiz.total_marks > 0 %}
+              {% widthratio q.score q.quiz.total_marks 100 as pct %}
+              <span class="badge {% if pct >= 75 %}bg-success{% elif pct >= 50 %}bg-primary{% else %}bg-danger{% endif %}">{{ pct }}%</span>
+              {% endif %}
+            </td>
+            <td class="small text-muted">{{ q.attempted_at|date:"d M Y" }}</td>
           </tr>
-          {% empty %}
-          <tr><td colspan="5" class="text-muted">No performance data available.</td></tr>
           {% endfor %}
         </tbody>
       </table>
     </div>
   </div>
 </div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+{% for e in enriched %}
+(function() {
+  const ctx = document.getElementById('radar_{{ e.record.subject.code }}');
+  if (!ctx) return;
+  const color = {
+    'High':    { bg: 'rgba(40,167,69,.15)',  border: '#28a745' },
+    'Medium':  { bg: 'rgba(13,110,253,.15)', border: '#0d6efd' },
+    'Low':     { bg: 'rgba(255,193,7,.2)',   border: '#ffc107' },
+    'At-Risk': { bg: 'rgba(220,53,69,.15)',  border: '#dc3545' },
+  }['{{ e.predicted_label }}'] || { bg: 'rgba(108,117,125,.15)', border: '#6c757d' };
+
+  new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: {{ e.feature_keys|safe }},
+      datasets: [{
+        data: {{ e.feature_vals|safe }},
+        backgroundColor: color.bg,
+        borderColor: color.border,
+        borderWidth: 2,
+        pointBackgroundColor: color.border,
+        pointRadius: 3,
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        r: {
+          min: 0, max: 100,
+          ticks: { display: false, stepSize: 25 },
+          grid: { color: 'rgba(0,0,0,.07)' },
+          pointLabels: { font: { size: 10 } }
+        }
+      },
+      plugins: { legend: { display: false } }
+    }
+  });
+})();
+{% endfor %}
+</script>
 {% endblock %}

@@ -924,6 +924,57 @@ body {
 }
 
 /* ════════════════════════════════════════════════════════════════════
+   NOTIFICATION DROPDOWN
+   ════════════════════════════════════════════════════════════════════ */
+.notif-dropdown {
+  width: clamp(280px, 90vw, 340px);   /* never wider than viewport */
+  max-width: calc(100vw - 24px);       /* safe on small phones */
+  padding: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,.15);
+  border: 1px solid rgba(0,0,0,.08);
+  /* keep it fully inside the viewport */
+  right: 0 !important;
+  left: auto !important;
+}
+[data-theme="dark"] .notif-dropdown {
+  background: #1e1e2e;
+  border-color: rgba(255,255,255,.08);
+  box-shadow: 0 8px 32px rgba(0,0,0,.45);
+}
+.notif-header {
+  background: rgba(0,0,0,.03);
+  border-bottom: 1px solid rgba(0,0,0,.06);
+}
+[data-theme="dark"] .notif-header {
+  background: rgba(255,255,255,.04);
+  border-bottom-color: rgba(255,255,255,.08);
+}
+/* Scrollable list — max 5 items visible before scrolling */
+.notif-scroll-area {
+  max-height: 280px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.notif-scroll-area::-webkit-scrollbar { width: 4px; }
+.notif-scroll-area::-webkit-scrollbar-track { background: transparent; }
+.notif-scroll-area::-webkit-scrollbar-thumb { background: rgba(0,0,0,.15); border-radius: 4px; }
+[data-theme="dark"] .notif-scroll-area::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); }
+.notif-item {
+  white-space: normal;           /* allow text to wrap */
+  line-height: 1.45;
+  transition: background .15s;
+  border-bottom: 1px solid rgba(0,0,0,.04);
+}
+.notif-item:last-child { border-bottom: none; }
+.notif-item:hover { background: rgba(255,193,7,.08); }
+[data-theme="dark"] .notif-item:hover { background: rgba(255,193,7,.12); }
+.notif-icon { margin-top: 1px; font-size: .9rem; }
+.notif-msg  { color: var(--bs-body-color); word-break: break-word; }
+[data-theme="dark"] .notif-msg { color: #e2e8f0; }
+
+/* ════════════════════════════════════════════════════════════════════
    SCROLLBAR  (dark)
    ════════════════════════════════════════════════════════════════════ */
 [data-theme="dark"] ::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -1684,29 +1735,48 @@ main { animation: pageIn 0.45s cubic-bezier(0.22,1,0.36,1); }
 }
 .chat-answer-text li { margin-bottom: .3em; }
 
-/* ── Generative streaming: blinking cursor + fade-in on final render ── */
-@keyframes chat-blink {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0; }
+/* ── Generative streaming: typewriter cursor + smooth token reveal ── */
+@keyframes chat-cursor-blink {
+  0%, 45%  { opacity: 1; }
+  55%, 100% { opacity: 0; }
+}
+@keyframes chat-token-in {
+  from { opacity: 0; transform: translateY(3px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 @keyframes chat-fade-in {
-  from { opacity: 0.55; transform: translateY(2px); }
-  to   { opacity: 1;    transform: translateY(0);   }
+  from { opacity: 0.6; transform: translateY(2px); filter: blur(0.5px); }
+  to   { opacity: 1;   transform: translateY(0);   filter: blur(0);     }
 }
-/* Inline blinking cursor injected during stream */
+@keyframes chat-shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+/* Smooth blinking cursor */
 .chat-cursor {
   display: inline-block;
-  width: 2px;
-  height: 1.1em;
-  background: currentColor;
-  margin-left: 2px;
+  width: 2.5px;
+  height: 1em;
+  background: var(--primary, #0d6efd);
+  margin-left: 1px;
   vertical-align: text-bottom;
-  border-radius: 1px;
-  animation: chat-blink 0.6s step-end infinite;
+  border-radius: 2px;
+  animation: chat-cursor-blink 0.9s ease-in-out infinite;
 }
-/* Subtle fade + slide-up when final highlighted markdown replaces streamed content */
+[data-theme="dark"] .chat-cursor { background: #a78bfa; }
+/* While text is being typed: each new last-paragraph fades in */
+.chat-streaming > p:last-child,
+.chat-streaming > ul:last-child,
+.chat-streaming > ol:last-child {
+  animation: chat-token-in 0.18s ease forwards;
+}
+/* Shimmer glow on the actively streaming block */
+.chat-streaming {
+  position: relative;
+}
+/* Fade + blur-clear when final highlighted markdown renders */
 .chat-render-done {
-  animation: chat-fade-in 0.25s ease forwards;
+  animation: chat-fade-in 0.35s cubic-bezier(.22,1,.36,1) forwards;
 }
 .chat-answer-text code {
   background: var(--chat-code-bg);

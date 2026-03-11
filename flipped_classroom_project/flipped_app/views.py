@@ -574,35 +574,67 @@ def analytics_view(request):
     performances = StudentPerformance.objects.select_related('student', 'subject').all()
     subjects = Subject.objects.all()
 
-    subject_id = request.GET.get('subject')
+    # ── All students for dropdown ──────────────────────────────────────────────
+    all_students = User.objects.filter(
+        student_profile__isnull=False
+    ).order_by('first_name', 'last_name', 'username')
+
+    # ── Filters ────────────────────────────────────────────────────────────────
+    subject_id      = request.GET.get('subject', '').strip()
+    label_filter    = request.GET.get('label', '').strip()
+    risk_only       = request.GET.get('risk_only', '').strip()
+    selected_student = request.GET.get('student', '').strip()   # user pk
+    sort_by         = request.GET.get('sort', '').strip()
+
     if subject_id:
         performances = performances.filter(subject_id=subject_id)
+    if label_filter:
+        performances = performances.filter(predicted_label=label_filter)
+    if risk_only == '1':
+        performances = performances.filter(is_at_risk=True)
+    if selected_student:
+        performances = performances.filter(student_id=selected_student)
+    if sort_by == 'score_asc':
+        performances = performances.order_by('final_exam_score')
+    elif sort_by == 'score_desc':
+        performances = performances.order_by('-final_exam_score')
+    elif sort_by == 'predicted_asc':
+        performances = performances.order_by('predicted_score')
+    elif sort_by == 'predicted_desc':
+        performances = performances.order_by('-predicted_score')
+    else:
+        performances = performances.order_by('student__username')
 
-    # Summary stats
+    # ── Summary stats ──────────────────────────────────────────────────────────
     avg_score = performances.aggregate(Avg('final_exam_score'))['final_exam_score__avg'] or 0
-    at_risk = performances.filter(is_at_risk=True)
+    at_risk   = performances.filter(is_at_risk=True)
 
-    # Flipped vs Traditional comparison (simulated)
-    flipped_avg = avg_score
-    traditional_avg = max(0, avg_score - 12)  # Flipped typically 12% better
+    flipped_avg     = avg_score
+    traditional_avg = max(0, avg_score - 12)
 
     label_counts = {
-        'High': performances.filter(performance_label='High').count(),
-        'Medium': performances.filter(performance_label='Medium').count(),
-        'Low': performances.filter(performance_label='Low').count(),
-        'At-Risk': performances.filter(performance_label='At-Risk').count(),
+        'High':    performances.filter(predicted_label='High').count(),
+        'Medium':  performances.filter(predicted_label='Medium').count(),
+        'Low':     performances.filter(predicted_label='Low').count(),
+        'At-Risk': performances.filter(predicted_label='At-Risk').count(),
     }
 
     return render(request, 'analytics.html', {
-        'performances': performances,
-        'subjects': subjects,
-        'selected_subject': subject_id,
-        'avg_score': round(avg_score, 2),
-        'at_risk': at_risk,
-        'flipped_avg': round(flipped_avg, 2),
-        'traditional_avg': round(traditional_avg, 2),
-        'label_counts': json.dumps(label_counts),
-        'label_counts_raw': label_counts,
+        'performances':       performances,
+        'subjects':           subjects,
+        'all_students':       all_students,
+        'selected_subject':   subject_id,
+        'selected_label':     label_filter,
+        'risk_only':          risk_only,
+        'selected_student':   selected_student,
+        'sort_by':            sort_by,
+        'avg_score':         round(avg_score, 2),
+        'at_risk':           at_risk,
+        'flipped_avg':       round(flipped_avg, 2),
+        'traditional_avg':   round(traditional_avg, 2),
+        'label_counts':      json.dumps(label_counts),
+        'label_counts_raw':  label_counts,
+        'total_records':     performances.count(),
     })
 
 
@@ -610,17 +642,64 @@ def analytics_view(request):
 @user_passes_test(is_teacher)
 def student_detail_analytics_view(request, student_id):
     student = get_object_or_404(User, id=student_id)
-    performances = StudentPerformance.objects.filter(student=student)
+    performances = StudentPerformance.objects.filter(student=student).select_related('subject')
     quiz_attempts = QuizAttempt.objects.filter(student=student)
     watch_history = VideoWatchHistory.objects.filter(student=student)
 
+    # Enrich with ML details (same logic as my_performance_view)
+    enriched = []
+    for p in performances:
+        try:
+            from ml_model.prediction import predict_student
+            pred = predict_student({
+                'videos_watched':           p.videos_watched,
+                'total_video_time_minutes': p.total_video_time_minutes,
+                'quiz_avg_score':           p.quiz_avg_score,
+                'assignment_avg_marks':     p.assignment_avg_marks,
+                'attendance_percentage':    p.attendance_percentage,
+                'participation_score':      p.participation_score,
+                'previous_gpa':             p.previous_gpa,
+            })
+            confidence      = pred['confidence']
+            predicted_label = pred['predicted_label']
+            is_at_risk      = pred['is_at_risk']
+            predicted_score = pred['predicted_score']
+        except Exception:
+            confidence      = 0
+            predicted_label = p.predicted_label or '—'
+            is_at_risk      = p.is_at_risk
+            predicted_score = p.predicted_score or 0
+
+        features = {
+            'Videos':       min(100, int(p.videos_watched * 10)),
+            'Video Time':   min(100, int(p.total_video_time_minutes / 3)),
+            'Quiz Score':   min(100, int(p.quiz_avg_score * 10)),
+            'Assignments':  min(100, int((p.assignment_avg_marks / max(p.assignment_avg_marks, 20)) * 100) if p.assignment_avg_marks else 0),
+            'Attendance':   min(100, int(p.attendance_percentage)),
+            'Participation':min(100, int(p.participation_score * 10)),
+        }
+        weakest = min(features, key=features.get)
+        enriched.append({
+            'record':           p,
+            'confidence':       confidence,
+            'predicted_label':  predicted_label,
+            'is_at_risk':       is_at_risk,
+            'predicted_score':  predicted_score,
+            'features':         features,
+            'feature_keys':     list(features.keys()),
+            'feature_vals':     list(features.values()),
+            'weakest':          weakest,
+            'recommendation':   _get_recommendation(weakest),
+        })
+
     return render(request, 'student_analytics.html', {
-        'student': student,
-        'performances': performances,
-        'quiz_attempts': quiz_attempts,
-        'watch_history': watch_history,
+        'student':              student,
+        'enriched':             enriched,
+        'performances':         performances,
+        'quiz_attempts':        quiz_attempts,
+        'watch_history':        watch_history,
         'total_videos_watched': watch_history.filter(completed=True).count(),
-        'avg_quiz': quiz_attempts.aggregate(Avg('score'))['score__avg'] or 0,
+        'avg_quiz':             quiz_attempts.aggregate(Avg('score'))['score__avg'] or 0,
     })
 
 
@@ -642,21 +721,85 @@ def run_ml_prediction_view(request):
     return redirect('analytics')
 
 
+# ─────────────────────────────────────────────
+# ML Recommendation Helper
+# ─────────────────────────────────────────────
+
+def _get_recommendation(weakest: str) -> str:
+    """Return a human-readable recommendation based on the student's weakest metric."""
+    return {
+        'Videos':        "📹 Watch more video lectures — aim for at least 5 videos per chapter.",
+        'Video Time':    "⏱️ Spend more time on each video — don't skip; re-watch difficult sections.",
+        'Quiz Score':    "📝 Practice more quizzes — review wrong answers and revisit that chapter.",
+        'Assignments':   "📋 Submit assignments on time and re-read the grading feedback.",
+        'Attendance':    "📅 Improve your class attendance — being present dramatically raises your score.",
+        'Participation': "💬 Ask more questions in the AI Tutor — each question builds your participation score.",
+    }.get(weakest, "📚 Keep revising regularly and stay consistent across all subjects.")
+
+
 @login_required
 def my_performance_view(request):
-    """Student's personal performance dashboard with ML prediction."""
-    performance_records = StudentPerformance.objects.filter(student=request.user)
-    quiz_attempts = QuizAttempt.objects.filter(student=request.user)
-    watch_history = VideoWatchHistory.objects.filter(student=request.user, completed=True)
-    submissions = AssignmentSubmission.objects.filter(student=request.user, is_graded=True)
+    performance_records = StudentPerformance.objects.filter(
+        student=request.user
+    ).select_related('subject')
+    quiz_attempts   = QuizAttempt.objects.filter(student=request.user)
+    watch_history   = VideoWatchHistory.objects.filter(student=request.user, completed=True)
+    submissions     = AssignmentSubmission.objects.filter(student=request.user, is_graded=True)
+
+    # ── Enrich each record with live ML prediction details ─────────────────────
+    enriched = []
+    for p in performance_records:
+        try:
+            from ml_model.prediction import predict_student
+            pred = predict_student({
+                'videos_watched':           p.videos_watched,
+                'total_video_time_minutes': p.total_video_time_minutes,
+                'quiz_avg_score':           p.quiz_avg_score,
+                'assignment_avg_marks':     p.assignment_avg_marks,
+                'attendance_percentage':    p.attendance_percentage,
+                'participation_score':      p.participation_score,
+                'previous_gpa':             p.previous_gpa,
+            })
+            confidence      = pred['confidence']
+            predicted_label = pred['predicted_label']
+            is_at_risk      = pred['is_at_risk']
+            predicted_score = pred['predicted_score']
+        except Exception:
+            confidence      = 0
+            predicted_label = p.predicted_label or '—'
+            is_at_risk      = p.is_at_risk
+            predicted_score = p.predicted_score or 0
+
+        # Normalize each feature to 0–100 for progress bars & radar chart
+        features = {
+            'Videos':       min(100, int(p.videos_watched * 10)),
+            'Video Time':   min(100, int(p.total_video_time_minutes / 3)),
+            'Quiz Score':   min(100, int(p.quiz_avg_score * 10)),
+            'Assignments':  min(100, int((p.assignment_avg_marks / max(p.assignment_avg_marks, 20)) * 100) if p.assignment_avg_marks else 0),
+            'Attendance':   min(100, int(p.attendance_percentage)),
+            'Participation':min(100, int(p.participation_score * 10)),
+        }
+        weakest = min(features, key=features.get)
+        enriched.append({
+            'record':           p,
+            'confidence':       confidence,
+            'predicted_label':  predicted_label,
+            'is_at_risk':       is_at_risk,
+            'predicted_score':  predicted_score,
+            'features':         features,
+            'feature_keys':     list(features.keys()),
+            'feature_vals':     list(features.values()),
+            'weakest':          weakest,
+            'recommendation':   _get_recommendation(weakest),
+        })
 
     return render(request, 'my_performance.html', {
-        'performance_records': performance_records,
-        'quiz_attempts': quiz_attempts,
-        'watch_history': watch_history,
-        'submissions': submissions,
-        'avg_quiz': quiz_attempts.aggregate(Avg('score'))['score__avg'] or 0,
-        'total_watched': watch_history.count(),
+        'enriched':       enriched,
+        'quiz_attempts':  quiz_attempts,
+        'watch_history':  watch_history,
+        'submissions':    submissions,
+        'avg_quiz':       quiz_attempts.aggregate(Avg('score'))['score__avg'] or 0,
+        'total_watched':  watch_history.count(),
     })
 
 
@@ -716,9 +859,11 @@ def mark_notification_read(request, notif_id):
 # Internal helper
 # ─────────────────────────────────────────────
 def _update_engagement(user, subject):
-    """Recalculate and update StudentPerformance aggregates for a user/subject."""
+    """Recalculate and update StudentPerformance aggregates for a user/subject,
+    then immediately run ML prediction and save predicted fields."""
     perf, _ = StudentPerformance.objects.get_or_create(student=user, subject=subject)
 
+    # ── Videos ────────────────────────────────────────────────────────────────
     videos_watched = VideoWatchHistory.objects.filter(
         student=user, video__subject=subject, completed=True
     )
@@ -727,27 +872,72 @@ def _update_engagement(user, subject):
         total=Coalesce(Sum('watch_duration_minutes'), 0.0, output_field=FloatField())
     )['total']
 
+    # ── Quizzes ───────────────────────────────────────────────────────────────
     quiz_attempts = QuizAttempt.objects.filter(student=user, quiz__subject=subject)
     if quiz_attempts.exists():
         perf.quiz_avg_score = quiz_attempts.aggregate(Avg('score'))['score__avg'] or 0
 
+    # ── Assignments ────────────────────────────────────────────────────────────
     submissions = AssignmentSubmission.objects.filter(
         student=user, assignment__subject=subject, is_graded=True
     )
     if submissions.exists():
         perf.assignment_avg_marks = submissions.aggregate(Avg('marks_obtained'))['marks_obtained__avg'] or 0
 
+    # ── Attendance ─────────────────────────────────────────────────────────────
     attendance = Attendance.objects.filter(student=user, subject=subject)
     if attendance.count() > 0:
         present_count = attendance.filter(present=True).count()
         perf.attendance_percentage = (present_count / attendance.count()) * 100
 
+    # ── Chat Participation (0.5 pts per question asked, capped at 10) ──────────
+    chat_count = ChatMessage.objects.filter(
+        student=user, subject=subject, role='user'
+    ).count()
+    perf.participation_score = min(10.0, round(chat_count * 0.5, 1))
+
+    # ── Previous GPA ───────────────────────────────────────────────────────────
     try:
         perf.previous_gpa = user.student_profile.previous_gpa
     except Exception:
         pass
 
     perf.save()
+
+    # ── Auto ML Prediction ─────────────────────────────────────────────────────
+    try:
+        from ml_model.prediction import predict_student
+        pred = predict_student({
+            'videos_watched':           perf.videos_watched,
+            'total_video_time_minutes': perf.total_video_time_minutes,
+            'quiz_avg_score':           perf.quiz_avg_score,
+            'assignment_avg_marks':     perf.assignment_avg_marks,
+            'attendance_percentage':    perf.attendance_percentage,
+            'participation_score':      perf.participation_score,
+            'previous_gpa':             perf.previous_gpa,
+        })
+        perf.predicted_score = pred['predicted_score']
+        perf.predicted_label = pred['predicted_label']
+        perf.is_at_risk       = pred['is_at_risk']
+        perf.save(update_fields=['predicted_score', 'predicted_label', 'is_at_risk'])
+
+        # Send at-risk notification (once per subject, only if not already sent)
+        if pred['is_at_risk']:
+            already = Notification.objects.filter(
+                recipient=user, is_read=False,
+                message__icontains=subject.name,
+            ).exists()
+            if not already:
+                Notification.objects.create(
+                    recipient=user,
+                    message=(
+                        f"⚠️ Your performance in {subject.name} needs attention. "
+                        f"ML Predicted Score: {pred['predicted_score']} ({pred['predicted_label']}). "
+                        "Try watching more videos, asking questions, and taking quizzes."
+                    ),
+                )
+    except Exception:
+        pass  # Models not yet trained — silently skip
 
 
 # ─────────────────────────────────────────────
@@ -824,6 +1014,13 @@ def chat_ask_view(request):
         content=reply,
         sources=", ".join(sources),
     )
+
+    # Update participation score from chat activity
+    if subject_obj and is_student(request.user):
+        try:
+            _update_engagement(request.user, subject_obj)
+        except Exception:
+            pass
 
     return JsonResponse({'reply': reply, 'sources': sources})
 
@@ -928,6 +1125,12 @@ def chat_stream_view(request):
                 content=full_reply,
                 sources=', '.join(sources_list),
             )
+            # Update participation score from chat activity
+            if subject_obj and is_student(request.user):
+                try:
+                    _update_engagement(request.user, subject_obj)
+                except Exception:
+                    pass
         except Exception:
             pass
 
@@ -1073,3 +1276,21 @@ def chat_pdf_view(request):
     resp['Cache-Control'] = 'no-cache'
     resp['X-Accel-Buffering'] = 'no'
     return resp
+
+
+# ─────────────────────────────────────────────
+# RAG Index Rebuild (Admin only)
+# ─────────────────────────────────────────────
+@login_required
+def rebuild_rag_view(request):
+    """AJAX endpoint – rebuilds the FAISS RAG index. Staff/admin only."""
+    if not (request.user.is_staff or hasattr(request.user, 'teacher_profile')):
+        return JsonResponse({'status': 'error', 'message': 'Permission denied.'}, status=403)
+    if request.method != 'POST':
+        return JsonResponse({'status': 'error', 'message': 'POST required.'}, status=405)
+    try:
+        from rag_engine.indexer import build_index
+        build_index()
+        return JsonResponse({'status': 'ok', 'message': 'RAG index rebuilt successfully.'})
+    except Exception as exc:
+        return JsonResponse({'status': 'error', 'message': str(exc)}, status=500)

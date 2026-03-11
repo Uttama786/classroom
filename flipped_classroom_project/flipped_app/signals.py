@@ -27,9 +27,11 @@ def on_performance_saved(sender, instance, created, **kwargs):
     """
     Fires every time a StudentPerformance row is created or updated.
 
-    Only acts when final_exam_score > 0 (teacher has recorded the outcome).
-    Engagement updates without a final score are stored in the CSV
-    progressively — rows without a score are skipped by upsert_performance_row.
+    Writes to dataset.csv whenever there is any meaningful engagement
+    (quiz taken, video watched, assignment submitted, chat message).
+    Rows without a final_exam_score use the ML predicted_label as their
+    performance_label.  Model retraining is only triggered for rows
+    that have a confirmed final_exam_score > 0.
     """
     try:
         from ml_model.realtime_dataset import upsert_performance_row
@@ -57,15 +59,13 @@ def on_quiz_attempt_saved(sender, instance, created, **kwargs):
     """
     try:
         from flipped_app.models import StudentPerformance
+        from ml_model.realtime_dataset import upsert_performance_row
         perf_qs = StudentPerformance.objects.filter(
             student=instance.student,
             subject=instance.quiz.subject
         )
         if perf_qs.exists():
-            perf = perf_qs.first()
-            if float(perf.final_exam_score) > 0:
-                from ml_model.realtime_dataset import upsert_performance_row
-                upsert_performance_row(perf)
+            upsert_performance_row(perf_qs.first())
     except Exception as e:
         logger.error(f"[Signal] on_quiz_attempt_saved error: {e}")
 
@@ -80,15 +80,13 @@ def on_submission_graded(sender, instance, created, **kwargs):
         return
     try:
         from flipped_app.models import StudentPerformance
+        from ml_model.realtime_dataset import upsert_performance_row
         perf_qs = StudentPerformance.objects.filter(
             student=instance.student,
             subject=instance.assignment.subject
         )
         if perf_qs.exists():
-            perf = perf_qs.first()
-            if float(perf.final_exam_score) > 0:
-                from ml_model.realtime_dataset import upsert_performance_row
-                upsert_performance_row(perf)
+            upsert_performance_row(perf_qs.first())
     except Exception as e:
         logger.error(f"[Signal] on_submission_graded error: {e}")
 
@@ -104,14 +102,12 @@ def on_video_watched(sender, instance, created, **kwargs):
         return
     try:
         from flipped_app.models import StudentPerformance
+        from ml_model.realtime_dataset import upsert_performance_row
         perf_qs = StudentPerformance.objects.filter(
             student=instance.student,
             subject=instance.video.subject
         )
         if perf_qs.exists():
-            perf = perf_qs.first()
-            if float(perf.final_exam_score) > 0:
-                from ml_model.realtime_dataset import upsert_performance_row
-                upsert_performance_row(perf)
+            upsert_performance_row(perf_qs.first())
     except Exception as e:
         logger.error(f"[Signal] on_video_watched error: {e}")

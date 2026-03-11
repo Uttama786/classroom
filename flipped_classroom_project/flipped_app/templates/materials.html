@@ -22,13 +22,25 @@
 
 <div class="row g-3">
   {% for material in materials %}
+  {% with fname=material.file.name|lower %}
   <div class="col-sm-6 col-md-6 col-lg-4">
     <div class="card border-0 shadow-sm h-100">
       <div class="card-body">
         <div class="d-flex align-items-start gap-3">
-          <div class="text-danger" style="font-size: 2.5rem;"><i class="bi bi-file-earmark-pdf-fill"></i></div>
+          {% if fname|slice:"-4:" == ".pdf" %}
+            <div class="text-danger" style="font-size: 2.5rem;"><i class="bi bi-file-earmark-pdf-fill"></i></div>
+          {% else %}
+            <div class="text-primary" style="font-size: 2.5rem;"><i class="bi bi-file-earmark-text-fill"></i></div>
+          {% endif %}
           <div class="flex-grow-1">
-            <span class="badge bg-success mb-1">{{ material.subject.name }}</span>
+            <div class="d-flex gap-1 mb-1 flex-wrap">
+              <span class="badge bg-success">{{ material.subject.name }}</span>
+              {% if fname|slice:"-4:" == ".pdf" %}
+                <span class="badge bg-danger">PDF</span>
+              {% else %}
+                <span class="badge bg-primary">Notes</span>
+              {% endif %}
+            </div>
             <h6 class="fw-bold mb-1">{{ material.title }}</h6>
             <p class="text-muted small mb-2">{{ material.description|truncatechars:80 }}</p>
             <div class="text-muted small mb-3">
@@ -42,6 +54,7 @@
       </div>
     </div>
   </div>
+  {% endwith %}
   {% empty %}
   <div class="col-12 text-center py-5 text-muted">
     <i class="bi bi-file-earmark fs-1 d-block mb-3 opacity-50"></i>

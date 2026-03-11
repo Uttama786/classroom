@@ -330,5 +330,84 @@ document.addEventListener('DOMContentLoaded', function () {
     </a>
   </div>
 
+  <div class="col-6 col-md-2">
+    <button id="trainRagBtn" class="btn btn-outline-secondary admin-action-btn w-100" title="Keyboard shortcut: Ctrl+Shift+R">
+      <i class="bi bi-robot d-block fs-2 mb-1" id="trainRagIcon"></i>
+      <small class="fw-semibold">Train RAG <kbd class="ms-1" style="font-size:.65rem">⌃⇧R</kbd></small>
+    </button>
+  </div>
+
 </div>
+
+<!-- RAG Toast -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index:1100">
+  <div id="ragToast" class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body d-flex align-items-center gap-2" id="ragToastBody">
+        <span class="spinner-border spinner-border-sm" id="ragSpinner"></span>
+        <span id="ragToastMsg">Rebuilding RAG index…</span>
+      </div>
+      <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+  const CSRF = document.cookie.match(/csrftoken=([^;]+)/)?.[1] || '';
+  const toast    = new bootstrap.Toast(document.getElementById('ragToast'), {delay: 4000});
+  const toastMsg = document.getElementById('ragToastMsg');
+  const spinner  = document.getElementById('ragSpinner');
+  const icon     = document.getElementById('trainRagIcon');
+  const btn      = document.getElementById('trainRagBtn');
+
+  function setToastState(type, msg) {
+    const el = document.getElementById('ragToast');
+    el.classList.remove('text-bg-success','text-bg-danger','text-bg-secondary');
+    spinner.classList.toggle('d-none', type !== 'loading');
+    if (type === 'loading') { el.classList.add('text-bg-secondary'); }
+    else if (type === 'ok')  { el.classList.add('text-bg-success'); }
+    else                     { el.classList.add('text-bg-danger'); }
+    toastMsg.textContent = msg;
+    toast.show();
+  }
+
+  function triggerRebuild() {
+    if (btn.disabled) return;
+    btn.disabled = true;
+    icon.className = 'bi bi-arrow-repeat d-block fs-2 mb-1 spin-icon';
+    setToastState('loading', 'Rebuilding RAG index…');
+    fetch('{% url "rebuild_rag" %}', {
+      method: 'POST',
+      headers: { 'X-CSRFToken': CSRF, 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (data.status === 'ok') setToastState('ok',   '✓ ' + data.message);
+      else                      setToastState('err',  '✗ ' + data.message);
+    })
+    .catch(e => setToastState('err', '✗ Network error: ' + e.message))
+    .finally(() => {
+      btn.disabled = false;
+      icon.className = 'bi bi-robot d-block fs-2 mb-1';
+    });
+  }
+
+  btn.addEventListener('click', triggerRebuild);
+
+  /* Keyboard shortcut: Ctrl+Shift+R */
+  document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey && e.shiftKey && e.key === 'R') {
+      e.preventDefault();
+      triggerRebuild();
+    }
+  });
+})();
+</script>
+<style>
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin-icon { animation: spin .9s linear infinite; display: block; }
+</style>
 {% endblock %}

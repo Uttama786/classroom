@@ -88,15 +88,25 @@
               {{ notifications.count }}
             </span>
           </a>
-          <ul class="dropdown-menu dropdown-menu-end" style="width:320px">
-            <li><h6 class="dropdown-header">Notifications</h6></li>
-            {% for n in notifications %}
-            <li>
-              <a class="dropdown-item small py-2" href="{% url 'mark_read' n.id %}">
-                <i class="bi bi-exclamation-triangle-fill text-warning me-1"></i>{{ n.message|truncatechars:80 }}
-              </a>
+          <ul class="dropdown-menu dropdown-menu-end notif-dropdown">
+            <li class="notif-header d-flex align-items-center justify-content-between px-3 py-2">
+              <span class="fw-semibold small"><i class="bi bi-bell-fill me-1 text-warning"></i>Notifications</span>
+              <span class="badge bg-danger rounded-pill">{{ notifications.count }}</span>
             </li>
-            {% endfor %}
+            <li><hr class="dropdown-divider my-0"></li>
+            <li class="notif-scroll-area">
+              <ul class="list-unstyled mb-0">
+              {% for n in notifications %}
+                <li>
+                  <a class="dropdown-item notif-item d-flex align-items-start gap-2 py-2 px-3"
+                     href="{% url 'mark_read' n.id %}">
+                    <span class="notif-icon flex-shrink-0"><i class="bi bi-exclamation-triangle-fill text-warning"></i></span>
+                    <span class="notif-msg small lh-sm">{{ n.message|truncatechars:90 }}</span>
+                  </a>
+                </li>
+              {% endfor %}
+              </ul>
+            </li>
           </ul>
         </li>
         {% endif %}
@@ -443,6 +453,62 @@
 {% load static %}
 <script src="{% static 'js/main.js' %}"></script>
 {% block extra_js %}{% endblock %}
+
+<!-- ══ Global RAG shortcut (staff only) ══ -->
+{% if user.is_authenticated and user.is_staff %}
+<script>
+(function () {
+  var _ragBusy = false;
+  var _csrf = document.cookie.match(/csrftoken=([^;]+)/)?.[1] || '';
+
+  /* reuse toast if on admin dashboard, otherwise create a floating one */
+  function showFloatingToast(type, msg) {
+    /* if the admin dashboard toast is already in the DOM, skip */
+    if (document.getElementById('ragToast')) return;
+    var id = 'ragGlobalToast';
+    var existing = document.getElementById(id);
+    if (existing) existing.remove();
+    var colours = { loading: 'text-bg-secondary', ok: 'text-bg-success', err: 'text-bg-danger' };
+    var html = '<div id="' + id + '" class="toast align-items-center border-0 ' + (colours[type]||'text-bg-secondary') + '"' +
+      ' role="alert" aria-live="assertive" aria-atomic="true">'
+      + '<div class="d-flex"><div class="toast-body d-flex align-items-center gap-2">'
+      + (type==='loading' ? '<span class="spinner-border spinner-border-sm"></span>' : '')
+      + '<span>' + msg + '</span></div>'
+      + '<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>'
+      + '</div></div>';
+    var wrap = document.createElement('div');
+    wrap.className = 'position-fixed bottom-0 end-0 p-3';
+    wrap.style.zIndex = 9999;
+    wrap.innerHTML = html;
+    document.body.appendChild(wrap);
+    new bootstrap.Toast(wrap.firstChild, {delay: 4500}).show();
+  }
+
+  document.addEventListener('keydown', function (e) {
+    /* Ctrl+Shift+R — rebuild RAG index */
+    if (!e.ctrlKey || !e.shiftKey || e.key !== 'R') return;
+    e.preventDefault();
+    /* if the admin dashboard button exists, delegate to it */
+    var dashBtn = document.getElementById('trainRagBtn');
+    if (dashBtn) { dashBtn.click(); return; }
+    if (_ragBusy) return;
+    _ragBusy = true;
+    showFloatingToast('loading', 'Rebuilding RAG index…');
+    fetch('/rag/rebuild/', {
+      method: 'POST',
+      headers: { 'X-CSRFToken': _csrf, 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if (d.status === 'ok') showFloatingToast('ok',  '✓ ' + d.message);
+      else                   showFloatingToast('err', '✗ ' + d.message);
+    })
+    .catch(function(er){ showFloatingToast('err', '✗ Network error: ' + er.message); })
+    .finally(function(){ _ragBusy = false; });
+  });
+})();
+</script>
+{% endif %}
 
 <!-- ══ v4 UI/UX: Sidebar • Progress • Scroll-Reveal • Back-to-Top ══ -->
 <script>
@@ -951,6 +1017,65 @@
     scrollBottom();
   }
 
+  /* ── Typewriter engine ─────────────────────────────────────────────
+     Returns { push(text), finish(), abort(html) }.
+     Drips characters smoothly into textDiv at ~SPEED chars/frame.
+     On finish(), types remaining chars then does final MD render.
+  ── */
+  function makeTypewriter(textDiv, onFinish) {
+    const SPEED = 5;   // chars revealed per animation frame (~300 chars/s @ 60fps)
+    let target    = ''; // full raw text accumulated from server
+    let displayed = 0;  // how many chars are currently rendered
+    let isDone    = false;
+    let rafId     = null;
+
+    function tick() {
+      rafId = null;
+      // Advance displayed pointer toward target length
+      if (displayed < target.length) {
+        displayed = Math.min(displayed + SPEED, target.length);
+        const slice = target.slice(0, displayed);
+        textDiv.classList.add('chat-streaming');
+        // Render markdown slice + blinking cursor
+        textDiv.innerHTML = renderMd(slice) + '<span class="chat-cursor"></span>';
+        scrollBottom();
+      }
+      // Still catching up or server still sending → keep looping
+      if (displayed < target.length || !isDone) {
+        rafId = requestAnimationFrame(tick);
+        return;
+      }
+      // All chars typed AND server is done → final highlighted render
+      textDiv.classList.remove('chat-streaming');
+      textDiv.classList.add('chat-render-done');
+      textDiv.innerHTML = renderMd(target);
+      if (typeof hljs !== 'undefined') {
+        textDiv.querySelectorAll('pre code:not([data-highlighted])').forEach(el => {
+          hljs.highlightElement(el);
+          el.setAttribute('data-highlighted', 'true');
+        });
+      }
+      scrollBottom();
+      if (onFinish) onFinish();
+    }
+
+    return {
+      push(text) {
+        target += text;
+        if (!rafId) rafId = requestAnimationFrame(tick);
+      },
+      finish() {
+        isDone = true;
+        if (!rafId) rafId = requestAnimationFrame(tick);
+      },
+      abort(html) {
+        if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+        textDiv.classList.remove('chat-streaming');
+        textDiv.innerHTML = html;
+      }
+    };
+  }
+
   /* ── related question chips ── */
   function addRelatedQuestions(wrap, questions) {
     if (!questions || questions.length === 0) return;
@@ -1038,9 +1163,11 @@
     addSearching();
     const { wrap, textDiv } = createAnswerBlock();
     const sourcesData = [];
-    let accumulated = '';
     let streamStarted = false;
-    let renderScheduled = false;
+    const tw = makeTypewriter(textDiv, () => {
+      addSourceCards(wrap, sourcesData);
+      if (!isOpen) { unread++; badge.textContent = unread; badge.classList.remove('d-none'); }
+    });
 
     try {
       const formData = new FormData();
@@ -1079,39 +1206,18 @@
             sourcesData.push(...(payload.sources || []));
           } else if (payload.type === 'token') {
             if (!streamStarted) { removeSearching(); streamStarted = true; }
-            accumulated += payload.text;
-            // Generative flow: render markdown progressively via rAF throttle
-            if (!renderScheduled) {
-              renderScheduled = true;
-              requestAnimationFrame(() => {
-                textDiv.classList.add('chat-streaming');
-                textDiv.innerHTML = renderMd(accumulated) + '<span class="chat-cursor"></span>';
-                renderScheduled = false;
-                scrollBottom();
-              });
-            }
+            tw.push(payload.text);
           } else if (payload.type === 'done') {
-            // Streaming complete — final render with syntax highlighting + fade-in
-            renderScheduled = true; // cancel any pending rAF
-            textDiv.classList.remove('chat-streaming');
-            textDiv.classList.add('chat-render-done');
-            textDiv.innerHTML = renderMd(accumulated);
-            if (typeof hljs !== 'undefined') {
-              textDiv.querySelectorAll('pre code:not([data-highlighted])').forEach(el => {
-                hljs.highlightElement(el); el.setAttribute('data-highlighted','true');
-              });
-            }
-            addSourceCards(wrap, sourcesData);
-            if (!isOpen) { unread++; badge.textContent = unread; badge.classList.remove('d-none'); }
+            tw.finish();
           } else if (payload.type === 'error') {
             removeSearching();
-            textDiv.innerHTML = `<p class="text-danger"><i class="bi bi-exclamation-triangle me-1"></i>${escapeHtml(payload.text)}</p>`;
+            tw.abort(`<p class="text-danger"><i class="bi bi-exclamation-triangle me-1"></i>${escapeHtml(payload.text)}</p>`);
           }
         }
       }
     } catch (err) {
       removeSearching();
-      textDiv.innerHTML = `<p class="text-danger"><i class="bi bi-wifi-off me-1"></i>${escapeHtml(String(err))}</p>`;
+      tw.abort(`<p class="text-danger"><i class="bi bi-wifi-off me-1"></i>${escapeHtml(String(err))}</p>`);
     } finally {
       if (!streamStarted) removeSearching();
       isLoading = false;
@@ -1145,9 +1251,13 @@
 
     const { wrap, textDiv } = createAnswerBlock();
     const sourcesData = [];
-    let accumulated = '';
+    let relatedQs = [];
     let streamStarted = false;
-    let renderScheduled = false;
+    const tw = makeTypewriter(textDiv, () => {
+      addSourceCards(wrap, sourcesData);
+      if (relatedQs.length) addRelatedQuestions(wrap, relatedQs);
+      if (!isOpen) { unread++; badge.textContent = unread; badge.classList.remove('d-none'); }
+    });
 
     try {
       const response = await fetch('{% url "chat_stream" %}', {
@@ -1185,42 +1295,20 @@
             sourcesData.push(...(payload.sources || []));
           } else if (payload.type === 'token') {
             if (!streamStarted) { removeSearching(); streamStarted = true; }
-            accumulated += payload.text;
-            // Generative flow: render markdown progressively via rAF throttle
-            if (!renderScheduled) {
-              renderScheduled = true;
-              requestAnimationFrame(() => {
-                textDiv.classList.add('chat-streaming');
-                textDiv.innerHTML = renderMd(accumulated) + '<span class="chat-cursor"></span>';
-                renderScheduled = false;
-                scrollBottom();
-              });
-            }
+            tw.push(payload.text);
           } else if (payload.type === 'related') {
-            addRelatedQuestions(wrap, payload.questions);
+            relatedQs = payload.questions || [];
           } else if (payload.type === 'done') {
-            // Streaming complete — final render with syntax highlighting + fade-in
-            renderScheduled = true; // cancel any pending rAF
-            textDiv.classList.remove('chat-streaming');
-            textDiv.classList.add('chat-render-done');
-            textDiv.innerHTML = renderMd(accumulated);
-            if (typeof hljs !== 'undefined') {
-              textDiv.querySelectorAll('pre code:not([data-highlighted])').forEach(el => {
-                hljs.highlightElement(el);
-                el.setAttribute('data-highlighted', 'true');
-              });
-            }
-            addSourceCards(wrap, sourcesData);
-            if (!isOpen) { unread++; badge.textContent = unread; badge.classList.remove('d-none'); }
+            tw.finish();
           } else if (payload.type === 'error') {
             removeSearching();
-            textDiv.innerHTML = `<p class="text-danger"><i class="bi bi-exclamation-triangle me-1"></i>${escapeHtml(payload.text)}</p>`;
+            tw.abort(`<p class="text-danger"><i class="bi bi-exclamation-triangle me-1"></i>${escapeHtml(payload.text)}</p>`);
           }
         }
       }
     } catch (err) {
       removeSearching();
-      textDiv.innerHTML = `<p class="text-danger"><i class="bi bi-wifi-off me-1"></i>Network error: ${escapeHtml(String(err))}</p>`;
+      tw.abort(`<p class="text-danger"><i class="bi bi-wifi-off me-1"></i>Network error: ${escapeHtml(String(err))}</p>`);
     } finally {
       if (!streamStarted) removeSearching();
       isLoading = false;

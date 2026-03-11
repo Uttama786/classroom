@@ -1,106 +1,238 @@
 {% extends 'base.html' %}
 {% block title %}Student Analytics – FlipLearn{% endblock %}
 {% block content %}
-<h3 class="fw-bold mb-3"><i class="bi bi-person-badge me-2 text-primary"></i>Student Analytics</h3>
-<div class="card shadow-sm border-0 mb-4">
-  <div class="card-body">
-    <h5 class="fw-bold">{{ student.get_full_name|default:student.username }}</h5>
-    <p class="text-muted small mb-0">Username: {{ student.username }} &nbsp;|&nbsp;
+
+<!-- Student header -->
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4">
+  <div>
+    <h3 class="fw-bold mb-0">
+      <i class="bi bi-person-badge me-2 text-primary"></i>
+      {{ student.get_full_name|default:student.username }}
+    </h3>
+    <p class="text-muted small mb-0">
+      {{ student.username }}
       {% if student.student_profile %}
-        Roll No: {{ student.student_profile.roll_number }} &nbsp;|&nbsp;
-        Semester: {{ student.student_profile.semester }}
+      &nbsp;·&nbsp; Roll: {{ student.student_profile.roll_number }}
+      &nbsp;·&nbsp; Sem {{ student.student_profile.semester }}
       {% endif %}
     </p>
   </div>
+  <a href="{% url 'analytics' %}" class="btn btn-outline-secondary btn-sm">
+    <i class="bi bi-arrow-left me-1"></i>Back to Analytics
+  </a>
 </div>
 
-<!-- KPI stats row -->
+<!-- KPI row -->
 <div class="row g-3 mb-4">
   <div class="col-6 col-md-3">
-    <div class="card border-0 shadow-sm text-center py-3 kpi-blue">
+    <div class="card border-0 shadow-sm text-center py-3">
       <i class="bi bi-camera-video-fill fs-3 text-primary d-block mb-1"></i>
       <div class="fw-bold fs-4">{{ total_videos_watched }}</div>
       <small class="text-muted">Videos Watched</small>
     </div>
   </div>
   <div class="col-6 col-md-3">
-    <div class="card border-0 shadow-sm text-center py-3 kpi-green">
+    <div class="card border-0 shadow-sm text-center py-3">
       <i class="bi bi-patch-question-fill fs-3 text-success d-block mb-1"></i>
       <div class="fw-bold fs-4">{{ quiz_attempts|length }}</div>
       <small class="text-muted">Quiz Attempts</small>
     </div>
   </div>
   <div class="col-6 col-md-3">
-    <div class="card border-0 shadow-sm text-center py-3 kpi-yellow">
+    <div class="card border-0 shadow-sm text-center py-3">
       <i class="bi bi-star-fill fs-3 text-warning d-block mb-1"></i>
       <div class="fw-bold fs-4">{{ avg_quiz|floatformat:1 }}</div>
       <small class="text-muted">Avg Quiz Score</small>
     </div>
   </div>
   <div class="col-6 col-md-3">
-    <div class="card border-0 shadow-sm text-center py-3 kpi-red">
-      <i class="bi bi-journal-check fs-3 text-danger d-block mb-1"></i>
-      <div class="fw-bold fs-4">{{ performances|length }}</div>
-      <small class="text-muted">Subject Records</small>
+    <div class="card border-0 shadow-sm text-center py-3">
+      <i class="bi bi-robot fs-3 text-info d-block mb-1"></i>
+      <div class="fw-bold fs-4">{{ enriched|length }}</div>
+      <small class="text-muted">ML-Analysed Subjects</small>
     </div>
   </div>
 </div>
 
+<!-- Per-subject ML prediction cards -->
+{% if enriched %}
+<h5 class="fw-bold mb-3"><i class="bi bi-robot me-2 text-info"></i>ML Predictions per Subject</h5>
+<div class="row g-3 mb-4">
+{% for e in enriched %}
+{% with p=e.record %}
+<div class="col-12 col-md-6">
+  <div class="card border-0 shadow-sm h-100">
+    <div class="card-header border-0 d-flex align-items-center justify-content-between
+      {% if e.is_at_risk %}bg-danger bg-opacity-10
+      {% elif e.predicted_label == 'High' %}bg-success bg-opacity-10
+      {% elif e.predicted_label == 'Medium' %}bg-primary bg-opacity-10
+      {% else %}bg-warning bg-opacity-10{% endif %}">
+      <div>
+        <h6 class="mb-0 fw-bold">{{ p.subject.name }}</h6>
+        <small class="text-muted">{{ p.subject.code }}</small>
+      </div>
+      <div class="d-flex gap-2 align-items-center">
+        <span class="badge fs-6
+          {% if e.predicted_label == 'High' %}bg-success
+          {% elif e.predicted_label == 'Medium' %}bg-primary
+          {% elif e.predicted_label == 'Low' %}bg-warning text-dark
+          {% else %}bg-danger{% endif %}">
+          {{ e.predicted_label|default:"—" }}
+        </span>
+        {% if e.confidence %}
+        <span class="badge bg-secondary">{{ e.confidence }}%</span>
+        {% endif %}
+        {% if e.is_at_risk %}
+        <i class="bi bi-exclamation-triangle-fill text-danger" title="At-Risk"></i>
+        {% endif %}
+      </div>
+    </div>
+    <div class="card-body">
+      <!-- Score summary -->
+      <div class="d-flex gap-4 mb-3 flex-wrap border-bottom pb-3">
+        <div class="text-center">
+          <div class="text-muted small">Final Score</div>
+          <div class="fw-bold fs-5">{{ p.final_exam_score|default:"—" }}</div>
+        </div>
+        <div class="text-center">
+          <div class="text-muted small">ML Predicted</div>
+          <div class="fw-bold fs-5 text-primary">
+            {{ e.predicted_score|floatformat:1|default:"—" }}<small class="text-muted fw-normal">/100</small>
+          </div>
+        </div>
+        <div class="text-center">
+          <div class="text-muted small">Attendance</div>
+          <div class="fw-bold fs-5">{{ p.attendance_percentage|floatformat:0 }}%</div>
+        </div>
+        <div class="text-center">
+          <div class="text-muted small">Participation</div>
+          <div class="fw-bold fs-5">{{ p.participation_score }}<small class="text-muted fw-normal">/10</small></div>
+        </div>
+      </div>
+      <!-- Feature progress bars -->
+      <div class="mb-3">
+        {% for key, val in e.features.items %}
+        <div class="d-flex align-items-center mb-1 gap-2">
+          <span class="small" style="width:95px;flex-shrink:0;
+            {% if key == e.weakest %}color:#dc3545;font-weight:600{% else %}color:#6c757d{% endif %}">
+            {{ key }}{% if key == e.weakest %} ⚠{% endif %}
+          </span>
+          <div class="progress flex-grow-1" style="height:7px">
+            <div class="progress-bar
+              {% if val >= 70 %}bg-success
+              {% elif val >= 40 %}bg-warning
+              {% else %}bg-danger{% endif %}"
+              style="width:{{ val }}%" title="{{ val }}%"></div>
+          </div>
+          <span class="small text-muted" style="width:34px;text-align:right">{{ val }}%</span>
+        </div>
+        {% endfor %}
+      </div>
+      <!-- Radar chart -->
+      <div style="max-height:180px">
+        <canvas id="radar_sa_{{ p.subject.code }}" height="160"></canvas>
+      </div>
+      <!-- Recommendation -->
+      <div class="alert border-0 mt-3 mb-0 py-2 px-3 small
+        {% if e.is_at_risk %}alert-danger{% else %}alert-warning{% endif %}">
+        <strong>Focus: {{ e.weakest }}</strong><br>{{ e.recommendation }}
+      </div>
+    </div>
+  </div>
+</div>
+{% endwith %}
+{% endfor %}
+</div>
+{% endif %}
+
+<!-- Quiz attempts + video history -->
 <div class="row g-3">
   <div class="col-md-6">
     <div class="card shadow-sm border-0">
-      <div class="card-body">
-        <h6 class="fw-bold"><i class="bi bi-bar-chart-fill me-2 text-primary"></i>Performance Records</h6>
-        <ul class="list-group list-group-flush">
-          {% for p in performances %}
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-            <span>{{ p.subject.name }}</span>
-            <span>
-              <span class="badge bg-secondary me-1">{{ p.final_exam_score }}</span>
-              <span class="badge {% if p.performance_label == 'High' %}bg-success{% elif p.performance_label == 'Medium' %}bg-primary{% elif p.performance_label == 'Low' %}bg-warning text-dark{% else %}bg-danger{% endif %}">
-                {{ p.performance_label|default:"—" }}
-              </span>
-            </span>
-          </li>
-          {% empty %}
-          <li class="list-group-item text-muted">No records.</li>
-          {% endfor %}
-        </ul>
+      <div class="card-header border-0 fw-bold">
+        <i class="bi bi-patch-question-fill me-2 text-warning"></i>Quiz Attempts
+      </div>
+      <div class="list-group list-group-flush" style="max-height:280px;overflow-y:auto">
+        {% for q in quiz_attempts %}
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+          <span class="small">{{ q.quiz.title|truncatechars:38 }}</span>
+          <div class="d-flex gap-1 align-items-center">
+            <span class="badge bg-secondary">{{ q.quiz.subject.code }}</span>
+            <span class="badge bg-info text-dark">{{ q.score }} / {{ q.quiz.total_marks }}</span>
+          </div>
+        </div>
+        {% empty %}
+        <div class="list-group-item text-muted">No quiz attempts.</div>
+        {% endfor %}
       </div>
     </div>
   </div>
   <div class="col-md-6">
     <div class="card shadow-sm border-0">
-      <div class="card-body">
-        <h6 class="fw-bold"><i class="bi bi-patch-question-fill me-2 text-warning"></i>Quiz Attempts</h6>
-        <ul class="list-group list-group-flush">
-          {% for q in quiz_attempts %}
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-            <span class="small">{{ q.quiz.title|truncatechars:35 }}</span>
-            <span class="badge bg-info text-dark">{{ q.score }} / {{ q.quiz.total_marks }}</span>
-          </li>
-          {% empty %}
-          <li class="list-group-item text-muted">No quiz attempts.</li>
-          {% endfor %}
-        </ul>
+      <div class="card-header border-0 fw-bold">
+        <i class="bi bi-camera-video me-2 text-info"></i>Video Watch History
+      </div>
+      <div class="list-group list-group-flush" style="max-height:280px;overflow-y:auto">
+        {% for v in watch_history %}
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+          <span class="small">{{ v.video.title|truncatechars:40 }}</span>
+          <div class="d-flex gap-1 align-items-center">
+            {% if v.completed %}
+            <span class="badge bg-success">Done</span>
+            {% endif %}
+            <span class="text-muted small">{{ v.watch_duration_minutes|floatformat:0 }} min</span>
+          </div>
+        </div>
+        {% empty %}
+        <div class="list-group-item text-muted">No watch history.</div>
+        {% endfor %}
       </div>
     </div>
   </div>
 </div>
 
-<div class="card shadow-sm border-0 mt-3">
-  <div class="card-body">
-    <h6 class="fw-bold"><i class="bi bi-camera-video me-2 text-info"></i>Video Watch History</h6>
-    <ul class="list-group list-group-flush">
-      {% for v in watch_history %}
-      <li class="list-group-item d-flex justify-content-between align-items-center">
-        <span class="small">{{ v.video.title|truncatechars:50 }}</span>
-        <span class="text-muted small">{{ v.watch_duration_minutes }} min</span>
-      </li>
-      {% empty %}
-      <li class="list-group-item text-muted">No videos watched.</li>
-      {% endfor %}
-    </ul>
-  </div>
-</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+{% for e in enriched %}
+(function() {
+  const ctx = document.getElementById('radar_sa_{{ e.record.subject.code }}');
+  if (!ctx) return;
+  const color = {
+    'High':    { bg: 'rgba(40,167,69,.15)',  border: '#28a745' },
+    'Medium':  { bg: 'rgba(13,110,253,.15)', border: '#0d6efd' },
+    'Low':     { bg: 'rgba(255,193,7,.2)',   border: '#ffc107' },
+    'At-Risk': { bg: 'rgba(220,53,69,.15)',  border: '#dc3545' },
+  }['{{ e.predicted_label }}'] || { bg: 'rgba(108,117,125,.15)', border: '#6c757d' };
+
+  new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: {{ e.feature_keys|safe }},
+      datasets: [{
+        data: {{ e.feature_vals|safe }},
+        backgroundColor: color.bg,
+        borderColor: color.border,
+        borderWidth: 2,
+        pointBackgroundColor: color.border,
+        pointRadius: 3,
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        r: {
+          min: 0, max: 100,
+          ticks: { display: false },
+          grid: { color: 'rgba(0,0,0,.07)' },
+          pointLabels: { font: { size: 10 } }
+        }
+      },
+      plugins: { legend: { display: false } }
+    }
+  });
+})();
+{% endfor %}
+</script>
 {% endblock %}
