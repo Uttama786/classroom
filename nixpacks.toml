@@ -14,4 +14,7 @@ cmds = [
 ]
 
 [start]
-cmd = "cd flipped_classroom_project && python manage.py migrate --noinput && python manage.py create_admin; python -m gunicorn flipped_classroom_project.wsgi:application --workers 1 --threads 4 --timeout 120 --bind 0.0.0.0:$PORT"
+# NOTE: Requires the Railway PostgreSQL plugin to be added in the Railway dashboard.
+# Railway will auto-inject DATABASE_URL which switches Django from SQLite to PostgreSQL.
+# Without PostgreSQL, all user data is wiped on every redeploy (ephemeral filesystem).
+cmd = "cd flipped_classroom_project && python manage.py migrate --noinput && python manage.py create_admin && python -m gunicorn flipped_classroom_project.wsgi:application --workers 1 --threads 4 --timeout 120 --bind 0.0.0.0:$PORT"
