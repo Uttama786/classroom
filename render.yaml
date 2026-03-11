@@ -13,7 +13,7 @@ databases:
 services:
   - type: web
     name: fliplearn
-    env: python
+    runtime: python
     plan: free
     rootDir: flipped_classroom_project
     buildCommand: |

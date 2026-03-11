@@ -10,7 +10,7 @@ databases:
 services:
   - type: web
     name: fliplearn
-    env: python
+    runtime: python
     plan: free
     buildCommand: |
       pip install -r requirements.txt &&
