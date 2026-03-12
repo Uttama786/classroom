@@ -27,9 +27,14 @@
 import pathlib
 import threading
 import logging
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 import pandas as pd
+
+IST = timezone(timedelta(hours=5, minutes=30))
+
+def _now_ist() -> str:
+    return datetime.now(IST).strftime('%Y-%m-%d %H:%M:%S IST')
 
 logger = logging.getLogger('fliplearn.video_dataset')
 
@@ -109,7 +114,7 @@ def upsert_video_row(history) -> bool:
             'completion_pct':     completion_pct,
             'watched_at':         str(history.watched_at),
             'engagement_label':   _engagement_label(completion_pct),
-            'appended_at':        datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC'),
+            'appended_at':        _now_ist(),
         }
 
         key    = str(row['record_id'])
@@ -121,7 +126,7 @@ def upsert_video_row(history) -> bool:
                 idx = df.index[df['record_id'].astype(str) == key][0]
                 for col, val in row.items():
                     df.at[idx, col] = val
-                df.at[idx, 'appended_at'] = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')
+                df.at[idx, 'appended_at'] = _now_ist()
                 logger.info(f'[VideoDS] Updated {key}')
             else:
                 df = pd.concat([df, pd.DataFrame([row])], ignore_index=True)

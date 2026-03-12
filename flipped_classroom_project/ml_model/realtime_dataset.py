@@ -22,10 +22,15 @@
 import pathlib
 import threading
 import logging
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 import numpy as np
 import pandas as pd
+
+IST = timezone(timedelta(hours=5, minutes=30))
+
+def _now_ist() -> str:
+    return datetime.now(IST).strftime('%Y-%m-%d %H:%M:%S IST')
 
 logger = logging.getLogger('fliplearn.realtime_dataset')
 
@@ -87,7 +92,7 @@ def _row_from_performance(perf) -> dict:
         'previous_gpa':             round(float(prev_gpa), 2),
         'final_exam_score':         round(float(perf.final_exam_score), 1),
         'performance_label':        _derive_label(perf.final_exam_score),
-        'appended_at':              datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC'),
+        'appended_at':              _now_ist(),
     }
 
 
@@ -187,7 +192,7 @@ def upsert_performance_row(perf) -> bool:
             for col, val in new_row.items():
                 df.at[idx, col] = val
             # Always refresh the timestamp on update
-            df.at[idx, 'appended_at'] = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')
+            df.at[idx, 'appended_at'] = _now_ist()
             logger.info(f"[RealTime] Updated row for {key}")
         else:
             # INSERT new row

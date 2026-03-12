@@ -27,9 +27,14 @@
 import pathlib
 import threading
 import logging
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 import pandas as pd
+
+IST = timezone(timedelta(hours=5, minutes=30))
+
+def _now_ist() -> str:
+    return datetime.now(IST).strftime('%Y-%m-%d %H:%M:%S IST')
 
 logger = logging.getLogger('fliplearn.quiz_dataset')
 
@@ -106,7 +111,7 @@ def upsert_quiz_row(attempt) -> bool:
             'time_taken_min':   round(float(attempt.time_taken_minutes), 1),
             'attempted_at':     str(attempt.attempted_at),
             'performance_label': _derive_label(score_pct),
-            'appended_at':      datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC'),
+            'appended_at':      _now_ist(),
         }
 
         key    = str(row['record_id'])
@@ -118,7 +123,7 @@ def upsert_quiz_row(attempt) -> bool:
                 idx = df.index[df['record_id'].astype(str) == key][0]
                 for col, val in row.items():
                     df.at[idx, col] = val
-                df.at[idx, 'appended_at'] = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')
+                df.at[idx, 'appended_at'] = _now_ist()
                 logger.info(f'[QuizDS] Updated {key}')
             else:
                 df = pd.concat([df, pd.DataFrame([row])], ignore_index=True)
