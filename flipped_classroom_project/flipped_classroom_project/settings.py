@@ -67,6 +67,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'cloudinary',
+    'cloudinary_storage',
     'crispy_forms',
     'crispy_bootstrap5',
     'flipped_app',
@@ -148,6 +150,24 @@ STORAGES = {
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# ── Cloudinary (persistent media storage for production) ──────────────
+# Set CLOUDINARY_URL in environment for production (Render/Railway).
+# Format: cloudinary://api_key:api_secret@cloud_name
+# Locally, falls back to local FileSystemStorage when CLOUDINARY_URL is not set.
+_cloudinary_url = os.environ.get('CLOUDINARY_URL', '')
+if _cloudinary_url:
+    import cloudinary
+    _parts = _cloudinary_url.replace('cloudinary://', '').split('@')
+    _creds, _cloud = _parts[0], _parts[1]
+    _api_key, _api_secret = _creds.split(':')
+    cloudinary.config(
+        cloud_name=_cloud,
+        api_key=_api_key,
+        api_secret=_api_secret,
+        secure=True,
+    )
+    STORAGES['default'] = {'BACKEND': 'cloudinary_storage.storage.MediaCloudinaryStorage'}
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

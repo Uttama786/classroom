@@ -23,3 +23,6 @@ gunicorn
 # PostgreSQL support
 dj-database-url>=2.1.0
 psycopg2-binary>=2.9.9
+# Cloud media storage (materials & videos persist across redeploys)
+cloudinary==1.44.1
+django-cloudinary-storage==0.3.0
