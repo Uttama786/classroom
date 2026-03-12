@@ -27,6 +27,7 @@
 import pathlib
 import threading
 import logging
+from datetime import datetime, timezone
 
 import pandas as pd
 
@@ -39,7 +40,7 @@ _COLUMNS = [
     'record_id', 'usn', 'student_name',
     'subject_code', 'subject_name', 'quiz_title',
     'score', 'total_marks', 'score_pct',
-    'time_taken_min', 'attempted_at', 'performance_label',
+    'time_taken_min', 'attempted_at', 'performance_label', 'appended_at',
 ]
 
 _lock = threading.Lock()
@@ -105,6 +106,7 @@ def upsert_quiz_row(attempt) -> bool:
             'time_taken_min':   round(float(attempt.time_taken_minutes), 1),
             'attempted_at':     str(attempt.attempted_at),
             'performance_label': _derive_label(score_pct),
+            'appended_at':      datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC'),
         }
 
         key    = str(row['record_id'])
@@ -116,6 +118,7 @@ def upsert_quiz_row(attempt) -> bool:
                 idx = df.index[df['record_id'].astype(str) == key][0]
                 for col, val in row.items():
                     df.at[idx, col] = val
+                df.at[idx, 'appended_at'] = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')
                 logger.info(f'[QuizDS] Updated {key}')
             else:
                 df = pd.concat([df, pd.DataFrame([row])], ignore_index=True)

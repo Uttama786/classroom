@@ -22,6 +22,7 @@
 import pathlib
 import threading
 import logging
+from datetime import datetime, timezone
 
 import numpy as np
 import pandas as pd
@@ -86,6 +87,7 @@ def _row_from_performance(perf) -> dict:
         'previous_gpa':             round(float(prev_gpa), 2),
         'final_exam_score':         round(float(perf.final_exam_score), 1),
         'performance_label':        _derive_label(perf.final_exam_score),
+        'appended_at':              datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC'),
     }
 
 
@@ -95,7 +97,7 @@ def _read_csv() -> pd.DataFrame:
         'student_id', 'usn', 'student_name', 'videos_watched',
         'total_video_time_minutes', 'quiz_avg_score', 'assignment_avg_marks',
         'attendance_percentage', 'participation_score', 'previous_gpa',
-        'final_exam_score', 'performance_label'
+        'final_exam_score', 'performance_label', 'appended_at'
     ]
     if DATASET_CSV.exists():
         try:
@@ -105,6 +107,8 @@ def _read_csv() -> pd.DataFrame:
                 df.insert(1, 'usn', '')
             if 'student_name' not in df.columns:
                 df.insert(2, 'student_name', '')
+            if 'appended_at' not in df.columns:
+                df['appended_at'] = ''
             return df
         except Exception:
             pass
@@ -182,6 +186,8 @@ def upsert_performance_row(perf) -> bool:
             idx = df.index[df['student_id'].astype(str) == key][0]
             for col, val in new_row.items():
                 df.at[idx, col] = val
+            # Always refresh the timestamp on update
+            df.at[idx, 'appended_at'] = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')
             logger.info(f"[RealTime] Updated row for {key}")
         else:
             # INSERT new row

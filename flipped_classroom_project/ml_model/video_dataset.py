@@ -27,6 +27,7 @@
 import pathlib
 import threading
 import logging
+from datetime import datetime, timezone
 
 import pandas as pd
 
@@ -39,7 +40,7 @@ _COLUMNS = [
     'record_id', 'usn', 'student_name',
     'subject_code', 'subject_name', 'video_title',
     'video_duration_min', 'watch_duration_min',
-    'completed', 'completion_pct', 'watched_at', 'engagement_label',
+    'completed', 'completion_pct', 'watched_at', 'engagement_label', 'appended_at',
 ]
 
 _lock = threading.Lock()
@@ -108,6 +109,7 @@ def upsert_video_row(history) -> bool:
             'completion_pct':     completion_pct,
             'watched_at':         str(history.watched_at),
             'engagement_label':   _engagement_label(completion_pct),
+            'appended_at':        datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC'),
         }
 
         key    = str(row['record_id'])
@@ -119,6 +121,7 @@ def upsert_video_row(history) -> bool:
                 idx = df.index[df['record_id'].astype(str) == key][0]
                 for col, val in row.items():
                     df.at[idx, col] = val
+                df.at[idx, 'appended_at'] = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')
                 logger.info(f'[VideoDS] Updated {key}')
             else:
                 df = pd.concat([df, pd.DataFrame([row])], ignore_index=True)
