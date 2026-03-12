@@ -13,7 +13,7 @@ env/
 # Django
 db.sqlite3
 *.log
-media/
+media/videos/
 staticfiles/
 
 # Environment / secrets
