@@ -13,7 +13,7 @@ __pycache__/
 # Django
 *.log
 db.sqlite3
-media/
+media/videos/
 staticfiles/
 
 # Environment / secrets
