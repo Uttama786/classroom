@@ -69,6 +69,13 @@ def on_quiz_attempt_saved(sender, instance, created, **kwargs):
     except Exception as e:
         logger.error(f"[Signal] on_quiz_attempt_saved error: {e}")
 
+    # Also update the dedicated quiz_dataset.csv
+    try:
+        from ml_model.quiz_dataset import upsert_quiz_row
+        upsert_quiz_row(instance)
+    except Exception as e:
+        logger.error(f"[Signal] quiz_dataset upsert error: {e}")
+
 
 @receiver(post_save, sender='flipped_app.AssignmentSubmission')
 def on_submission_graded(sender, instance, created, **kwargs):
@@ -98,6 +105,14 @@ def on_video_watched(sender, instance, created, **kwargs):
     Snapshots the updated StudentPerformance row so video engagement
     is reflected in the CSV immediately.
     """
+    # Update video_dataset.csv for ALL saves (partial + complete)
+    try:
+        from ml_model.video_dataset import upsert_video_row
+        upsert_video_row(instance)
+    except Exception as e:
+        logger.error(f"[Signal] video_dataset upsert error: {e}")
+
+    # Only update the main performance dataset on completion
     if not instance.completed:
         return
     try:

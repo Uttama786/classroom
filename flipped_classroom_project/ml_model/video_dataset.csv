@@ -1,0 +1,45 @@
+record_id,usn,student_name,subject_code,subject_name,video_title,video_duration_min,watch_duration_min,completed,completion_pct,watched_at,engagement_label
+DB_5_1,CS2024001,Arjun Desai,DS,Data Structures,Introduction to Arrays,12.0,12.0,True,100.0,2026-02-25 04:09:18.985516+00:00,Full
+DB_5_2,CS2024001,Arjun Desai,DS,Data Structures,Linked Lists Explained,15.0,15.0,True,100.0,2026-02-25 04:09:18.991319+00:00,Full
+DB_5_4,CS2024001,Arjun Desai,PY,Python Programming,Python Basics – Variables & Types,10.0,10.0,True,100.0,2026-02-25 04:09:19.191302+00:00,Full
+DB_5_6,CS2024001,Arjun Desai,WD,Web Development,HTML & CSS Fundamentals,20.0,20.0,True,100.0,2026-02-25 04:09:19.371247+00:00,Full
+DB_5_10,CS2024001,Arjun Desai,AI,Artificial Intelligence & Machine Learning,Machine Learning Overview,17.0,17.0,True,100.0,2026-02-25 04:09:19.576811+00:00,Full
+DB_6_1,CS2024002,Priya Nair,DS,Data Structures,Introduction to Arrays,12.0,12.0,True,100.0,2026-02-25 04:09:19.771072+00:00,Full
+DB_6_2,CS2024002,Priya Nair,DS,Data Structures,Linked Lists Explained,15.0,15.0,True,100.0,2026-02-25 04:09:19.777254+00:00,Full
+DB_6_4,CS2024002,Priya Nair,PY,Python Programming,Python Basics – Variables & Types,10.0,10.0,True,100.0,2026-02-25 04:09:19.971290+00:00,Full
+DB_6_9,CS2024002,Priya Nair,DSC,Data Science,Introduction to Data Science,11.0,11.0,True,100.0,2026-02-25 04:09:20.175499+00:00,Full
+DB_6_10,CS2024002,Priya Nair,AI,Artificial Intelligence & Machine Learning,Machine Learning Overview,17.0,17.0,True,100.0,2026-02-25 04:09:20.371486+00:00,Full
+DB_7_4,CS2024003,Rohit Mehta,PY,Python Programming,Python Basics – Variables & Types,10.0,10.0,True,100.0,2026-02-25 04:09:20.641224+00:00,Full
+DB_7_6,CS2024003,Rohit Mehta,WD,Web Development,HTML & CSS Fundamentals,20.0,20.0,True,100.0,2026-02-25 04:09:20.881387+00:00,Full
+DB_7_8,CS2024003,Rohit Mehta,CN,Computer Networks,OSI Model Explained,13.0,13.0,True,100.0,2026-02-25 04:09:21.097186+00:00,Full
+DB_8_1,CS2024004,Sneha Joshi,DS,Data Structures,Introduction to Arrays,12.0,12.0,True,100.0,2026-02-25 04:09:21.296197+00:00,Full
+DB_8_2,CS2024004,Sneha Joshi,DS,Data Structures,Linked Lists Explained,15.0,15.0,True,100.0,2026-02-25 04:09:21.301298+00:00,Full
+DB_8_8,CS2024004,Sneha Joshi,CN,Computer Networks,OSI Model Explained,13.0,13.0,True,100.0,2026-02-25 04:09:21.512711+00:00,Full
+DB_8_9,CS2024004,Sneha Joshi,DSC,Data Science,Introduction to Data Science,11.0,11.0,True,100.0,2026-02-25 04:09:21.724002+00:00,Full
+DB_9_6,CS2024005,Kiran Patil,WD,Web Development,HTML & CSS Fundamentals,20.0,20.0,True,100.0,2026-02-25 04:09:21.903475+00:00,Full
+DB_9_8,CS2024005,Kiran Patil,CN,Computer Networks,OSI Model Explained,13.0,13.0,True,100.0,2026-02-25 04:09:22.098794+00:00,Full
+DB_9_10,CS2024005,Kiran Patil,AI,Artificial Intelligence & Machine Learning,Machine Learning Overview,17.0,17.0,True,100.0,2026-02-25 04:09:22.306017+00:00,Full
+DB_10_1,CS2024006,Amit Verma,DS,Data Structures,Introduction to Arrays,12.0,12.0,True,100.0,2026-02-25 04:09:22.502082+00:00,Full
+DB_10_2,CS2024006,Amit Verma,DS,Data Structures,Linked Lists Explained,15.0,15.0,True,100.0,2026-02-25 04:09:22.514825+00:00,Full
+DB_10_3,CS2024006,Amit Verma,DS,Data Structures,Binary Search Trees,18.0,18.0,True,100.0,2026-02-25 04:09:22.521316+00:00,Full
+DB_10_4,CS2024006,Amit Verma,PY,Python Programming,Python Basics – Variables & Types,10.0,10.0,True,100.0,2026-02-25 04:09:22.704110+00:00,Full
+DB_10_5,CS2024006,Amit Verma,PY,Python Programming,Python OOP Concepts,14.0,14.0,True,100.0,2026-02-25 04:09:22.704110+00:00,Full
+DB_10_9,CS2024006,Amit Verma,DSC,Data Science,Introduction to Data Science,11.0,11.0,True,100.0,2026-02-25 04:09:22.901217+00:00,Full
+DB_10_10,CS2024006,Amit Verma,AI,Artificial Intelligence & Machine Learning,Machine Learning Overview,17.0,17.0,True,100.0,2026-02-25 04:09:23.089296+00:00,Full
+DB_11_4,CS2024007,Pooja Rao,PY,Python Programming,Python Basics – Variables & Types,10.0,10.0,True,100.0,2026-02-25 04:09:23.381128+00:00,Full
+DB_11_6,CS2024007,Pooja Rao,WD,Web Development,HTML & CSS Fundamentals,20.0,20.0,True,100.0,2026-02-25 04:09:23.551082+00:00,Full
+DB_12_1,CS2024008,Varun Singh,DS,Data Structures,Introduction to Arrays,12.0,12.0,True,100.0,2026-02-25 04:09:23.751103+00:00,Full
+DB_12_8,CS2024008,Varun Singh,CN,Computer Networks,OSI Model Explained,13.0,13.0,True,100.0,2026-02-25 04:09:23.941241+00:00,Full
+DB_12_10,CS2024008,Varun Singh,AI,Artificial Intelligence & Machine Learning,Machine Learning Overview,17.0,17.0,True,100.0,2026-02-25 04:09:24.201273+00:00,Full
+DB_13_4,CS2024009,Meera Kulkarni,PY,Python Programming,Python Basics – Variables & Types,10.0,10.0,True,100.0,2026-02-25 04:09:24.465277+00:00,Full
+DB_13_9,CS2024009,Meera Kulkarni,DSC,Data Science,Introduction to Data Science,11.0,11.0,True,100.0,2026-02-25 04:09:24.663395+00:00,Full
+DB_13_6,CS2024009,Meera Kulkarni,WD,Web Development,HTML & CSS Fundamentals,20.0,20.0,True,100.0,2026-02-25 04:09:24.884683+00:00,Full
+DB_14_1,CS2024010,Nikhil Sharma,DS,Data Structures,Introduction to Arrays,12.0,12.0,True,100.0,2026-02-25 04:09:25.123557+00:00,Full
+DB_14_8,CS2024010,Nikhil Sharma,CN,Computer Networks,OSI Model Explained,13.0,13.0,True,100.0,2026-02-25 04:09:25.341301+00:00,Full
+DB_14_4,CS2024010,Nikhil Sharma,PY,Python Programming,Python Basics – Variables & Types,10.0,10.0,True,100.0,2026-02-25 04:09:25.519096+00:00,Full
+DB_2_1,USN_2,Rajesh Sharma,DS,Data Structures,Introduction to Arrays,12.0,12.0,True,100.0,2026-02-25 04:11:47.927942+00:00,Full
+DB_5_11,CS2024001,Arjun Desai,DS,Data Structures,MAIN,0.0,0.0,True,100.0,2026-02-25 04:47:10.315444+00:00,Full
+DB_5_59,CS2024001,Arjun Desai,AI,Artificial Intelligence & Machine Learning,Introduction to AI & Machine Learning,15.0,15.0,True,100.0,2026-02-26 16:00:48.738282+00:00,Full
+DB_5_3,CS2024001,Arjun Desai,DS,Data Structures,Binary Search Trees,18.0,18.0,True,100.0,2026-03-05 04:33:31.656346+00:00,Full
+DB_5_16,CS2024001,Arjun Desai,DS,Data Structures,Queues – Types & Circular Queue,13.0,13.0,True,100.0,2026-03-11 04:02:37.217341+00:00,Full
+DB_5_12,CS2024001,Arjun Desai,DS,Data Structures,Introduction to Data Structures,15.0,15.0,True,100.0,2026-03-11 15:58:20.280369+00:00,Full

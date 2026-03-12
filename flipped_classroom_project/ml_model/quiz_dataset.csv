@@ -1,0 +1,37 @@
+record_id,usn,student_name,subject_code,subject_name,quiz_title,score,total_marks,score_pct,time_taken_min,attempted_at,performance_label
+DB_5_1,CS2024001,Arjun Desai,DS,Data Structures,Data Structures Quiz 1,5.0,10,50.0,0.0,2026-02-25 04:09:18.993546+00:00,Medium
+DB_5_2,CS2024001,Arjun Desai,PY,Python Programming,Python Fundamentals Quiz,5.0,10,50.0,0.0,2026-02-25 04:09:19.197404+00:00,Medium
+DB_5_3,CS2024001,Arjun Desai,WD,Web Development,Web Dev Basics Quiz,5.0,10,50.0,0.0,2026-02-25 04:09:19.381268+00:00,Medium
+DB_5_6,CS2024001,Arjun Desai,AI,Artificial Intelligence & Machine Learning,ML Basics Quiz,5.0,10,50.0,0.0,2026-02-25 04:09:19.581102+00:00,Medium
+DB_6_1,CS2024002,Priya Nair,DS,Data Structures,Data Structures Quiz 1,5.0,10,50.0,0.0,2026-02-25 04:09:19.783311+00:00,Medium
+DB_6_2,CS2024002,Priya Nair,PY,Python Programming,Python Fundamentals Quiz,5.0,10,50.0,0.0,2026-02-25 04:09:19.981334+00:00,Medium
+DB_6_5,CS2024002,Priya Nair,DSC,Data Science,Data Science Quiz,5.0,10,50.0,0.0,2026-02-25 04:09:20.181332+00:00,Medium
+DB_6_6,CS2024002,Priya Nair,AI,Artificial Intelligence & Machine Learning,ML Basics Quiz,5.0,10,50.0,0.0,2026-02-25 04:09:20.381163+00:00,Medium
+DB_7_2,CS2024003,Rohit Mehta,PY,Python Programming,Python Fundamentals Quiz,5.0,10,50.0,0.0,2026-02-25 04:09:20.647885+00:00,Medium
+DB_7_3,CS2024003,Rohit Mehta,WD,Web Development,Web Dev Basics Quiz,5.0,10,50.0,0.0,2026-02-25 04:09:20.886923+00:00,Medium
+DB_7_4,CS2024003,Rohit Mehta,CN,Computer Networks,Networking Concepts Quiz,5.0,10,50.0,0.0,2026-02-25 04:09:21.104903+00:00,Medium
+DB_8_1,CS2024004,Sneha Joshi,DS,Data Structures,Data Structures Quiz 1,5.0,10,50.0,0.0,2026-02-25 04:09:21.304453+00:00,Medium
+DB_8_4,CS2024004,Sneha Joshi,CN,Computer Networks,Networking Concepts Quiz,5.0,10,50.0,0.0,2026-02-25 04:09:21.521470+00:00,Medium
+DB_8_5,CS2024004,Sneha Joshi,DSC,Data Science,Data Science Quiz,5.0,10,50.0,0.0,2026-02-25 04:09:21.724002+00:00,Medium
+DB_9_3,CS2024005,Kiran Patil,WD,Web Development,Web Dev Basics Quiz,5.0,10,50.0,0.0,2026-02-25 04:09:21.913678+00:00,Medium
+DB_9_4,CS2024005,Kiran Patil,CN,Computer Networks,Networking Concepts Quiz,5.0,10,50.0,0.0,2026-02-25 04:09:22.101040+00:00,Medium
+DB_9_6,CS2024005,Kiran Patil,AI,Artificial Intelligence & Machine Learning,ML Basics Quiz,5.0,10,50.0,0.0,2026-02-25 04:09:22.311306+00:00,Medium
+DB_10_1,CS2024006,Amit Verma,DS,Data Structures,Data Structures Quiz 1,5.0,10,50.0,0.0,2026-02-25 04:09:22.528176+00:00,Medium
+DB_10_2,CS2024006,Amit Verma,PY,Python Programming,Python Fundamentals Quiz,5.0,10,50.0,0.0,2026-02-25 04:09:22.712262+00:00,Medium
+DB_10_5,CS2024006,Amit Verma,DSC,Data Science,Data Science Quiz,5.0,10,50.0,0.0,2026-02-25 04:09:22.911665+00:00,Medium
+DB_10_6,CS2024006,Amit Verma,AI,Artificial Intelligence & Machine Learning,ML Basics Quiz,5.0,10,50.0,0.0,2026-02-25 04:09:23.091303+00:00,Medium
+DB_11_2,CS2024007,Pooja Rao,PY,Python Programming,Python Fundamentals Quiz,5.0,10,50.0,0.0,2026-02-25 04:09:23.384316+00:00,Medium
+DB_11_3,CS2024007,Pooja Rao,WD,Web Development,Web Dev Basics Quiz,5.0,10,50.0,0.0,2026-02-25 04:09:23.561009+00:00,Medium
+DB_12_1,CS2024008,Varun Singh,DS,Data Structures,Data Structures Quiz 1,0.0,10,0.0,0.0,2026-02-25 04:09:23.761630+00:00,At-Risk
+DB_12_4,CS2024008,Varun Singh,CN,Computer Networks,Networking Concepts Quiz,0.0,10,0.0,0.0,2026-02-25 04:09:23.948689+00:00,At-Risk
+DB_12_6,CS2024008,Varun Singh,AI,Artificial Intelligence & Machine Learning,ML Basics Quiz,0.0,10,0.0,0.0,2026-02-25 04:09:24.211090+00:00,At-Risk
+DB_13_2,CS2024009,Meera Kulkarni,PY,Python Programming,Python Fundamentals Quiz,5.0,10,50.0,0.0,2026-02-25 04:09:24.475278+00:00,Medium
+DB_13_5,CS2024009,Meera Kulkarni,DSC,Data Science,Data Science Quiz,5.0,10,50.0,0.0,2026-02-25 04:09:24.671388+00:00,Medium
+DB_13_3,CS2024009,Meera Kulkarni,WD,Web Development,Web Dev Basics Quiz,5.0,10,50.0,0.0,2026-02-25 04:09:24.895211+00:00,Medium
+DB_14_1,CS2024010,Nikhil Sharma,DS,Data Structures,Data Structures Quiz 1,0.0,10,0.0,0.0,2026-02-25 04:09:25.123557+00:00,At-Risk
+DB_14_4,CS2024010,Nikhil Sharma,CN,Computer Networks,Networking Concepts Quiz,0.0,10,0.0,0.0,2026-02-25 04:09:25.345947+00:00,At-Risk
+DB_14_2,CS2024010,Nikhil Sharma,PY,Python Programming,Python Fundamentals Quiz,0.0,10,0.0,0.0,2026-02-25 04:09:25.521416+00:00,At-Risk
+DB_5_5,CS2024001,Arjun Desai,DSC,Data Science,Data Science Quiz,10.0,10,100.0,0.0,2026-02-25 04:15:29.402005+00:00,High
+DB_5_49,CS2024001,Arjun Desai,AIML,Artificial Intelligence & Machine Learning,AI & Machine Learning Quiz,2.0,5,40.0,0.0,2026-03-05 04:34:39.502277+00:00,Low
+DB_5_8,CS2024001,Arjun Desai,DS,Data Structures,DS – Stacks & Queues,6.0,10,60.0,0.0,2026-03-05 04:38:25.922071+00:00,Medium
+DB_5_46,CS2024001,Arjun Desai,WD,Web Development,Web Development Basics Quiz,2.0,5,40.0,0.0,2026-03-11 16:00:58.087064+00:00,Low
