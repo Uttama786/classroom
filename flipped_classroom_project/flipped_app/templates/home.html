@@ -40,6 +40,7 @@
 .hero-v4 h1 {
   font-size: clamp(1.8rem, 4vw, 2.9rem);
   font-weight: 900;
+  color: #ffffff;
   line-height: 1.2;
   margin-bottom: .5rem;
   animation: heroTitleIn .7s cubic-bezier(0.22,1,0.36,1) .2s both;
@@ -53,7 +54,7 @@
 }
 .hero-v4 p.lead {
   font-size: .95rem;
-  opacity: .88;
+  color: rgba(255, 255, 255, 0.92);
   max-width: 560px;
   line-height: 1.7;
   margin-bottom: 1.75rem;
@@ -233,12 +234,12 @@
         <i class="bi bi-mortarboard-fill text-warning"></i>
         M.Tech CSE Research Project &nbsp;·&nbsp; 2025–2026
       </div>
-      <h1>Performance Analysis of the<br><span style="color:#fbbf24">Flipped Classroom</span> Model</h1>
-      <p class="hero-sub">using AI &amp; Machine Learning in CSE Education</p>
+      <h1><span style="color:#fbbf24">Flipped Classroom</span><br>Using RAG</h1>
+      <p class="hero-sub">AI-Powered Learning &amp; Analytics for CSE Education</p>
       <p class="lead">
-        A full-stack research platform built to compare traditional vs flipped classroom outcomes using
-        real student engagement data. Multiple ML models — trained on quiz scores, video watch-time &amp;
-        attendance — predict final exam scores and classify performance, with early warning for at-risk students.
+        A full-stack learning platform that combines flipped classroom pedagogy with Retrieval-Augmented Generation
+        (RAG) for contextual AI tutoring. Real student engagement data and ML models work together to predict
+        performance and provide early warning for at-risk students.
       </p>
       <div class="hero-btns d-flex gap-3 flex-wrap">
         <a href="{% url 'register' %}" class="btn btn-warning btn-lg px-4 fw-bold shadow-sm">

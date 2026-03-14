@@ -317,6 +317,13 @@ document.addEventListener('DOMContentLoaded', function () {
   </div>
 
   <div class="col-6 col-md-2">
+    <a href="{% url 'upload_material' %}" class="btn btn-outline-secondary admin-action-btn w-100">
+      <i class="bi bi-file-earmark-arrow-up-fill d-block fs-2 mb-1"></i>
+      <small class="fw-semibold">Add Textbook/Notes</small>
+    </a>
+  </div>
+
+  <div class="col-6 col-md-2">
     <a href="{% url 'create_quiz' %}" class="btn btn-outline-warning admin-action-btn w-100">
       <i class="bi bi-patch-plus d-block fs-2 mb-1"></i>
       <small class="fw-semibold">Create Quiz</small>
@@ -331,12 +338,39 @@ document.addEventListener('DOMContentLoaded', function () {
   </div>
 
   <div class="col-6 col-md-2">
-    <button id="trainRagBtn" class="btn btn-outline-secondary admin-action-btn w-100" title="Keyboard shortcut: Ctrl+Shift+R">
+    <button id="trainRagBtn" type="button" class="btn btn-outline-secondary admin-action-btn w-100" title="Keyboard shortcut: Ctrl+Shift+R">
       <i class="bi bi-robot d-block fs-2 mb-1" id="trainRagIcon"></i>
       <small class="fw-semibold">Train RAG <kbd class="ms-1" style="font-size:.65rem">⌃⇧R</kbd></small>
     </button>
   </div>
 
+</div>
+
+<!-- RAG Action Choice Modal -->
+<div class="modal fade" id="ragChoiceModal" tabindex="-1" aria-labelledby="ragChoiceModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header">
+        <h5 class="modal-title" id="ragChoiceModalLabel">
+          <i class="bi bi-robot me-2"></i>Train RAG
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="mb-2">Before training, do you want to add a textbook or notes?</p>
+        <small class="text-muted">Upload new material first if you want it included in AI answers.</small>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <a href="{% url 'upload_material' %}" class="btn btn-outline-primary" id="ragAddMaterialBtn">
+          <i class="bi bi-file-earmark-arrow-up me-1"></i>Add Textbook/Notes
+        </a>
+        <button type="button" class="btn btn-success" id="ragTrainNowBtn">
+          <i class="bi bi-cpu me-1"></i>Train Now
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- RAG Toast -->
@@ -353,56 +387,108 @@ document.addEventListener('DOMContentLoaded', function () {
 </div>
 
 <script>
-(function () {
-  const CSRF = document.cookie.match(/csrftoken=([^;]+)/)?.[1] || '';
-  const toast    = new bootstrap.Toast(document.getElementById('ragToast'), {delay: 4000});
+window.addEventListener('load', function () {
+  const btn = document.getElementById('trainRagBtn');
+  const trainNowBtn = document.getElementById('ragTrainNowBtn');
+  const choiceModalEl = document.getElementById('ragChoiceModal');
+  const icon = document.getElementById('trainRagIcon');
+  const toastEl = document.getElementById('ragToast');
   const toastMsg = document.getElementById('ragToastMsg');
-  const spinner  = document.getElementById('ragSpinner');
-  const icon     = document.getElementById('trainRagIcon');
-  const btn      = document.getElementById('trainRagBtn');
+  const spinner = document.getElementById('ragSpinner');
+  if (!btn || !trainNowBtn || !choiceModalEl || !icon || !toastEl || !toastMsg || !spinner) return;
+
+  const CSRF = document.cookie.match(/csrftoken=([^;]+)/)?.[1] || '';
+  const statusUrl = '{% url "rebuild_rag" %}';
+  const toast = window.bootstrap ? new window.bootstrap.Toast(toastEl, { delay: 4000 }) : null;
+  const choiceModal = window.bootstrap ? new window.bootstrap.Modal(choiceModalEl) : null;
+  let pollTimer = null;
 
   function setToastState(type, msg) {
-    const el = document.getElementById('ragToast');
-    el.classList.remove('text-bg-success','text-bg-danger','text-bg-secondary');
+    toastEl.classList.remove('text-bg-success', 'text-bg-danger', 'text-bg-secondary');
     spinner.classList.toggle('d-none', type !== 'loading');
-    if (type === 'loading') { el.classList.add('text-bg-secondary'); }
-    else if (type === 'ok')  { el.classList.add('text-bg-success'); }
-    else                     { el.classList.add('text-bg-danger'); }
+    if (type === 'loading') toastEl.classList.add('text-bg-secondary');
+    else if (type === 'ok') toastEl.classList.add('text-bg-success');
+    else toastEl.classList.add('text-bg-danger');
     toastMsg.textContent = msg;
-    toast.show();
+    if (toast) toast.show();
+    else alert(msg);
   }
 
   function triggerRebuild() {
     if (btn.disabled) return;
     btn.disabled = true;
     icon.className = 'bi bi-arrow-repeat d-block fs-2 mb-1 spin-icon';
-    setToastState('loading', 'Rebuilding RAG index…');
-    fetch('{% url "rebuild_rag" %}', {
+    setToastState('loading', 'Rebuilding RAG index...');
+
+    if (pollTimer) {
+      clearInterval(pollTimer);
+      pollTimer = null;
+    }
+
+    fetch(statusUrl, {
       method: 'POST',
       headers: { 'X-CSRFToken': CSRF, 'X-Requested-With': 'XMLHttpRequest' }
     })
-    .then(r => r.json())
-    .then(data => {
-      if (data.status === 'ok') setToastState('ok',   '✓ ' + data.message);
-      else                      setToastState('err',  '✗ ' + data.message);
-    })
-    .catch(e => setToastState('err', '✗ Network error: ' + e.message))
-    .finally(() => {
-      btn.disabled = false;
-      icon.className = 'bi bi-robot d-block fs-2 mb-1';
-    });
+      .then(r => r.json())
+      .then(data => {
+        if (data.status !== 'ok') {
+          setToastState('err', 'X ' + (data.message || 'Failed to start RAG rebuild.'));
+          return;
+        }
+
+        setToastState('loading', data.message || 'RAG rebuild started.');
+        pollTimer = setInterval(() => {
+          fetch(statusUrl, {
+            method: 'GET',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+          })
+            .then(r => r.json())
+            .then(status => {
+              if (status.running) return;
+              clearInterval(pollTimer);
+              pollTimer = null;
+              if (status.last_error) setToastState('err', 'X ' + status.last_error);
+              else setToastState('ok', 'RAG index rebuilt successfully.');
+            })
+            .catch(() => {
+              clearInterval(pollTimer);
+              pollTimer = null;
+              setToastState('err', 'Could not fetch rebuild status.');
+            });
+        }, 3000);
+      })
+      .catch(e => setToastState('err', 'Network error: ' + e.message))
+      .finally(() => {
+        btn.disabled = false;
+        icon.className = 'bi bi-robot d-block fs-2 mb-1';
+      });
   }
 
-  btn.addEventListener('click', triggerRebuild);
+  function openChoiceModal() {
+    if (choiceModal) choiceModal.show();
+    else {
+      // Fallback when Bootstrap modal is unavailable
+      if (confirm('Do you want to add textbook/notes before training RAG?')) {
+        window.location.href = '{% url "upload_material" %}';
+      } else {
+        triggerRebuild();
+      }
+    }
+  }
 
-  /* Keyboard shortcut: Ctrl+Shift+R */
+  btn.addEventListener('click', openChoiceModal);
+  trainNowBtn.addEventListener('click', function () {
+    if (choiceModal) choiceModal.hide();
+    triggerRebuild();
+  });
+
   document.addEventListener('keydown', function (e) {
-    if (e.ctrlKey && e.shiftKey && e.key === 'R') {
+    if (e.ctrlKey && e.shiftKey && e.key.toUpperCase() === 'R') {
       e.preventDefault();
-      triggerRebuild();
+      openChoiceModal();
     }
   });
-})();
+});
 </script>
 <style>
 @keyframes spin { to { transform: rotate(360deg); } }

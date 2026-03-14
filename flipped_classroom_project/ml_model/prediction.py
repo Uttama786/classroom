@@ -32,7 +32,7 @@ def _load_models():
     return scaler, le, rf_reg, rf_cls
 
 
-def predict_student(features_dict: dict) -> dict:
+def predict_student(features_dict: dict, models_tuple=None) -> dict:
     """
     Predict performance for a single student.
 
@@ -49,13 +49,16 @@ def predict_student(features_dict: dict) -> dict:
         is_at_risk       : bool
         confidence       : float  (classification probability)
     """
-    try:
-        scaler, le, rf_reg, rf_cls = _load_models()
-    except FileNotFoundError:
-        raise RuntimeError(
-            "Trained models not found. "
-            "Please run ml_model/model_training.py first."
-        )
+    if models_tuple is None:
+        try:
+            scaler, le, rf_reg, rf_cls = _load_models()
+        except FileNotFoundError:
+            raise RuntimeError(
+                "Trained models not found. "
+                "Please run ml_model/model_training.py first."
+            )
+    else:
+        scaler, le, rf_reg, rf_cls = models_tuple
 
     # Use DataFrame so scaler receives correct feature names (avoids sklearn warning)
     feature_values = pd.DataFrame(
@@ -126,7 +129,7 @@ def predict_all_students():
             'previous_gpa':             perf.previous_gpa,
         }
 
-        prediction = predict_student(features_dict)
+        prediction = predict_student(features_dict, models_tuple=(scaler, le, rf_reg, rf_cls))
 
         perf.predicted_score = prediction['predicted_score']
         perf.predicted_label = prediction['predicted_label']

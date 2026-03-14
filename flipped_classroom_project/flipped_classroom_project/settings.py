@@ -7,6 +7,14 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
+def _env_bool(name: str, default: bool = False) -> bool:
+    """Parse a boolean env var safely."""
+    value = os.environ.get(name)
+    if value is None:
+        return default
+    return value.strip().lower() in {'1', 'true', 'yes', 'on'}
+
 # Load .env file if present (keeps secrets out of source control)
 _env_file = BASE_DIR / '.env'
 if _env_file.exists():
@@ -16,16 +24,20 @@ if _env_file.exists():
             _k, _v = _line.split('=', 1)
             os.environ.setdefault(_k.strip(), _v.strip())
 
-SECRET_KEY = os.environ.get(
-    'SECRET_KEY',
-    'django-insecure-flipped-classroom-cse-ml-uttam-bhise-mtech-2026'  # override via .env in production
-)
+DEBUG = _env_bool('DEBUG', default=False)
 
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+SECRET_KEY = os.environ.get('SECRET_KEY', '').strip()
+if not SECRET_KEY:
+    if DEBUG:
+        # Local-only fallback so developers can run without extra setup.
+        SECRET_KEY = 'dev-only-secret-key-change-before-deploy'
+    else:
+        raise RuntimeError('SECRET_KEY is required when DEBUG=False')
 
 # In production set ALLOWED_HOSTS=.up.railway.app in env vars
 # Converts *.domain to .domain (Django uses leading-dot for subdomain wildcard)
-_raw_hosts = os.environ.get('ALLOWED_HOSTS', '*')
+_default_hosts = 'localhost,127.0.0.1'
+_raw_hosts = os.environ.get('ALLOWED_HOSTS', _default_hosts)
 ALLOWED_HOSTS = [
     h.strip()[1:] if h.strip().startswith('*.') else h.strip()
     for h in _raw_hosts.split(',') if h.strip()
@@ -135,13 +147,13 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'flipped_app' / 'static']
+# Keep empty to avoid duplicate collection of flipped_app/static.
+# AppDirectoriesFinder already discovers app static files (including admin assets).
+STATICFILES_DIRS = []
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-# Use only FileSystemFinder — AppDirectoriesFinder would double-collect
-# flipped_app/static/ since it is already listed in STATICFILES_DIRS above.
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',  # required for admin CSS/JS
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
 STORAGES = {
     "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
@@ -181,6 +193,7 @@ LOGOUT_REDIRECT_URL = '/login/'
 # ── RAG Chatbot Settings ──────────────────────────────────
 # API key is loaded from .env file (see BASE_DIR/.env) — never hardcode here
 GROQ_API_KEY = os.environ.get('GROQ_API_KEY', '')
+RAG_ENABLE_WEB_SEARCH = _env_bool('RAG_ENABLE_WEB_SEARCH', default=False)
 RAG_INDEX_PATH = BASE_DIR / 'rag_engine' / 'saved_index'
 RAG_KNOWLEDGE_PATH = BASE_DIR / 'rag_knowledge'
 

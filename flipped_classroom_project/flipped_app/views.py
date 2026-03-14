@@ -6,10 +6,14 @@ from django.contrib import messages
 from django.db.models import Avg, Count, Sum, FloatField
 from django.db.models.functions import Coalesce
 from django.http import JsonResponse, HttpResponse, StreamingHttpResponse
+from django.conf import settings
 from django.utils import timezone
+from django.utils.http import url_has_allowed_host_and_scheme
 import json
 import csv
 import os
+import logging
+import threading
 
 from .models import (
     Subject, StudentProfile, TeacherProfile, VideoLecture, StudyMaterial,
@@ -21,6 +25,42 @@ from .forms import (
     QuizForm, QuizQuestionForm, AssignmentForm, AssignmentSubmissionForm,
     GradeSubmissionForm
 )
+
+logger = logging.getLogger(__name__)
+
+
+# In-process state for RAG rebuild jobs.
+RAG_REBUILD_LOCK = threading.Lock()
+RAG_REBUILD_STATE = {
+    'running': False,
+    'started_at': None,
+    'finished_at': None,
+    'last_error': None,
+}
+
+
+def _rag_status_payload():
+    return {
+        'running': RAG_REBUILD_STATE['running'],
+        'started_at': RAG_REBUILD_STATE['started_at'].isoformat() if RAG_REBUILD_STATE['started_at'] else None,
+        'finished_at': RAG_REBUILD_STATE['finished_at'].isoformat() if RAG_REBUILD_STATE['finished_at'] else None,
+        'last_error': RAG_REBUILD_STATE['last_error'],
+    }
+
+
+def _run_rag_rebuild_job():
+    try:
+        from rag_engine.indexer import build_index
+        build_index()
+        err = None
+    except Exception as exc:
+        logger.exception('rebuild_rag_view failed: %s', exc)
+        err = 'Failed to rebuild RAG index. Check server logs.'
+
+    with RAG_REBUILD_LOCK:
+        RAG_REBUILD_STATE['running'] = False
+        RAG_REBUILD_STATE['finished_at'] = timezone.now()
+        RAG_REBUILD_STATE['last_error'] = err
 
 
 # ─────────────────────────────────────────────
@@ -303,17 +343,20 @@ def mark_video_watched_view(request, video_id):
     """AJAX/POST endpoint: student explicitly marks a video as watched."""
     if request.method != 'POST':
         return JsonResponse({'error': 'POST required'}, status=405)
+    if not is_student(request.user):
+        return JsonResponse({'error': 'Only students can mark videos as watched'}, status=403)
     video = get_object_or_404(VideoLecture, id=video_id)
     history, _ = VideoWatchHistory.objects.get_or_create(
         student=request.user, video=video,
         defaults={'watch_duration_minutes': 0}
     )
+    already_completed = history.completed
     if not history.completed:
         history.completed = True
         history.watch_duration_minutes = video.duration_minutes
         history.save()
         _update_engagement(request.user, video.subject)
-    return JsonResponse({'status': 'ok', 'already_completed': history.completed})
+    return JsonResponse({'status': 'ok', 'already_completed': already_completed})
 
 
 @login_required
@@ -387,7 +430,15 @@ def quiz_list_view(request):
 
 @login_required
 def take_quiz_view(request, quiz_id):
+    if not is_student(request.user):
+        messages.error(request, 'Only students can attempt quizzes.')
+        return redirect('quizzes')
+
     quiz = get_object_or_404(Quiz, id=quiz_id, is_active=True)
+
+    if quiz.due_date and timezone.now() > quiz.due_date:
+        messages.error(request, 'This quiz is closed because the due date has passed.')
+        return redirect('quizzes')
 
     if QuizAttempt.objects.filter(quiz=quiz, student=request.user).exists():
         messages.warning(request, 'You have already attempted this quiz.')
@@ -510,7 +561,15 @@ def create_assignment_view(request):
 
 @login_required
 def submit_assignment_view(request, assignment_id):
+    if not is_student(request.user):
+        messages.error(request, 'Only students can submit assignments.')
+        return redirect('assignments')
+
     assignment = get_object_or_404(Assignment, id=assignment_id)
+    if assignment.due_date and timezone.now() > assignment.due_date:
+        messages.error(request, 'Submission closed: the assignment due date has passed.')
+        return redirect('assignments')
+
     if AssignmentSubmission.objects.filter(assignment=assignment, student=request.user).exists():
         messages.warning(request, 'You have already submitted this assignment.')
         return redirect('assignments')
@@ -717,7 +776,8 @@ def run_ml_prediction_view(request):
         results = predict_all_students()
         messages.success(request, f'ML prediction complete! Processed {len(results)} records.')
     except Exception as e:
-        messages.error(request, f'ML prediction failed: {str(e)}')
+        logger.exception('run_ml_prediction_view failed: %s', e)
+        messages.error(request, 'ML prediction failed. Please try again later or check server logs.')
     return redirect('analytics')
 
 
@@ -852,7 +912,14 @@ def mark_notification_read(request, notif_id):
     notif = get_object_or_404(Notification, id=notif_id, recipient=request.user)
     notif.is_read = True
     notif.save()
-    return redirect(request.META.get('HTTP_REFERER', 'dashboard'))
+    referer = request.META.get('HTTP_REFERER', '')
+    if referer and url_has_allowed_host_and_scheme(
+        referer,
+        allowed_hosts={request.get_host()},
+        require_https=request.is_secure(),
+    ):
+        return redirect(referer)
+    return redirect('dashboard')
 
 
 # ─────────────────────────────────────────────
@@ -984,10 +1051,11 @@ def chat_ask_view(request):
             lang_pref=lang_code,
         )
     except Exception as e:
+        logger.exception('chat_ask_view failed: %s', e)
         result = {
-            'reply': f"⚠️ An error occurred: {e}",
+            'reply': 'Sorry, something went wrong while generating the response.',
             'sources': [],
-            'error': str(e),
+            'error': 'internal_error',
         }
 
     reply = result.get('reply', '')
@@ -1100,8 +1168,9 @@ def chat_stream_view(request):
                     except Exception:
                         pass
         except Exception as e:
+            logger.exception('chat_stream_view failed: %s', e)
             import json as _json
-            yield f'data: {_json.dumps({"type": "error", "text": str(e)})}\n\n'
+            yield f'data: {_json.dumps({"type": "error", "text": "Sorry, the chatbot is temporarily unavailable."})}\n\n'
             return
 
         # Persist to DB after stream completes
@@ -1155,7 +1224,7 @@ def chat_pdf_view(request):
 
     fname = uploaded_file.name.lower()
     is_pdf  = fname.endswith('.pdf')
-    is_docx = fname.endswith('.docx') or fname.endswith('.doc')
+    is_docx = fname.endswith('.docx')
 
     if not is_pdf and not is_docx:
         return JsonResponse({'error': 'Only PDF and Word (.docx) files are supported'}, status=400)
@@ -1179,7 +1248,7 @@ def chat_pdf_view(request):
                     if t:
                         pages_text.append(t.strip())
             pdf_text = '\n\n'.join(pages_text)
-        else:  # .docx / .doc
+        else:  # .docx
             from docx import Document
             doc = Document(io.BytesIO(raw_bytes))
             paras = [p.text.strip() for p in doc.paragraphs if p.text.strip()]
@@ -1191,7 +1260,8 @@ def chat_pdf_view(request):
                         paras.append(row_text)
             pdf_text = '\n\n'.join(paras)
     except Exception as e:
-        return JsonResponse({'error': f'Could not read file: {e}'}, status=400)
+        logger.exception('chat_pdf_view failed to parse uploaded file: %s', e)
+        return JsonResponse({'error': 'Could not read this file. Please upload a valid PDF or .docx file.'}, status=400)
 
     if not pdf_text.strip():
         return JsonResponse({'error': 'File appears to be empty or image-only (no extractable text)'}, status=400)
@@ -1259,7 +1329,8 @@ def chat_pdf_view(request):
                     full_reply += token
                     yield sse({'type': 'token', 'text': token})
         except Exception as e:
-            yield sse({'type': 'error', 'text': str(e)})
+            logger.exception('chat_pdf_view stream failed: %s', e)
+            yield sse({'type': 'error', 'text': 'Sorry, the AI service is temporarily unavailable.'})
 
         yield sse({'type': 'done', 'full_reply': full_reply, 'sources': [pdf_name]})
 
@@ -1284,13 +1355,41 @@ def chat_pdf_view(request):
 @login_required
 def rebuild_rag_view(request):
     """AJAX endpoint – rebuilds the FAISS RAG index. Staff/admin only."""
-    if not (request.user.is_staff or hasattr(request.user, 'teacher_profile')):
+    if not request.user.is_superuser:
         return JsonResponse({'status': 'error', 'message': 'Permission denied.'}, status=403)
+    if request.method == 'GET':
+        with RAG_REBUILD_LOCK:
+            return JsonResponse({'status': 'ok', **_rag_status_payload()})
+
     if request.method != 'POST':
         return JsonResponse({'status': 'error', 'message': 'POST required.'}, status=405)
-    try:
-        from rag_engine.indexer import build_index
-        build_index()
-        return JsonResponse({'status': 'ok', 'message': 'RAG index rebuilt successfully.'})
-    except Exception as exc:
-        return JsonResponse({'status': 'error', 'message': str(exc)}, status=500)
+
+    with RAG_REBUILD_LOCK:
+        if RAG_REBUILD_STATE['running']:
+            return JsonResponse({
+                'status': 'ok',
+                'message': 'RAG rebuild is already running.',
+                **_rag_status_payload(),
+            })
+
+        RAG_REBUILD_STATE['running'] = True
+        RAG_REBUILD_STATE['started_at'] = timezone.now()
+        RAG_REBUILD_STATE['finished_at'] = None
+        RAG_REBUILD_STATE['last_error'] = None
+
+    if getattr(settings, 'RAG_REBUILD_SYNC', False):
+        _run_rag_rebuild_job()
+        with RAG_REBUILD_LOCK:
+            payload = _rag_status_payload()
+        if payload['last_error']:
+            return JsonResponse({'status': 'error', 'message': payload['last_error'], **payload}, status=500)
+        return JsonResponse({'status': 'ok', 'message': 'RAG index rebuilt successfully.', **payload})
+
+    threading.Thread(target=_run_rag_rebuild_job, daemon=True, name='fliplearn-rag-rebuild').start()
+    with RAG_REBUILD_LOCK:
+        payload = _rag_status_payload()
+    return JsonResponse({
+        'status': 'ok',
+        'message': 'RAG rebuild started in background. It may take several minutes.',
+        **payload,
+    })

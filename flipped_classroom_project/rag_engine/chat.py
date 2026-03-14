@@ -7,6 +7,7 @@ import os
 import re
 import json
 import threading
+import logging
 import urllib.request
 import urllib.parse
 from typing import List, Optional, Generator
@@ -14,6 +15,18 @@ from .retriever import get_context
 
 GROQ_MODEL = "llama-3.1-8b-instant"
 MAX_CONTEXT_CHARS = 4000   # increased for better answer quality
+logger = logging.getLogger(__name__)
+
+
+def _is_web_search_enabled() -> bool:
+    """Return whether external web search augmentation is enabled."""
+    try:
+        from django.conf import settings
+        enabled = getattr(settings, "RAG_ENABLE_WEB_SEARCH", False)
+        return bool(enabled)
+    except Exception:
+        pass
+    return os.environ.get("RAG_ENABLE_WEB_SEARCH", "false").strip().lower() in {"1", "true", "yes", "on"}
 
 
 def _get_groq_client():
@@ -296,10 +309,14 @@ def stream_answer(
     # ── Shared Groq client (created once, reused throughout) ────────────────
     client = _get_groq_client()
 
-    # ── 1. Retrieve FAISS + Wikipedia + Web results in parallel ─────────────
+    # ── 1. Retrieve FAISS (always) + optional web sources ───────────────────
     wiki_results: list = []
     web_results: list  = []
     web_ctx_holder: list = []   # [str] — holds web context text when found
+    web_search_enabled = _is_web_search_enabled()
+
+    wiki_thread = None
+    web_thread = None
 
     def _wiki():
         wiki_results.extend(_fetch_wiki_sources(user_query, limit=2))
@@ -310,15 +327,17 @@ def stream_answer(
         if ctx:
             web_ctx_holder.append(ctx)
 
-    wiki_thread = threading.Thread(target=_wiki, daemon=True)
-    web_thread  = threading.Thread(target=_web,  daemon=True)
-    wiki_thread.start()
-    web_thread.start()
+    if web_search_enabled:
+        wiki_thread = threading.Thread(target=_wiki, daemon=True)
+        web_thread = threading.Thread(target=_web, daemon=True)
+        wiki_thread.start()
+        web_thread.start()
 
     # FAISS retrieval runs in main thread while background threads work
     chunks = get_context(user_query, top_k=top_k, subject_filter=subject_code)
-    wiki_thread.join(timeout=4)
-    web_thread.join(timeout=6)   # web search needs a bit more time
+    if web_search_enabled and wiki_thread and web_thread:
+        wiki_thread.join(timeout=4)
+        web_thread.join(timeout=6)   # web search needs a bit more time
 
     # ── 2. Build deduplicated source list ────────────────────────────────────
     sources = []
@@ -368,8 +387,9 @@ def stream_answer(
                 yield sse({"type": "token", "text": token})
 
     except Exception as e:
-        yield sse({"type": "error", "text": str(e)})
-        full_reply = f"Error: {e}"
+        logger.exception("RAG stream_answer failed: %s", e)
+        yield sse({"type": "error", "text": "Sorry, the chatbot is temporarily unavailable."})
+        full_reply = "Sorry, something went wrong while generating the response."
 
     # ── 5. Yield done ────────────────────────────────────────────────────────
     yield sse({"type": "done", "full_reply": full_reply, "sources": [s["title"] for s in sources]})
@@ -435,4 +455,9 @@ def ask(
         reply = response.choices[0].message.content.strip()
         return {"reply": reply, "sources": sources, "error": None}
     except Exception as e:
-        return {"reply": f"⚠️ Error: {e}", "sources": [], "error": str(e)}
+        logger.exception("RAG ask failed: %s", e)
+        return {
+            "reply": "Sorry, something went wrong while generating the response.",
+            "sources": [],
+            "error": "internal_error",
+        }

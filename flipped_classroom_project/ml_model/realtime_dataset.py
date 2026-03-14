@@ -11,9 +11,10 @@
 
  1. UPSERT  – adds or updates that student's row in dataset.csv
               (match key = student_id + subject code)
- 2. RETRAIN – when RETRAIN_EVERY new real rows have been added
-              since the last retrain, retrains all ML models
-              in a background thread (non-blocking).
+ 2. RETRAIN – triggers model retraining immediately for any
+              meaningful record that has a confirmed final score.
+              If a retrain is already running, one follow-up retrain
+              request is queued and runs right after the current one.
 
  Thread safety: a threading.Lock protects dataset.csv I/O.
 ============================================================
@@ -40,11 +41,12 @@ DATASET_CSV = ML_DIR / 'dataset.csv'
 COUNTER_FILE = ML_DIR / '.new_rows_since_retrain'   # tiny counter file
 
 # ── Config ────────────────────────────────────────────────────
-RETRAIN_EVERY = 5       # retrain after every N new real rows added
+RETRAIN_EVERY = 1       # immediate retraining mode (legacy name retained)
 
 # ── Thread safety ─────────────────────────────────────────────
 _csv_lock      = threading.Lock()
 _retrain_lock  = threading.Lock()   # prevent simultaneous retrains
+_retrain_pending = False            # queue one rerun when retrain is busy
 
 
 # ═════════════════════════════════════════════════════
@@ -154,8 +156,8 @@ def upsert_performance_row(perf) -> bool:
     - Rows with final_exam_score > 0  → true label from _derive_label()
     - Rows with final_exam_score == 0 → label from predicted_label (ML) or 'Pending'
 
-    Retraining is triggered only when rows with a real final_exam_score > 0
-    are newly inserted (to avoid training on unconfirmed labels).
+    Retraining is triggered immediately when a row has a real
+    final_exam_score > 0 (insert OR update).
 
     Returns True if a new row was INSERTED (not just updated).
     """
@@ -203,14 +205,9 @@ def upsert_performance_row(perf) -> bool:
 
         _write_csv(df)
 
-    # Only count toward retraining when a confirmed final score is present
-    if is_new and has_final:
-        count = _get_counter() + 1
-        _set_counter(count)
-        logger.info(f"[RealTime] New real rows since last retrain: {count}")
-        if count >= RETRAIN_EVERY:
-            _set_counter(0)
-            _trigger_retrain_background()
+    # Trigger retrain immediately for confirmed final scores.
+    if has_final:
+        _trigger_retrain_background()
 
     return is_new
 
@@ -221,8 +218,10 @@ def upsert_performance_row(perf) -> bool:
 
 def _trigger_retrain_background() -> None:
     """Spawn a daemon thread to retrain ML models without blocking requests."""
+    global _retrain_pending
     if _retrain_lock.locked():
-        logger.info("[RealTime] Retrain already in progress — skipping.")
+        _retrain_pending = True
+        logger.info("[RealTime] Retrain already in progress — queued one follow-up run.")
         return
 
     t = threading.Thread(target=_retrain_worker, daemon=True,
@@ -233,6 +232,8 @@ def _trigger_retrain_background() -> None:
 
 def _retrain_worker() -> None:
     """Run inside background thread — retrains all saved_models/*.pkl."""
+    global _retrain_pending
+    rerun_after = False
     with _retrain_lock:
         try:
             logger.info("[RealTime] Starting model retrain ...")
@@ -251,6 +252,14 @@ def _retrain_worker() -> None:
             logger.error(f"[RealTime] Retrain failed: {e}")
             print(f"[FlipLearn RealTime] Retrain error: {e}")
 
+        # If another request arrived while retraining, run one more pass.
+        rerun_after = _retrain_pending
+        _retrain_pending = False
+
+    if rerun_after:
+        logger.info("[RealTime] Running queued retrain request.")
+        _trigger_retrain_background()
+
 
 # ═════════════════════════════════════════════════════
 # MANUAL TRIGGER (admin / management command)
@@ -258,7 +267,6 @@ def _retrain_worker() -> None:
 
 def force_retrain() -> None:
     """Manually trigger a background retrain (e.g. from Django admin action)."""
-    _set_counter(0)
     _trigger_retrain_background()
 
 
@@ -272,7 +280,9 @@ def dataset_stats() -> dict:
         'total_rows':   len(df),
         'real_rows':    int(real_rows),
         'synthetic_rows': len(df) - int(real_rows),
-        'pending_until_retrain': max(0, RETRAIN_EVERY - _get_counter()),
+        'pending_until_retrain': 0,
+        'retrain_running': _retrain_lock.locked(),
+        'retrain_queued': _retrain_pending,
         'label_dist': df['performance_label'].value_counts().to_dict()
                       if 'performance_label' in df.columns else {},
     }

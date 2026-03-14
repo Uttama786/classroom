@@ -1,3 +1,5 @@
+import os
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -6,6 +8,39 @@ from .models import (
     StudyMaterial, Quiz, QuizQuestion, Assignment,
     AssignmentSubmission, QuizAttempt, Subject
 )
+
+
+def _validate_uploaded_file(
+    uploaded_file,
+    *,
+    allowed_extensions,
+    allowed_content_types,
+    max_size_bytes,
+    label,
+):
+    """Shared file validation for all upload forms."""
+    if not uploaded_file:
+        return uploaded_file
+
+    ext = os.path.splitext(uploaded_file.name or "")[1].lower()
+    if ext not in allowed_extensions:
+        allowed = ', '.join(sorted(allowed_extensions))
+        raise forms.ValidationError(
+            f'Unsupported file type for {label}. Allowed: {allowed}.'
+        )
+
+    content_type = (getattr(uploaded_file, 'content_type', '') or '').lower()
+    if content_type and content_type not in allowed_content_types:
+        raise forms.ValidationError(
+            f'Unsupported MIME type for {label}: {content_type}.'
+        )
+
+    if uploaded_file.size > max_size_bytes:
+        raise forms.ValidationError(
+            f'{label.capitalize()} file is too large. Max size is {max_size_bytes // (1024 * 1024)} MB.'
+        )
+
+    return uploaded_file
 
 
 class StudentRegistrationForm(UserCreationForm):
@@ -73,6 +108,23 @@ class VideoLectureForm(forms.ModelForm):
             )
         return cleaned_data
 
+    def clean_video_file(self):
+        video_file = self.cleaned_data.get('video_file')
+        return _validate_uploaded_file(
+            video_file,
+            allowed_extensions={'.mp4', '.webm', '.mov', '.mkv', '.avi'},
+            allowed_content_types={
+                'video/mp4',
+                'video/webm',
+                'video/quicktime',
+                'video/x-matroska',
+                'video/x-msvideo',
+                'application/octet-stream',
+            },
+            max_size_bytes=500 * 1024 * 1024,
+            label='video',
+        )
+
 
 class StudyMaterialForm(forms.ModelForm):
     class Meta:
@@ -81,6 +133,25 @@ class StudyMaterialForm(forms.ModelForm):
         widgets = {
             'description': forms.Textarea(attrs={'rows': 3}),
         }
+
+    def clean_file(self):
+        material_file = self.cleaned_data.get('file')
+        return _validate_uploaded_file(
+            material_file,
+            allowed_extensions={'.pdf', '.doc', '.docx', '.ppt', '.pptx', '.txt', '.md'},
+            allowed_content_types={
+                'application/pdf',
+                'application/msword',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'application/vnd.ms-powerpoint',
+                'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+                'text/plain',
+                'text/markdown',
+                'application/octet-stream',
+            },
+            max_size_bytes=25 * 1024 * 1024,
+            label='study material',
+        )
 
 
 class QuizForm(forms.ModelForm):
@@ -111,11 +182,61 @@ class AssignmentForm(forms.ModelForm):
             'due_date': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
         }
 
+    def clean_attachment(self):
+        attachment = self.cleaned_data.get('attachment')
+        return _validate_uploaded_file(
+            attachment,
+            allowed_extensions={'.pdf', '.doc', '.docx', '.ppt', '.pptx', '.txt', '.zip', '.py'},
+            allowed_content_types={
+                'application/pdf',
+                'application/msword',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'application/vnd.ms-powerpoint',
+                'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+                'text/plain',
+                'application/zip',
+                'application/x-zip-compressed',
+                'text/x-python',
+                'application/octet-stream',
+            },
+            max_size_bytes=25 * 1024 * 1024,
+            label='assignment attachment',
+        )
+
 
 class AssignmentSubmissionForm(forms.ModelForm):
     class Meta:
         model = AssignmentSubmission
         fields = ['submitted_file']
+
+    def clean_submitted_file(self):
+        submitted_file = self.cleaned_data.get('submitted_file')
+        return _validate_uploaded_file(
+            submitted_file,
+            allowed_extensions={
+                '.pdf', '.doc', '.docx', '.txt', '.zip', '.py', '.ipynb',
+                '.java', '.c', '.cpp', '.js', '.html', '.css', '.sql',
+            },
+            allowed_content_types={
+                'application/pdf',
+                'application/msword',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'text/plain',
+                'application/zip',
+                'application/x-zip-compressed',
+                'application/x-ipynb+json',
+                'text/x-python',
+                'text/x-java-source',
+                'text/x-c',
+                'text/javascript',
+                'text/html',
+                'text/css',
+                'application/sql',
+                'application/octet-stream',
+            },
+            max_size_bytes=25 * 1024 * 1024,
+            label='submission',
+        )
 
 
 class GradeSubmissionForm(forms.ModelForm):

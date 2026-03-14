@@ -1,4 +1,4 @@
-# 📘 Performance Analysis of the Flipped Classroom in CSE Education Using Machine Learning
+# 📘 Flipped Classroom Using RAG: Performance Analysis in CSE Education
 
 ## 📌 Project Overview
 This project is a web-based learning platform designed to implement and analyze the **Flipped Classroom** model in **Computer Science and Engineering (CSE)** education. Students learn from videos and notes before class, then practice with quizzes, discussions, and coding tasks during class. The system collects interaction data and uses Machine Learning models to **predict performance and identify at-risk students**.

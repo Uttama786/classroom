@@ -8,7 +8,7 @@ Usage (Procfile release step):
 Required env vars:
     DJANGO_SUPERUSER_USERNAME  (default: admin)
     DJANGO_SUPERUSER_EMAIL     (default: admin@example.com)
-    DJANGO_SUPERUSER_PASSWORD  (default: admin1234)
+    DJANGO_SUPERUSER_PASSWORD  (required)
 """
 
 import os
@@ -25,9 +25,25 @@ class Command(BaseCommand):
             self.stdout.write('[create_admin] Superuser already exists — skipping.')
             return
 
-        username = os.environ.get('DJANGO_SUPERUSER_USERNAME', 'admin')
-        email    = os.environ.get('DJANGO_SUPERUSER_EMAIL',    'admin@example.com')
-        password = os.environ.get('DJANGO_SUPERUSER_PASSWORD', 'admin1234')
+        username = os.environ.get('DJANGO_SUPERUSER_USERNAME', 'admin').strip()
+        email = os.environ.get('DJANGO_SUPERUSER_EMAIL', 'admin@example.com').strip()
+        password = os.environ.get('DJANGO_SUPERUSER_PASSWORD', '').strip()
+
+        if not password:
+            self.stdout.write(
+                self.style.WARNING(
+                    '[create_admin] DJANGO_SUPERUSER_PASSWORD not set — skipping superuser creation.'
+                )
+            )
+            return
+
+        if len(password) < 12:
+            self.stdout.write(
+                self.style.WARNING(
+                    '[create_admin] Password too short (<12 chars) — skipping superuser creation.'
+                )
+            )
+            return
 
         User.objects.create_superuser(username=username, email=email, password=password)
         self.stdout.write(

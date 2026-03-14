@@ -10,7 +10,7 @@
   </script>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>{% block title %}FlipLearn – CSE Flipped Classroom Platform{% endblock %}</title>
+  <title>{% block title %}FlipLearn – Flipped Classroom Using RAG{% endblock %}</title>
   {% load static %}
   <link rel="icon" type="image/svg+xml" href="{% static 'images/logo.svg' %}"/>
   <!-- Bootstrap 5 -->
@@ -25,7 +25,7 @@
   <script src="https://cdn.jsdelivr.net/npm/marked@9.1.6/marked.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-  <link rel="stylesheet" href="{% static 'css/style.css' %}"/>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}?v=20260314-1"/>
   {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -291,6 +291,22 @@
 {% endif %}
 
 <!-- Footer -->
+<style>
+  /* Hard override for footer readability across themes and cached CSS states */
+  .site-footer,
+  .site-footer p,
+  .site-footer small,
+  .site-footer span,
+  .site-footer a,
+  .site-footer h6,
+  .site-footer .footer-desc,
+  .site-footer .footer-copy,
+  .site-footer .footer-tech-badge,
+  .site-footer .footer-info-label,
+  .site-footer .footer-info-value {
+    color: #fff !important;
+  }
+</style>
 <footer class="site-footer mt-5">
   <div class="footer-top">
     <div class="container-fluid px-4 px-md-5">
@@ -306,15 +322,15 @@
               FlipLearn <small class="text-warning" style="font-size:0.55rem;vertical-align:super;">CSE</small>
             </span>
           </div>
-          <p class="footer-desc mb-3">
+          <p class="footer-desc mb-3 text-white">
             An AI/ML-powered flipped classroom platform for M.Tech CSE students.
             Learn before class, practise during class, and let machine learning
             predict your performance.
           </p>
           <div class="d-flex gap-2 flex-wrap">
-            <span class="footer-badge"><i class="bi bi-mortarboard-fill me-1"></i>M.Tech CSE</span>
-            <span class="footer-badge"><i class="bi bi-robot me-1"></i>ML-Powered</span>
-            <span class="footer-badge"><i class="bi bi-shield-check me-1"></i>Research 2026</span>
+            <span class="footer-badge text-white"><i class="bi bi-mortarboard-fill me-1"></i>M.Tech CSE</span>
+            <span class="footer-badge text-white"><i class="bi bi-robot me-1"></i>ML-Powered</span>
+            <span class="footer-badge text-white"><i class="bi bi-shield-check me-1"></i>Research 2026</span>
           </div>
         </div>
 
@@ -356,12 +372,12 @@
         <div class="col-6 col-md-3 col-lg-2">
           <h6 class="footer-heading">Tech Stack</h6>
           <ul class="footer-links">
-            <li><span><i class="bi bi-braces me-2"></i>Django 4.2</span></li>
-            <li><span><i class="bi bi-filetype-py me-2"></i>Python 3.11</span></li>
-            <li><span><i class="bi bi-bootstrap-fill me-2"></i>Bootstrap 5.3</span></li>
-            <li><span><i class="bi bi-robot me-2"></i>scikit-learn 1.3</span></li>
-            <li><span><i class="bi bi-search me-2"></i>FAISS + LLaMA-3.1</span></li>
-            <li><span><i class="bi bi-database me-2"></i>PostgreSQL</span></li>
+            <li><span class="text-white"><i class="bi bi-braces me-2"></i>Django 4.2</span></li>
+            <li><span class="text-white"><i class="bi bi-filetype-py me-2"></i>Python 3.11</span></li>
+            <li><span class="text-white"><i class="bi bi-bootstrap-fill me-2"></i>Bootstrap 5.3</span></li>
+            <li><span class="text-white"><i class="bi bi-robot me-2"></i>scikit-learn 1.3</span></li>
+            <li><span class="text-white"><i class="bi bi-search me-2"></i>FAISS + LLaMA-3.1</span></li>
+            <li><span class="text-white"><i class="bi bi-database me-2"></i>PostgreSQL</span></li>
           </ul>
         </div>
 
@@ -451,7 +467,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 {% load static %}
-<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'js/main.js' %}?v=20260314-1"></script>
 {% block extra_js %}{% endblock %}
 
 <!-- ══ Global RAG shortcut (staff only) ══ -->

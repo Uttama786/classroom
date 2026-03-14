@@ -2,7 +2,7 @@
 RAG Indexer — builds FAISS index from:
   1. Subject knowledge txt files (rag_knowledge/)
   2. Textbook PDFs (rag_textbooks/)
-  3. Uploaded study materials (PDFs in media/)
+    3. Uploaded study materials (PDF, DOCX, TXT, MD in media/materials/)
   4. Quiz questions from the database
 """
 
@@ -131,18 +131,66 @@ def load_textbooks(textbooks_dir: pathlib.Path) -> List[dict]:
 
 
 def load_pdf_materials(media_dir: pathlib.Path) -> List[dict]:
-    """Extract text from uploaded PDF study materials."""
+    """Extract text from uploaded study materials in media/materials/."""
     all_chunks = []
-    pdf_paths = list(media_dir.rglob("*.pdf"))
-    print(f"[Indexer] Found {len(pdf_paths)} PDF(s) to index...")
-    for pdf_path in pdf_paths:
-        full_text, total_pages, method = _extract_pdf_text(pdf_path)
-        if full_text.strip():
-            chunks = chunk_text(full_text, source=f"Study Material: {pdf_path.name}")
-            all_chunks.extend(chunks)
-            print(f"[Indexer]   Indexed {len(chunks)} chunks from {pdf_path.name} via {method}")
+    materials_dir = media_dir / "materials"
+    if not materials_dir.exists():
+        print(f"[Indexer] Materials dir not found: {materials_dir}")
+        return all_chunks
+
+    allowed = {'.pdf', '.docx', '.txt', '.md'}
+    material_paths = [
+        p for p in materials_dir.rglob('*')
+        if p.is_file() and p.suffix.lower() in allowed
+    ]
+    print(f"[Indexer] Found {len(material_paths)} uploaded material file(s) to index...")
+
+    for path in material_paths:
+        ext = path.suffix.lower()
+        subject_code = _detect_subject(path.name)
+
+        if ext == '.pdf':
+            full_text, total_pages, method = _extract_pdf_text(path)
+        elif ext in {'.txt', '.md'}:
+            try:
+                full_text = path.read_text(encoding='utf-8', errors='ignore')
+                total_pages = 1
+                method = 'text'
+            except Exception as e:
+                print(f"[Indexer]   WARNING: Could not read text file {path.name}: {e}")
+                full_text, total_pages, method = '', 0, 'none'
+        elif ext == '.docx':
+            try:
+                from docx import Document
+                doc = Document(str(path))
+                paras = [p.text.strip() for p in doc.paragraphs if p.text.strip()]
+                for table in doc.tables:
+                    for row in table.rows:
+                        row_text = ' | '.join(c.text.strip() for c in row.cells if c.text.strip())
+                        if row_text:
+                            paras.append(row_text)
+                full_text = '\n\n'.join(paras)
+                total_pages = 1
+                method = 'docx'
+            except Exception as e:
+                print(f"[Indexer]   WARNING: Could not read DOCX file {path.name}: {e}")
+                full_text, total_pages, method = '', 0, 'none'
         else:
-            print(f"[Indexer]   WARNING: No text from {pdf_path.name}")
+            full_text, total_pages, method = '', 0, 'none'
+
+        if full_text.strip():
+            chunks = chunk_text(
+                full_text,
+                source=f"Study Material: {path.name}",
+                subject_code=subject_code,
+            )
+            all_chunks.extend(chunks)
+            print(
+                f"[Indexer]   Indexed {len(chunks)} chunks from {path.name} "
+                f"({total_pages} page(s)) via {method}"
+            )
+        else:
+            print(f"[Indexer]   WARNING: No text from {path.name}")
     return all_chunks
 
 

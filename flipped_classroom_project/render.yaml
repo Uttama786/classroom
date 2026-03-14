@@ -1,5 +1,6 @@
 # render.yaml — Deploy FlipLearn to Render.com (free tier)
 # Docs: https://render.com/docs/blueprint-spec
+# Keep this file aligned with ../render.yaml to avoid deployment drift.
 
 databases:
   - name: fliplearn-db
@@ -13,25 +14,26 @@ services:
     runtime: python
     plan: free
     buildCommand: |
-      pip install -r requirements.txt &&
-      python manage.py collectstatic --noinput &&
-      python manage.py migrate --noinput &&
-      python manage.py build_rag_index
-    startCommand: gunicorn flipped_classroom_project.wsgi:application --workers 2 --threads 2 --timeout 120 --bind 0.0.0.0:$PORT
+      pip install torch==2.5.1 --index-url https://download.pytorch.org/whl/cpu --no-cache-dir &&
+      pip install -r requirements.txt --no-cache-dir &&
+      python manage.py collectstatic --noinput
+    startCommand: python manage.py migrate --noinput && python manage.py create_admin && gunicorn flipped_classroom_project.wsgi:application --workers 1 --threads 4 --timeout 120 --bind 0.0.0.0:$PORT
     envVars:
       - key: SECRET_KEY
-        generateValue: true          # Render auto-generates a secure key
+        generateValue: true
       - key: DEBUG
         value: "False"
       - key: ALLOWED_HOSTS
-        value: "fliplearn.onrender.com"
+        value: ".onrender.com"
       - key: CSRF_TRUSTED_ORIGINS
-        value: "https://fliplearn.onrender.com"
+        value: "https://*.onrender.com"
       - key: GROQ_API_KEY
-        sync: false                  # Enter manually in the Render dashboard
+        sync: false
+      - key: CLOUDINARY_URL
+        sync: false
       - key: DATABASE_URL
         fromDatabase:
           name: fliplearn-db
           property: connectionString
       - key: PYTHON_VERSION
-        value: "3.11"
+        value: "3.11.0"

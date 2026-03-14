@@ -1,28 +1,8 @@
-// ── Hide navbar on scroll-down / show on scroll-up ────────
+// ── Keep navbar fixed at top (no hide-on-scroll) ─────────
 (function () {
   const navbar = document.querySelector('.navbar');
   if (!navbar) return;
-
-  let lastScrollY = window.scrollY;
-  let ticking = false;
-
-  window.addEventListener('scroll', function () {
-    if (!ticking) {
-      window.requestAnimationFrame(function () {
-        const currentScrollY = window.scrollY;
-        // Only hide after scrolled past 60px so the navbar doesn't
-        // disappear immediately on tiny scrolls at the top of the page.
-        if (currentScrollY > lastScrollY && currentScrollY > 60) {
-          navbar.classList.add('navbar-hidden');
-        } else {
-          navbar.classList.remove('navbar-hidden');
-        }
-        lastScrollY = currentScrollY;
-        ticking = false;
-      });
-      ticking = true;
-    }
-  }, { passive: true });
+  navbar.classList.remove('navbar-hidden');
 })();
 
 // ── Dark / Light Mode Toggle ────────────────────────────
