@@ -47,7 +47,7 @@
               <i class="bi bi-calendar me-1"></i>{{ material.uploaded_at|date:"d M Y" }}
             </div>
             {% if material.file %}
-            <a href="{{ material.file.url }}" class="btn btn-sm btn-outline-success" download>
+            <a href="{% url 'download_material' material.id %}" class="btn btn-sm btn-outline-success">
               <i class="bi bi-download me-1"></i>Download
             </a>
             {% else %}

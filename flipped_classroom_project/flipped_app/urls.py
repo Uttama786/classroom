@@ -26,6 +26,7 @@ urlpatterns = [
     path('materials/', views.material_list_view, name='materials'),
     path('materials/subject/<int:subject_id>/', views.material_list_view, name='materials_by_subject'),
     path('materials/upload/', views.upload_material_view, name='upload_material'),
+    path('materials/download/<int:material_id>/', views.download_material_view, name='download_material'),
 
     # Quizzes
     path('quizzes/', views.quiz_list_view, name='quizzes'),

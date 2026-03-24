@@ -13,7 +13,23 @@ import pathlib
 import textwrap
 
 from django.conf import settings
+from django.core.files.base import File
 from django.core.management.base import BaseCommand
+
+
+def _normalized_material_name(name: str) -> str:
+    """Ensure material file names are stored as materials/<filename>."""
+    clean = (name or "").replace("\\", "/").strip("/")
+    filename = pathlib.PurePosixPath(clean).name
+    return f"materials/{filename}" if filename else ""
+
+
+def _storage_exists(material) -> bool:
+    """Safely check storage existence across local and Cloudinary backends."""
+    try:
+        return bool(material.file and material.file.name and material.file.storage.exists(material.file.name))
+    except Exception:
+        return False
 
 
 # ── subject-specific chapter content ─────────────────────────────────────────
@@ -325,10 +341,15 @@ class Command(BaseCommand):
             targets = list(all_materials)
             self.stdout.write(f"Regenerating all {len(targets)} PDFs…")
         else:
-            targets = [m for m in all_materials
-                       if not (media / m.file.name).exists()]
+            targets = [
+                m
+                for m in all_materials
+                if (not m.file)
+                or (not m.file.name)
+                or (not _storage_exists(m))
+            ]
             self.stdout.write(
-                f"Found {len(targets)} material(s) with missing files – generating now…"
+                f"Found {len(targets)} material(s) missing in storage – generating now…"
             )
 
         if not targets:
@@ -338,25 +359,38 @@ class Command(BaseCommand):
         ok = 0
         skipped = 0
         for mat in targets:
-            dest = media / mat.file.name
+            if not mat.file or not mat.file.name:
+                self.stdout.write(f"  [skip] {mat.title}  (no file name set)")
+                skipped += 1
+                continue
+
+            normalized_name = _normalized_material_name(mat.file.name)
+            if not normalized_name:
+                self.stdout.write(f"  [skip] {mat.title}  (invalid file name)")
+                skipped += 1
+                continue
+
+            dest = media / normalized_name
             dest.parent.mkdir(parents=True, exist_ok=True)
 
             chapters = SUBJECT_CONTENT.get(mat.subject.code, _FALLBACK_CHAPTERS)
-            fname_lower = mat.file.name.lower()
+            fname_lower = normalized_name.lower()
             try:
                 if fname_lower.endswith(".pdf"):
                     _build_pdf(dest, mat.title, mat.subject.name, chapters)
                 elif fname_lower.endswith(".txt"):
                     _build_txt(dest, mat.title, chapters)
                 else:
-                    self.stdout.write(f"  [skip] {mat.file.name}  (unsupported type)")
+                    self.stdout.write(f"  [skip] {normalized_name}  (unsupported type)")
                     skipped += 1
                     continue
-                self.stdout.write(self.style.SUCCESS(f"  [ok]   {mat.file.name}"))
+                with dest.open("rb") as fh:
+                    mat.file.save(normalized_name, File(fh), save=True)
+                self.stdout.write(self.style.SUCCESS(f"  [ok]   {normalized_name}"))
                 ok += 1
             except Exception as exc:
                 self.stdout.write(
-                    self.style.ERROR(f"  [err]  {mat.file.name} – {exc}")
+                    self.style.ERROR(f"  [err]  {normalized_name} – {exc}")
                 )
 
         self.stdout.write("")

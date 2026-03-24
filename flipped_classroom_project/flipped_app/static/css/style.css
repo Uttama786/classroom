@@ -1840,6 +1840,7 @@ main { animation: pageIn 0.45s cubic-bezier(0.22,1,0.36,1); }
 }
 .chat-answer-text pre {
   background: var(--chat-pre-bg);
+  color: var(--chat-text);
   border-radius: 10px;
   padding: 14px 16px;
   overflow-x: auto;
@@ -1852,6 +1853,10 @@ main { animation: pageIn 0.45s cubic-bezier(0.22,1,0.36,1); }
   padding: 0;
   color: inherit;
   font-size: inherit;
+}
+.chat-answer-text pre .hljs {
+  background: transparent;
+  color: inherit;
 }
 .chat-answer-text blockquote {
   border-left: 3px solid var(--primary);

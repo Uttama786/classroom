@@ -30,6 +30,13 @@
       <!-- Student dropdown -->
       <div class="col-12 col-sm-6 col-md-3">
         <label class="form-label small text-muted mb-1"><i class="bi bi-person me-1"></i>Student</label>
+        <input
+          type="text"
+          id="studentSearch"
+          class="form-control form-control-sm mb-1"
+          placeholder="Type to find student..."
+          autocomplete="off"
+        >
         <select name="student" class="form-select form-select-sm" id="studentSelect">
           <option value="">All Students</option>
           {% for u in all_students %}
@@ -44,7 +51,14 @@
       <!-- Subject -->
       <div class="col-6 col-sm-6 col-md-2">
         <label class="form-label small text-muted mb-1"><i class="bi bi-book me-1"></i>Subject</label>
-        <select name="subject" class="form-select form-select-sm">
+        <input
+          type="text"
+          id="subjectSearch"
+          class="form-control form-control-sm mb-1"
+          placeholder="Type subject..."
+          autocomplete="off"
+        >
+        <select name="subject" class="form-select form-select-sm" id="subjectSelect">
           <option value="">All Subjects</option>
           {% for s in subjects %}
           <option value="{{ s.id }}" {% if selected_subject == s.id|stringformat:"s" %}selected{% endif %}>{{ s.code }}</option>
@@ -274,6 +288,64 @@ new Chart(ctx, {
     }
   }
 });
+
+function makeSelectSearchable(searchInputId, selectId) {
+  const searchInput = document.getElementById(searchInputId);
+  const select = document.getElementById(selectId);
+  if (!searchInput || !select) return;
+
+  const originalOptions = Array.from(select.options).map(opt => ({
+    value: opt.value,
+    text: opt.text,
+    selected: opt.selected,
+  }));
+
+  const applyFilter = () => {
+    const q = (searchInput.value || '').trim().toLowerCase();
+    const currentValue = select.value;
+    const currentOptionText = select.options[select.selectedIndex]?.text || '';
+
+    select.innerHTML = '';
+
+    let hasCurrentValue = false;
+
+    originalOptions.forEach((opt) => {
+      const isDefaultAll = opt.value === '';
+      const matches = isDefaultAll || opt.text.toLowerCase().includes(q);
+      if (!matches) return;
+
+      const option = document.createElement('option');
+      option.value = opt.value;
+      option.text = opt.text;
+      option.selected = opt.value === currentValue || (!currentValue && opt.selected);
+      if (opt.value === currentValue) hasCurrentValue = true;
+      select.appendChild(option);
+    });
+
+    // Keep the user-selected value available even if it doesn't match the search text.
+    if (currentValue && !hasCurrentValue) {
+      const cleanSelectedText = currentOptionText.replace(/\s+\(selected\)$/, '');
+      const preserved = document.createElement('option');
+      preserved.value = currentValue;
+      preserved.text = `${cleanSelectedText} (selected)`;
+      preserved.selected = true;
+      select.appendChild(preserved);
+    }
+
+    if (select.options.length === 0) {
+      const noneOption = document.createElement('option');
+      noneOption.value = '';
+      noneOption.text = 'No match found';
+      select.appendChild(noneOption);
+      select.value = '';
+    }
+  };
+
+  searchInput.addEventListener('input', applyFilter);
+}
+
+makeSelectSearchable('studentSearch', 'studentSelect');
+makeSelectSearchable('subjectSearch', 'subjectSelect');
 </script>
 {% endblock %}
 

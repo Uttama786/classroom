@@ -5,10 +5,11 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.db.models import Avg, Count, Sum, FloatField
 from django.db.models.functions import Coalesce
-from django.http import JsonResponse, HttpResponse, StreamingHttpResponse
+from django.http import JsonResponse, HttpResponse, StreamingHttpResponse, FileResponse, Http404
 from django.conf import settings
 from django.utils import timezone
 from django.utils.http import url_has_allowed_host_and_scheme
+from pathlib import Path
 import json
 import csv
 import os
@@ -392,6 +393,27 @@ def material_list_view(request, subject_id=None):
         'subjects': subjects,
         'subject': subject,
     })
+
+
+@login_required
+def download_material_view(request, material_id):
+    """Serve study materials from local MEDIA_ROOT with a stable app URL."""
+    material = get_object_or_404(StudyMaterial, id=material_id)
+    if not material.file or not material.file.name:
+        raise Http404("Material file not found")
+
+    filename = Path(material.file.name).name
+    rel_path = Path("materials") / filename
+    local_path = Path(settings.MEDIA_ROOT) / rel_path
+
+    if not local_path.exists():
+        raise Http404("Material file is unavailable on this server")
+
+    return FileResponse(
+        local_path.open("rb"),
+        as_attachment=True,
+        filename=filename,
+    )
 
 
 @login_required

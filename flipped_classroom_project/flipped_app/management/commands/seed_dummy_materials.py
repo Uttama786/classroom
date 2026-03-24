@@ -14,6 +14,7 @@ import textwrap
 
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.files.base import File
 from django.core.management.base import BaseCommand
 
 
@@ -402,15 +403,15 @@ class Command(BaseCommand):
                 if not pdf_path.exists() or force:
                     self.stdout.write(f"  [pdf]  Generating {mat['filename']} …")
                     _make_pdf(pdf_path, pdf_title, mat["chapters"])
-                StudyMaterial.objects.update_or_create(
+                material, _ = StudyMaterial.objects.get_or_create(
                     title=pdf_title,
                     subject=subj,
-                    defaults={
-                        "description": mat["description"],
-                        "file": pdf_rel,
-                        "uploaded_by": teacher,
-                    },
                 )
+                material.description = mat["description"]
+                material.uploaded_by = teacher
+                with pdf_path.open("rb") as fh:
+                    material.file.save(pdf_rel, File(fh), save=False)
+                material.save()
                 created_count += 1
                 self.stdout.write(self.style.SUCCESS(f"  [ok]   {pdf_title}"))
 
@@ -428,15 +429,15 @@ class Command(BaseCommand):
                 if not notes_path.exists() or force:
                     self.stdout.write(f"  [txt]  Generating {mat['notes_filename']} …")
                     _make_notes(notes_path, notes_title, mat["chapters"])
-                StudyMaterial.objects.update_or_create(
+                material, _ = StudyMaterial.objects.get_or_create(
                     title=notes_title,
                     subject=subj,
-                    defaults={
-                        "description": mat["description"] + " (Quick-reference text version.)",
-                        "file": notes_rel,
-                        "uploaded_by": teacher,
-                    },
                 )
+                material.description = mat["description"] + " (Quick-reference text version.)"
+                material.uploaded_by = teacher
+                with notes_path.open("rb") as fh:
+                    material.file.save(notes_rel, File(fh), save=False)
+                material.save()
                 created_count += 1
                 self.stdout.write(self.style.SUCCESS(f"  [ok]   {notes_title}"))
 
