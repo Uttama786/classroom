@@ -136,8 +136,16 @@ def train_classification_models(X, y_cls, le):
     print("CLASSIFICATION MODEL TRAINING – Predict Performance Label")
     print("=" * 60)
 
+    # Stratified split requires >= 2 samples per class.
+    # Fall back to random split if any class is too small (avoids ValueError crash
+    # that would silently fail the background retrain and leave stale models).
+    min_class_size = pd.Series(y_cls).value_counts().min()
+    use_stratify = y_cls if min_class_size >= 2 else None
+    if use_stratify is None:
+        print("⚠️  Skipping stratify — one or more classes have < 2 samples (dataset too small).")
+
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y_cls, test_size=0.2, random_state=42, stratify=y_cls
+        X, y_cls, test_size=0.2, random_state=42, stratify=use_stratify
     )
 
     class_names = list(le.classes_)
@@ -320,14 +328,31 @@ def main():
     print("   Author : Uttam Vitthal Bhise | M.Tech CSE\n")
 
     df = load_data()
-    X_scaled, y_reg, y_cls, le, scaler = preprocess(df)
+
+    # ── Filter: only train on rows that have a confirmed final score ─────────
+    # Rows with final_exam_score == 0 are engagement-only (exam not taken yet)
+    # and should not be used as training targets — they corrupt the model.
+    df_train = df[df[TARGET_REG] > 0].copy()
+    skipped = len(df) - len(df_train)
+    if skipped > 0:
+        print(f"ℹ️  Skipped {skipped} rows with final_exam_score=0 (exam not yet taken).")
+
+    # ── Guard: need at least 8 rows with 2 classes to train meaningfully ─────
+    MIN_ROWS = 8
+    if len(df_train) < MIN_ROWS:
+        print(f"⚠️  Dataset has only {len(df_train)} rows with final scores (need {MIN_ROWS}+). "
+              f"Skipping training to avoid unreliable models. "
+              f"Add more student records with final_exam_score > 0 first.")
+        return
+
+    X_scaled, y_reg, y_cls, le, scaler = preprocess(df_train)
 
     reg_results = train_regression_models(X_scaled, y_reg)
     cls_results = train_classification_models(X_scaled, y_cls, le)
 
     print("\n📊 Generating visualisation plots...")
     plot_model_comparison(reg_results, cls_results)
-    plot_flipped_vs_traditional(df)
+    plot_flipped_vs_traditional(df_train)
 
     print_summary(reg_results, cls_results)
     print("\n🎉 Training complete!\n")

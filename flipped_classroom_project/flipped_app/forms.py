@@ -45,13 +45,13 @@ def _validate_uploaded_file(
 
 class StudentRegistrationForm(UserCreationForm):
     _fc = {'class': 'form-control'}
-    first_name   = forms.CharField(max_length=50, required=True,  widget=forms.TextInput(attrs=_fc))
-    last_name    = forms.CharField(max_length=50, required=True,  widget=forms.TextInput(attrs=_fc))
-    email        = forms.EmailField(required=True,                 widget=forms.EmailInput(attrs=_fc))
-    roll_number  = forms.CharField(max_length=20,                  widget=forms.TextInput(attrs=_fc))
-    semester     = forms.IntegerField(min_value=1, max_value=8,    widget=forms.NumberInput(attrs=_fc))
-    phone        = forms.CharField(max_length=15, required=False,  widget=forms.TextInput(attrs=_fc))
-    previous_gpa = forms.FloatField(min_value=0.0, max_value=10.0, widget=forms.NumberInput(attrs={**_fc, 'step': '0.01'}))
+    first_name   = forms.CharField(max_length=50, required=True,  widget=forms.TextInput(attrs={**_fc, 'autocomplete': 'given-name'}))
+    last_name    = forms.CharField(max_length=50, required=True,  widget=forms.TextInput(attrs={**_fc, 'autocomplete': 'family-name'}))
+    email        = forms.EmailField(required=True,                 widget=forms.EmailInput(attrs={**_fc, 'autocomplete': 'email'}))
+    roll_number  = forms.CharField(max_length=20,                  widget=forms.TextInput(attrs={**_fc, 'autocomplete': 'off'}))
+    semester     = forms.IntegerField(min_value=1, max_value=8,    widget=forms.NumberInput(attrs={**_fc, 'autocomplete': 'off'}))
+    phone        = forms.CharField(max_length=15, required=False,  widget=forms.TextInput(attrs={**_fc, 'autocomplete': 'tel'}))
+    previous_gpa = forms.FloatField(min_value=0.0, max_value=10.0, widget=forms.NumberInput(attrs={**_fc, 'step': '0.01', 'autocomplete': 'off'}))
 
     class Meta:
         model = User

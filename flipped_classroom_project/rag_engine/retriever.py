@@ -6,6 +6,8 @@ import pickle
 import pathlib
 from typing import List, Optional
 
+from rag_engine.embedding_model import get_embedding_model
+
 PROJECT_ROOT = pathlib.Path(__file__).resolve().parent.parent
 INDEX_DIR = PROJECT_ROOT / "rag_engine" / "saved_index"
 
@@ -22,7 +24,6 @@ def _load_resources():
 
     try:
         import faiss
-        from sentence_transformers import SentenceTransformer
     except ImportError as e:
         print(f"[Retriever] Missing dependency: {e}")
         return False
@@ -31,15 +32,24 @@ def _load_resources():
     chunks_path = INDEX_DIR / "chunks.pkl"
 
     if not index_path.exists() or not chunks_path.exists():
-        print("[Retriever] Index not found. Run: python manage.py build_rag_index")
+        print("[Retriever] Index not found. Trigger a rebuild via Admin → RAG Rebuild.")
         return False
 
     _index = faiss.read_index(str(index_path))
     with open(chunks_path, "rb") as f:
         _chunks = pickle.load(f)
-    _model = SentenceTransformer("all-MiniLM-L6-v2")
+    _model = get_embedding_model()
     print(f"[Retriever] Index loaded — {_index.ntotal} vectors")
     return True
+
+
+def invalidate_cache():
+    """Force the next get_context() call to reload the FAISS index from disk.
+    Call this after a successful RAG rebuild so the new index is used immediately,
+    without requiring a server restart."""
+    global _index, _chunks
+    _index = None
+    _chunks = None
 
 
 def get_context(

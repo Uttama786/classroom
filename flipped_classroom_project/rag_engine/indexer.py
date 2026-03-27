@@ -12,6 +12,8 @@ import pickle
 import pathlib
 from typing import List, Tuple
 
+from rag_engine.embedding_model import EMBEDDING_MODEL_NAME, get_embedding_model
+
 # Add project root to path so Django ORM works
 PROJECT_ROOT = pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
@@ -228,7 +230,6 @@ def load_quiz_questions() -> List[dict]:
 def build_index():
     """Build FAISS index and save to disk."""
     try:
-        from sentence_transformers import SentenceTransformer
         import faiss
         import numpy as np
     except ImportError as e:
@@ -254,9 +255,9 @@ def build_index():
         return
 
     print(f"\n[Indexer] Total chunks: {len(all_chunks)}")
-    print("[Indexer] Loading embedding model (all-MiniLM-L6-v2)...")
+    print(f"[Indexer] Loading embedding model ({EMBEDDING_MODEL_NAME})...")
 
-    model = SentenceTransformer("all-MiniLM-L6-v2")
+    model = get_embedding_model()
     texts = [c["text"] for c in all_chunks]
 
     print("[Indexer] Computing embeddings...")

@@ -70,7 +70,8 @@ if not DEBUG:
         ] or ['https://*.up.railway.app', 'https://*.onrender.com']
     # Prevent browsers from sniffing MIME types
     SECURE_CONTENT_TYPE_NOSNIFF = True
-    SECURE_BROWSER_XSS_FILTER = True
+    # Note: SECURE_BROWSER_XSS_FILTER was removed in Django 4.0 (deprecated header,
+    # modern browsers ignore it; use Content-Security-Policy instead).
 
 INSTALLED_APPS = [
     'django.contrib.admin',

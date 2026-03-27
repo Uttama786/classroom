@@ -53,6 +53,9 @@ def _run_rag_rebuild_job():
     try:
         from rag_engine.indexer import build_index
         build_index()
+        # Invalidate cached FAISS index so next query loads the new index
+        from rag_engine.retriever import invalidate_cache
+        invalidate_cache()
         err = None
     except Exception as exc:
         logger.exception('rebuild_rag_view failed: %s', exc)
@@ -408,6 +411,20 @@ def download_material_view(request, material_id):
 
     if not local_path.exists():
         raise Http404("Material file is unavailable on this server")
+
+    # ── Track material download in StudentPerformance ─────────────────────
+    if is_student(request.user):
+        try:
+            from django.db.models import F
+            perf, _ = StudentPerformance.objects.get_or_create(
+                student=request.user,
+                subject=material.subject,
+            )
+            StudentPerformance.objects.filter(pk=perf.pk).update(
+                materials_downloaded=F('materials_downloaded') + 1
+            )
+        except Exception:
+            pass  # Never let tracking break the file download
 
     return FileResponse(
         local_path.open("rb"),
