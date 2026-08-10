@@ -76,6 +76,12 @@ def wait_for_database_raw():
             attempt_num = attempt + 1
             error_msg = str(e).split('\n')[0]  # Get first line of error
             print(f"⚠️  Attempt {attempt_num}/{MAX_RETRIES}: {error_msg}")
+
+            # If host does not exist (e.g. database deleted on Render), don't waste 60s
+            if 'could not translate host name' in error_msg.lower() or 'name or service not known' in error_msg.lower():
+                if attempt_num >= 3:
+                    print(f"❌ PostgreSQL host '{db_params['host']}' does not exist (database was deleted or URL changed).")
+                    return False
             
             if attempt_num < MAX_RETRIES:
                 print(f"⏳ Retrying in {RETRY_INTERVAL}s...")
@@ -110,11 +116,17 @@ if __name__ == '__main__':
     
     # Wait for database (raw connection test)
     if not wait_for_database_raw():
-        print("❌ Database unavailable. Exiting.")
-        sys.exit(1)
+        print("\n" + "!" * 70)
+        print("⚠️  WARNING: PostgreSQL database is unreachable or deleted on Render.")
+        print("⚠️  Falling back to SQLite database so FlipLearn starts immediately.")
+        print("⚠️  To persist data, create a new PostgreSQL database on Render and")
+        print("⚠️  update the DATABASE_URL environment variable in your Web Service.")
+        print("!" * 70 + "\n")
+        # Remove dead DATABASE_URL from process environment so Django uses SQLite
+        os.environ.pop('DATABASE_URL', None)
     
     print("\n" + "=" * 70)
-    print("✅ Database is ready. Starting Django initialization...")
+    print("✅ Database ready. Starting Django initialization...")
     print("=" * 70)
     
     # Run migrations
