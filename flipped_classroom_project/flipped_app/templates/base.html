@@ -36,9 +36,7 @@
     <a class="navbar-brand fw-bold fs-5 d-flex align-items-center gap-2" href="{% url 'home' %}">
       <img src="{% static 'images/logo.svg' %}" alt="FlipLearn Logo"
            style="height:38px;width:38px;background:rgba(255,255,255,0.12);border-radius:8px;padding:3px;">
-      <span>FlipLearn
-        <small class="text-warning ms-1" style="font-size:0.6rem;vertical-align:super;">CSE</small>
-      </span>
+      <span>FlipLearn</span>
     </a>
     {% if user.is_authenticated %}
     <button id="sidebarHamburger" title="Toggle navigation" aria-label="Toggle sidebar">
@@ -335,16 +333,16 @@
             <img src="{% static 'images/logo.svg' %}" alt="FlipLearn"
                  style="height:40px;width:40px;border-radius:10px;padding:4px;background:rgba(255,255,255,0.08);">
             <span class="fw-bold fs-5 footer-brand">
-              FlipLearn <small class="text-warning" style="font-size:0.55rem;vertical-align:super;">CSE</small>
+              FlipLearn
             </span>
           </div>
           <p class="footer-desc mb-3 text-white">
-            An AI/ML-powered flipped classroom platform for M.Tech CSE students.
+            An AI/ML-powered flipped classroom platform for students.
             Learn before class, practise during class, and let machine learning
             predict your performance.
           </p>
           <div class="d-flex gap-2 flex-wrap">
-            <span class="footer-badge text-white"><i class="bi bi-mortarboard-fill me-1"></i>M.Tech CSE</span>
+            <span class="footer-badge text-white"><i class="bi bi-mortarboard-fill me-1"></i>FlipLearn AI</span>
             <span class="footer-badge text-white"><i class="bi bi-robot me-1"></i>ML-Powered</span>
             <span class="footer-badge text-white"><i class="bi bi-shield-check me-1"></i>Research 2026</span>
           </div>
@@ -467,7 +465,7 @@
           <span class="footer-tech-badge"><i class="bi bi-database me-1"></i>PostgreSQL</span>
         </div>
         <small class="footer-copy">
-          Built with <i class="bi bi-heart-fill text-danger mx-1"></i> for CSE Education
+          Built with <i class="bi bi-heart-fill text-danger mx-1"></i> for Modern Education
         </small>
       </div>
     </div>
@@ -737,7 +735,7 @@
       <div class="chat-welcome" id="chatWelcome">
         <div class="chat-welcome-icon"><i class="bi bi-robot"></i></div>
         <h5 class="chat-welcome-title">Hi {{ user.first_name|default:user.username }}, I'm FlipLearn AI</h5>
-        <p class="chat-welcome-sub">Ask me anything about your CSE subjects or request code in <strong>any programming language</strong> — Python, Java, C++, JavaScript, Go, Rust and more.</p>
+        <p class="chat-welcome-sub">Ask me anything about your subjects or request code in <strong>any programming language</strong> — Python, Java, C++, JavaScript, Go, Rust and more.</p>
         <div class="chat-suggestions" id="chatSuggestions">
           <button class="chat-suggestion-chip" data-q="Explain AVL tree rotations with examples">AVL Tree Rotations</button>
           <button class="chat-suggestion-chip" data-q="What is the difference between TCP and UDP?">TCP vs UDP</button>
