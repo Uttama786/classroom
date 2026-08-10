@@ -1,0 +1,4 @@
+Model,Accuracy,95CI_lo,95CI_hi,F1_weighted,Precision,Recall,CV_mean,CV_std,Test_n,Train_n
+Logistic Regression,0.9583,0.875,1.0,0.9565,0.9625,0.9583,0.9274,0.0246,24,96
+Decision Tree,0.8333,0.6667,0.9583,0.8333,0.8333,0.8333,0.8737,0.0855,24,96
+Random Forest Classifier,0.875,0.75,1.0,0.8771,0.8833,0.875,0.9579,0.0394,24,96

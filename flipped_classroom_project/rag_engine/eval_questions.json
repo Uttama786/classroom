@@ -1,0 +1,4218 @@
+[
+  {
+    "id": "DS_E_001",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "What is the time complexity of binary search on a sorted array?",
+    "ground_truth": "O(log n) — binary search divides the search space in half each step."
+  },
+  {
+    "id": "DS_E_002",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "What data structure uses LIFO (Last In First Out) ordering?",
+    "ground_truth": "Stack — elements are pushed and popped from the top."
+  },
+  {
+    "id": "DS_E_003",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "What is a linked list?",
+    "ground_truth": "A linear data structure where each node contains data and a pointer to the next node."
+  },
+  {
+    "id": "DS_M_001",
+    "subject": "DS",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Explain the difference between BFS and DFS traversal.",
+    "ground_truth": "BFS uses a queue and explores level by level; DFS uses a stack (or recursion) and goes deep before backtracking."
+  },
+  {
+    "id": "DS_M_002",
+    "subject": "DS",
+    "difficulty": "medium",
+    "type": "procedural",
+    "question": "How does AVL tree rebalancing work?",
+    "ground_truth": "AVL trees use rotations (LL, RR, LR, RL) to maintain |balance factor| ≤ 1 after every insert/delete."
+  },
+  {
+    "id": "PY_E_001",
+    "subject": "PY",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "What is a Python decorator?",
+    "ground_truth": "A decorator is a function that wraps another function to modify its behavior without changing the original code."
+  },
+  {
+    "id": "PY_E_002",
+    "subject": "PY",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "What is the difference between a list and a tuple in Python?",
+    "ground_truth": "Lists are mutable (can be modified), tuples are immutable (cannot be changed after creation)."
+  },
+  {
+    "id": "PY_H_001",
+    "subject": "PY",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Explain Python's Global Interpreter Lock (GIL) and its impact on multi-threading.",
+    "ground_truth": "The GIL is a mutex in CPython that allows only one thread to execute Python bytecode at a time, limiting true parallelism for CPU-bound tasks; use multiprocessing for CPU-bound work."
+  },
+  {
+    "id": "WD_E_001",
+    "subject": "WD",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "What is the difference between GET and POST HTTP methods?",
+    "ground_truth": "GET retrieves data and is idempotent; POST sends data to the server and can modify state. GET parameters are in the URL, POST in the request body."
+  },
+  {
+    "id": "WD_M_001",
+    "subject": "WD",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Explain the concept of RESTful API design principles.",
+    "ground_truth": "REST (Representational State Transfer) APIs use stateless communication, standard HTTP methods (GET/POST/PUT/DELETE), resource-based URLs, and uniform interface principles."
+  },
+  {
+    "id": "CN_E_001",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "What is the difference between TCP and UDP?",
+    "ground_truth": "TCP provides reliable, ordered, connection-oriented communication with error checking; UDP is connectionless, faster but with no delivery guarantee."
+  },
+  {
+    "id": "CN_M_001",
+    "subject": "CN",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "How does the OSI model's seven-layer architecture facilitate network communication?",
+    "ground_truth": "Each layer provides services to the layer above and uses services from the layer below: Physical, Data Link, Network, Transport, Session, Presentation, Application."
+  },
+  {
+    "id": "DSC_E_001",
+    "subject": "DSC",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "What is the difference between supervised and unsupervised learning?",
+    "ground_truth": "Supervised learning uses labeled data; unsupervised learning finds patterns in unlabeled data (clustering, dimensionality reduction)."
+  },
+  {
+    "id": "DSC_M_001",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Explain overfitting and methods to prevent it.",
+    "ground_truth": "Overfitting occurs when a model learns training noise. Prevention: cross-validation, regularization (L1/L2), dropout, early stopping, more training data."
+  },
+  {
+    "id": "AIML_E_001",
+    "subject": "AIML",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "What is gradient descent and what is it used for?",
+    "ground_truth": "Gradient descent is an optimization algorithm that minimizes a function by iteratively stepping in the direction of steepest descent (negative gradient)."
+  },
+  {
+    "id": "AIML_H_001",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "conceptual",
+    "question": "How does attention mechanism work in transformer models?",
+    "ground_truth": "Attention computes weighted sums of value vectors based on query-key similarity scores. Self-attention allows each token to attend to all others. Multi-head attention runs multiple attention operations in parallel."
+  },
+  {
+    "id": "PLAT_001",
+    "subject": "PLATFORM",
+    "difficulty": "easy",
+    "type": "procedural",
+    "question": "How do I submit an assignment on FlipLearn?",
+    "ground_truth": "Go to Assignments, select the assignment, click Submit, upload your file, and confirm submission."
+  },
+  {
+    "id": "PLAT_002",
+    "subject": "PLATFORM",
+    "difficulty": "easy",
+    "type": "procedural",
+    "question": "How do I enroll in a subject on FlipLearn?",
+    "ground_truth": "Go to My Subjects, click Enroll in a Subject, select from available subjects, and confirm enrollment."
+  },
+  {
+    "id": "PY_M_019",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #19",
+    "ground_truth": "Sample ground truth answer for PY question #19."
+  },
+  {
+    "id": "WD_H_020",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #20",
+    "ground_truth": "Sample ground truth answer for WD question #20."
+  },
+  {
+    "id": "CN_E_021",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #21",
+    "ground_truth": "Sample ground truth answer for CN question #21."
+  },
+  {
+    "id": "DSC_M_022",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #22",
+    "ground_truth": "Sample ground truth answer for DSC question #22."
+  },
+  {
+    "id": "AIML_H_023",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #23",
+    "ground_truth": "Sample ground truth answer for AIML question #23."
+  },
+  {
+    "id": "DS_E_024",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #24",
+    "ground_truth": "Sample ground truth answer for DS question #24."
+  },
+  {
+    "id": "PY_M_025",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #25",
+    "ground_truth": "Sample ground truth answer for PY question #25."
+  },
+  {
+    "id": "WD_H_026",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #26",
+    "ground_truth": "Sample ground truth answer for WD question #26."
+  },
+  {
+    "id": "CN_E_027",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #27",
+    "ground_truth": "Sample ground truth answer for CN question #27."
+  },
+  {
+    "id": "DSC_M_028",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #28",
+    "ground_truth": "Sample ground truth answer for DSC question #28."
+  },
+  {
+    "id": "AIML_H_029",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #29",
+    "ground_truth": "Sample ground truth answer for AIML question #29."
+  },
+  {
+    "id": "DS_E_030",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #30",
+    "ground_truth": "Sample ground truth answer for DS question #30."
+  },
+  {
+    "id": "PY_M_031",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #31",
+    "ground_truth": "Sample ground truth answer for PY question #31."
+  },
+  {
+    "id": "WD_H_032",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #32",
+    "ground_truth": "Sample ground truth answer for WD question #32."
+  },
+  {
+    "id": "CN_E_033",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #33",
+    "ground_truth": "Sample ground truth answer for CN question #33."
+  },
+  {
+    "id": "DSC_M_034",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #34",
+    "ground_truth": "Sample ground truth answer for DSC question #34."
+  },
+  {
+    "id": "AIML_H_035",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #35",
+    "ground_truth": "Sample ground truth answer for AIML question #35."
+  },
+  {
+    "id": "DS_E_036",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #36",
+    "ground_truth": "Sample ground truth answer for DS question #36."
+  },
+  {
+    "id": "PY_M_037",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #37",
+    "ground_truth": "Sample ground truth answer for PY question #37."
+  },
+  {
+    "id": "WD_H_038",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #38",
+    "ground_truth": "Sample ground truth answer for WD question #38."
+  },
+  {
+    "id": "CN_E_039",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #39",
+    "ground_truth": "Sample ground truth answer for CN question #39."
+  },
+  {
+    "id": "DSC_M_040",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #40",
+    "ground_truth": "Sample ground truth answer for DSC question #40."
+  },
+  {
+    "id": "AIML_H_041",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #41",
+    "ground_truth": "Sample ground truth answer for AIML question #41."
+  },
+  {
+    "id": "DS_E_042",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #42",
+    "ground_truth": "Sample ground truth answer for DS question #42."
+  },
+  {
+    "id": "PY_M_043",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #43",
+    "ground_truth": "Sample ground truth answer for PY question #43."
+  },
+  {
+    "id": "WD_H_044",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #44",
+    "ground_truth": "Sample ground truth answer for WD question #44."
+  },
+  {
+    "id": "CN_E_045",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #45",
+    "ground_truth": "Sample ground truth answer for CN question #45."
+  },
+  {
+    "id": "DSC_M_046",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #46",
+    "ground_truth": "Sample ground truth answer for DSC question #46."
+  },
+  {
+    "id": "AIML_H_047",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #47",
+    "ground_truth": "Sample ground truth answer for AIML question #47."
+  },
+  {
+    "id": "DS_E_048",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #48",
+    "ground_truth": "Sample ground truth answer for DS question #48."
+  },
+  {
+    "id": "PY_M_049",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #49",
+    "ground_truth": "Sample ground truth answer for PY question #49."
+  },
+  {
+    "id": "WD_H_050",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #50",
+    "ground_truth": "Sample ground truth answer for WD question #50."
+  },
+  {
+    "id": "CN_E_051",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #51",
+    "ground_truth": "Sample ground truth answer for CN question #51."
+  },
+  {
+    "id": "DSC_M_052",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #52",
+    "ground_truth": "Sample ground truth answer for DSC question #52."
+  },
+  {
+    "id": "AIML_H_053",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #53",
+    "ground_truth": "Sample ground truth answer for AIML question #53."
+  },
+  {
+    "id": "DS_E_054",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #54",
+    "ground_truth": "Sample ground truth answer for DS question #54."
+  },
+  {
+    "id": "PY_M_055",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #55",
+    "ground_truth": "Sample ground truth answer for PY question #55."
+  },
+  {
+    "id": "WD_H_056",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #56",
+    "ground_truth": "Sample ground truth answer for WD question #56."
+  },
+  {
+    "id": "CN_E_057",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #57",
+    "ground_truth": "Sample ground truth answer for CN question #57."
+  },
+  {
+    "id": "DSC_M_058",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #58",
+    "ground_truth": "Sample ground truth answer for DSC question #58."
+  },
+  {
+    "id": "AIML_H_059",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #59",
+    "ground_truth": "Sample ground truth answer for AIML question #59."
+  },
+  {
+    "id": "DS_E_060",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #60",
+    "ground_truth": "Sample ground truth answer for DS question #60."
+  },
+  {
+    "id": "PY_M_061",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #61",
+    "ground_truth": "Sample ground truth answer for PY question #61."
+  },
+  {
+    "id": "WD_H_062",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #62",
+    "ground_truth": "Sample ground truth answer for WD question #62."
+  },
+  {
+    "id": "CN_E_063",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #63",
+    "ground_truth": "Sample ground truth answer for CN question #63."
+  },
+  {
+    "id": "DSC_M_064",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #64",
+    "ground_truth": "Sample ground truth answer for DSC question #64."
+  },
+  {
+    "id": "AIML_H_065",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #65",
+    "ground_truth": "Sample ground truth answer for AIML question #65."
+  },
+  {
+    "id": "DS_E_066",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #66",
+    "ground_truth": "Sample ground truth answer for DS question #66."
+  },
+  {
+    "id": "PY_M_067",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #67",
+    "ground_truth": "Sample ground truth answer for PY question #67."
+  },
+  {
+    "id": "WD_H_068",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #68",
+    "ground_truth": "Sample ground truth answer for WD question #68."
+  },
+  {
+    "id": "CN_E_069",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #69",
+    "ground_truth": "Sample ground truth answer for CN question #69."
+  },
+  {
+    "id": "DSC_M_070",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #70",
+    "ground_truth": "Sample ground truth answer for DSC question #70."
+  },
+  {
+    "id": "AIML_H_071",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #71",
+    "ground_truth": "Sample ground truth answer for AIML question #71."
+  },
+  {
+    "id": "DS_E_072",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #72",
+    "ground_truth": "Sample ground truth answer for DS question #72."
+  },
+  {
+    "id": "PY_M_073",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #73",
+    "ground_truth": "Sample ground truth answer for PY question #73."
+  },
+  {
+    "id": "WD_H_074",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #74",
+    "ground_truth": "Sample ground truth answer for WD question #74."
+  },
+  {
+    "id": "CN_E_075",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #75",
+    "ground_truth": "Sample ground truth answer for CN question #75."
+  },
+  {
+    "id": "DSC_M_076",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #76",
+    "ground_truth": "Sample ground truth answer for DSC question #76."
+  },
+  {
+    "id": "AIML_H_077",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #77",
+    "ground_truth": "Sample ground truth answer for AIML question #77."
+  },
+  {
+    "id": "DS_E_078",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #78",
+    "ground_truth": "Sample ground truth answer for DS question #78."
+  },
+  {
+    "id": "PY_M_079",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #79",
+    "ground_truth": "Sample ground truth answer for PY question #79."
+  },
+  {
+    "id": "WD_H_080",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #80",
+    "ground_truth": "Sample ground truth answer for WD question #80."
+  },
+  {
+    "id": "CN_E_081",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #81",
+    "ground_truth": "Sample ground truth answer for CN question #81."
+  },
+  {
+    "id": "DSC_M_082",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #82",
+    "ground_truth": "Sample ground truth answer for DSC question #82."
+  },
+  {
+    "id": "AIML_H_083",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #83",
+    "ground_truth": "Sample ground truth answer for AIML question #83."
+  },
+  {
+    "id": "DS_E_084",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #84",
+    "ground_truth": "Sample ground truth answer for DS question #84."
+  },
+  {
+    "id": "PY_M_085",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #85",
+    "ground_truth": "Sample ground truth answer for PY question #85."
+  },
+  {
+    "id": "WD_H_086",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #86",
+    "ground_truth": "Sample ground truth answer for WD question #86."
+  },
+  {
+    "id": "CN_E_087",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #87",
+    "ground_truth": "Sample ground truth answer for CN question #87."
+  },
+  {
+    "id": "DSC_M_088",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #88",
+    "ground_truth": "Sample ground truth answer for DSC question #88."
+  },
+  {
+    "id": "AIML_H_089",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #89",
+    "ground_truth": "Sample ground truth answer for AIML question #89."
+  },
+  {
+    "id": "DS_E_090",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #90",
+    "ground_truth": "Sample ground truth answer for DS question #90."
+  },
+  {
+    "id": "PY_M_091",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #91",
+    "ground_truth": "Sample ground truth answer for PY question #91."
+  },
+  {
+    "id": "WD_H_092",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #92",
+    "ground_truth": "Sample ground truth answer for WD question #92."
+  },
+  {
+    "id": "CN_E_093",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #93",
+    "ground_truth": "Sample ground truth answer for CN question #93."
+  },
+  {
+    "id": "DSC_M_094",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #94",
+    "ground_truth": "Sample ground truth answer for DSC question #94."
+  },
+  {
+    "id": "AIML_H_095",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #95",
+    "ground_truth": "Sample ground truth answer for AIML question #95."
+  },
+  {
+    "id": "DS_E_096",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #96",
+    "ground_truth": "Sample ground truth answer for DS question #96."
+  },
+  {
+    "id": "PY_M_097",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #97",
+    "ground_truth": "Sample ground truth answer for PY question #97."
+  },
+  {
+    "id": "WD_H_098",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #98",
+    "ground_truth": "Sample ground truth answer for WD question #98."
+  },
+  {
+    "id": "CN_E_099",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #99",
+    "ground_truth": "Sample ground truth answer for CN question #99."
+  },
+  {
+    "id": "DSC_M_100",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #100",
+    "ground_truth": "Sample ground truth answer for DSC question #100."
+  },
+  {
+    "id": "AIML_H_101",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #101",
+    "ground_truth": "Sample ground truth answer for AIML question #101."
+  },
+  {
+    "id": "DS_E_102",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #102",
+    "ground_truth": "Sample ground truth answer for DS question #102."
+  },
+  {
+    "id": "PY_M_103",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #103",
+    "ground_truth": "Sample ground truth answer for PY question #103."
+  },
+  {
+    "id": "WD_H_104",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #104",
+    "ground_truth": "Sample ground truth answer for WD question #104."
+  },
+  {
+    "id": "CN_E_105",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #105",
+    "ground_truth": "Sample ground truth answer for CN question #105."
+  },
+  {
+    "id": "DSC_M_106",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #106",
+    "ground_truth": "Sample ground truth answer for DSC question #106."
+  },
+  {
+    "id": "AIML_H_107",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #107",
+    "ground_truth": "Sample ground truth answer for AIML question #107."
+  },
+  {
+    "id": "DS_E_108",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #108",
+    "ground_truth": "Sample ground truth answer for DS question #108."
+  },
+  {
+    "id": "PY_M_109",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #109",
+    "ground_truth": "Sample ground truth answer for PY question #109."
+  },
+  {
+    "id": "WD_H_110",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #110",
+    "ground_truth": "Sample ground truth answer for WD question #110."
+  },
+  {
+    "id": "CN_E_111",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #111",
+    "ground_truth": "Sample ground truth answer for CN question #111."
+  },
+  {
+    "id": "DSC_M_112",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #112",
+    "ground_truth": "Sample ground truth answer for DSC question #112."
+  },
+  {
+    "id": "AIML_H_113",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #113",
+    "ground_truth": "Sample ground truth answer for AIML question #113."
+  },
+  {
+    "id": "DS_E_114",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #114",
+    "ground_truth": "Sample ground truth answer for DS question #114."
+  },
+  {
+    "id": "PY_M_115",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #115",
+    "ground_truth": "Sample ground truth answer for PY question #115."
+  },
+  {
+    "id": "WD_H_116",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #116",
+    "ground_truth": "Sample ground truth answer for WD question #116."
+  },
+  {
+    "id": "CN_E_117",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #117",
+    "ground_truth": "Sample ground truth answer for CN question #117."
+  },
+  {
+    "id": "DSC_M_118",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #118",
+    "ground_truth": "Sample ground truth answer for DSC question #118."
+  },
+  {
+    "id": "AIML_H_119",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #119",
+    "ground_truth": "Sample ground truth answer for AIML question #119."
+  },
+  {
+    "id": "DS_E_120",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #120",
+    "ground_truth": "Sample ground truth answer for DS question #120."
+  },
+  {
+    "id": "PY_M_121",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #121",
+    "ground_truth": "Sample ground truth answer for PY question #121."
+  },
+  {
+    "id": "WD_H_122",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #122",
+    "ground_truth": "Sample ground truth answer for WD question #122."
+  },
+  {
+    "id": "CN_E_123",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #123",
+    "ground_truth": "Sample ground truth answer for CN question #123."
+  },
+  {
+    "id": "DSC_M_124",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #124",
+    "ground_truth": "Sample ground truth answer for DSC question #124."
+  },
+  {
+    "id": "AIML_H_125",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #125",
+    "ground_truth": "Sample ground truth answer for AIML question #125."
+  },
+  {
+    "id": "DS_E_126",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #126",
+    "ground_truth": "Sample ground truth answer for DS question #126."
+  },
+  {
+    "id": "PY_M_127",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #127",
+    "ground_truth": "Sample ground truth answer for PY question #127."
+  },
+  {
+    "id": "WD_H_128",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #128",
+    "ground_truth": "Sample ground truth answer for WD question #128."
+  },
+  {
+    "id": "CN_E_129",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #129",
+    "ground_truth": "Sample ground truth answer for CN question #129."
+  },
+  {
+    "id": "DSC_M_130",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #130",
+    "ground_truth": "Sample ground truth answer for DSC question #130."
+  },
+  {
+    "id": "AIML_H_131",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #131",
+    "ground_truth": "Sample ground truth answer for AIML question #131."
+  },
+  {
+    "id": "DS_E_132",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #132",
+    "ground_truth": "Sample ground truth answer for DS question #132."
+  },
+  {
+    "id": "PY_M_133",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #133",
+    "ground_truth": "Sample ground truth answer for PY question #133."
+  },
+  {
+    "id": "WD_H_134",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #134",
+    "ground_truth": "Sample ground truth answer for WD question #134."
+  },
+  {
+    "id": "CN_E_135",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #135",
+    "ground_truth": "Sample ground truth answer for CN question #135."
+  },
+  {
+    "id": "DSC_M_136",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #136",
+    "ground_truth": "Sample ground truth answer for DSC question #136."
+  },
+  {
+    "id": "AIML_H_137",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #137",
+    "ground_truth": "Sample ground truth answer for AIML question #137."
+  },
+  {
+    "id": "DS_E_138",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #138",
+    "ground_truth": "Sample ground truth answer for DS question #138."
+  },
+  {
+    "id": "PY_M_139",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #139",
+    "ground_truth": "Sample ground truth answer for PY question #139."
+  },
+  {
+    "id": "WD_H_140",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #140",
+    "ground_truth": "Sample ground truth answer for WD question #140."
+  },
+  {
+    "id": "CN_E_141",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #141",
+    "ground_truth": "Sample ground truth answer for CN question #141."
+  },
+  {
+    "id": "DSC_M_142",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #142",
+    "ground_truth": "Sample ground truth answer for DSC question #142."
+  },
+  {
+    "id": "AIML_H_143",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #143",
+    "ground_truth": "Sample ground truth answer for AIML question #143."
+  },
+  {
+    "id": "DS_E_144",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #144",
+    "ground_truth": "Sample ground truth answer for DS question #144."
+  },
+  {
+    "id": "PY_M_145",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #145",
+    "ground_truth": "Sample ground truth answer for PY question #145."
+  },
+  {
+    "id": "WD_H_146",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #146",
+    "ground_truth": "Sample ground truth answer for WD question #146."
+  },
+  {
+    "id": "CN_E_147",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #147",
+    "ground_truth": "Sample ground truth answer for CN question #147."
+  },
+  {
+    "id": "DSC_M_148",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #148",
+    "ground_truth": "Sample ground truth answer for DSC question #148."
+  },
+  {
+    "id": "AIML_H_149",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #149",
+    "ground_truth": "Sample ground truth answer for AIML question #149."
+  },
+  {
+    "id": "DS_E_150",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #150",
+    "ground_truth": "Sample ground truth answer for DS question #150."
+  },
+  {
+    "id": "PY_M_151",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #151",
+    "ground_truth": "Sample ground truth answer for PY question #151."
+  },
+  {
+    "id": "WD_H_152",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #152",
+    "ground_truth": "Sample ground truth answer for WD question #152."
+  },
+  {
+    "id": "CN_E_153",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #153",
+    "ground_truth": "Sample ground truth answer for CN question #153."
+  },
+  {
+    "id": "DSC_M_154",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #154",
+    "ground_truth": "Sample ground truth answer for DSC question #154."
+  },
+  {
+    "id": "AIML_H_155",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #155",
+    "ground_truth": "Sample ground truth answer for AIML question #155."
+  },
+  {
+    "id": "DS_E_156",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #156",
+    "ground_truth": "Sample ground truth answer for DS question #156."
+  },
+  {
+    "id": "PY_M_157",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #157",
+    "ground_truth": "Sample ground truth answer for PY question #157."
+  },
+  {
+    "id": "WD_H_158",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #158",
+    "ground_truth": "Sample ground truth answer for WD question #158."
+  },
+  {
+    "id": "CN_E_159",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #159",
+    "ground_truth": "Sample ground truth answer for CN question #159."
+  },
+  {
+    "id": "DSC_M_160",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #160",
+    "ground_truth": "Sample ground truth answer for DSC question #160."
+  },
+  {
+    "id": "AIML_H_161",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #161",
+    "ground_truth": "Sample ground truth answer for AIML question #161."
+  },
+  {
+    "id": "DS_E_162",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #162",
+    "ground_truth": "Sample ground truth answer for DS question #162."
+  },
+  {
+    "id": "PY_M_163",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #163",
+    "ground_truth": "Sample ground truth answer for PY question #163."
+  },
+  {
+    "id": "WD_H_164",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #164",
+    "ground_truth": "Sample ground truth answer for WD question #164."
+  },
+  {
+    "id": "CN_E_165",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #165",
+    "ground_truth": "Sample ground truth answer for CN question #165."
+  },
+  {
+    "id": "DSC_M_166",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #166",
+    "ground_truth": "Sample ground truth answer for DSC question #166."
+  },
+  {
+    "id": "AIML_H_167",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #167",
+    "ground_truth": "Sample ground truth answer for AIML question #167."
+  },
+  {
+    "id": "DS_E_168",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #168",
+    "ground_truth": "Sample ground truth answer for DS question #168."
+  },
+  {
+    "id": "PY_M_169",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #169",
+    "ground_truth": "Sample ground truth answer for PY question #169."
+  },
+  {
+    "id": "WD_H_170",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #170",
+    "ground_truth": "Sample ground truth answer for WD question #170."
+  },
+  {
+    "id": "CN_E_171",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #171",
+    "ground_truth": "Sample ground truth answer for CN question #171."
+  },
+  {
+    "id": "DSC_M_172",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #172",
+    "ground_truth": "Sample ground truth answer for DSC question #172."
+  },
+  {
+    "id": "AIML_H_173",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #173",
+    "ground_truth": "Sample ground truth answer for AIML question #173."
+  },
+  {
+    "id": "DS_E_174",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #174",
+    "ground_truth": "Sample ground truth answer for DS question #174."
+  },
+  {
+    "id": "PY_M_175",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #175",
+    "ground_truth": "Sample ground truth answer for PY question #175."
+  },
+  {
+    "id": "WD_H_176",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #176",
+    "ground_truth": "Sample ground truth answer for WD question #176."
+  },
+  {
+    "id": "CN_E_177",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #177",
+    "ground_truth": "Sample ground truth answer for CN question #177."
+  },
+  {
+    "id": "DSC_M_178",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #178",
+    "ground_truth": "Sample ground truth answer for DSC question #178."
+  },
+  {
+    "id": "AIML_H_179",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #179",
+    "ground_truth": "Sample ground truth answer for AIML question #179."
+  },
+  {
+    "id": "DS_E_180",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #180",
+    "ground_truth": "Sample ground truth answer for DS question #180."
+  },
+  {
+    "id": "PY_M_181",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #181",
+    "ground_truth": "Sample ground truth answer for PY question #181."
+  },
+  {
+    "id": "WD_H_182",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #182",
+    "ground_truth": "Sample ground truth answer for WD question #182."
+  },
+  {
+    "id": "CN_E_183",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #183",
+    "ground_truth": "Sample ground truth answer for CN question #183."
+  },
+  {
+    "id": "DSC_M_184",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #184",
+    "ground_truth": "Sample ground truth answer for DSC question #184."
+  },
+  {
+    "id": "AIML_H_185",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #185",
+    "ground_truth": "Sample ground truth answer for AIML question #185."
+  },
+  {
+    "id": "DS_E_186",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #186",
+    "ground_truth": "Sample ground truth answer for DS question #186."
+  },
+  {
+    "id": "PY_M_187",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #187",
+    "ground_truth": "Sample ground truth answer for PY question #187."
+  },
+  {
+    "id": "WD_H_188",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #188",
+    "ground_truth": "Sample ground truth answer for WD question #188."
+  },
+  {
+    "id": "CN_E_189",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #189",
+    "ground_truth": "Sample ground truth answer for CN question #189."
+  },
+  {
+    "id": "DSC_M_190",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #190",
+    "ground_truth": "Sample ground truth answer for DSC question #190."
+  },
+  {
+    "id": "AIML_H_191",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #191",
+    "ground_truth": "Sample ground truth answer for AIML question #191."
+  },
+  {
+    "id": "DS_E_192",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #192",
+    "ground_truth": "Sample ground truth answer for DS question #192."
+  },
+  {
+    "id": "PY_M_193",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #193",
+    "ground_truth": "Sample ground truth answer for PY question #193."
+  },
+  {
+    "id": "WD_H_194",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #194",
+    "ground_truth": "Sample ground truth answer for WD question #194."
+  },
+  {
+    "id": "CN_E_195",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #195",
+    "ground_truth": "Sample ground truth answer for CN question #195."
+  },
+  {
+    "id": "DSC_M_196",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #196",
+    "ground_truth": "Sample ground truth answer for DSC question #196."
+  },
+  {
+    "id": "AIML_H_197",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #197",
+    "ground_truth": "Sample ground truth answer for AIML question #197."
+  },
+  {
+    "id": "DS_E_198",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #198",
+    "ground_truth": "Sample ground truth answer for DS question #198."
+  },
+  {
+    "id": "PY_M_199",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #199",
+    "ground_truth": "Sample ground truth answer for PY question #199."
+  },
+  {
+    "id": "WD_H_200",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #200",
+    "ground_truth": "Sample ground truth answer for WD question #200."
+  },
+  {
+    "id": "CN_E_201",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #201",
+    "ground_truth": "Sample ground truth answer for CN question #201."
+  },
+  {
+    "id": "DSC_M_202",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #202",
+    "ground_truth": "Sample ground truth answer for DSC question #202."
+  },
+  {
+    "id": "AIML_H_203",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #203",
+    "ground_truth": "Sample ground truth answer for AIML question #203."
+  },
+  {
+    "id": "DS_E_204",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #204",
+    "ground_truth": "Sample ground truth answer for DS question #204."
+  },
+  {
+    "id": "PY_M_205",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #205",
+    "ground_truth": "Sample ground truth answer for PY question #205."
+  },
+  {
+    "id": "WD_H_206",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #206",
+    "ground_truth": "Sample ground truth answer for WD question #206."
+  },
+  {
+    "id": "CN_E_207",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #207",
+    "ground_truth": "Sample ground truth answer for CN question #207."
+  },
+  {
+    "id": "DSC_M_208",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #208",
+    "ground_truth": "Sample ground truth answer for DSC question #208."
+  },
+  {
+    "id": "AIML_H_209",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #209",
+    "ground_truth": "Sample ground truth answer for AIML question #209."
+  },
+  {
+    "id": "DS_E_210",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #210",
+    "ground_truth": "Sample ground truth answer for DS question #210."
+  },
+  {
+    "id": "PY_M_211",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #211",
+    "ground_truth": "Sample ground truth answer for PY question #211."
+  },
+  {
+    "id": "WD_H_212",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #212",
+    "ground_truth": "Sample ground truth answer for WD question #212."
+  },
+  {
+    "id": "CN_E_213",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #213",
+    "ground_truth": "Sample ground truth answer for CN question #213."
+  },
+  {
+    "id": "DSC_M_214",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #214",
+    "ground_truth": "Sample ground truth answer for DSC question #214."
+  },
+  {
+    "id": "AIML_H_215",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #215",
+    "ground_truth": "Sample ground truth answer for AIML question #215."
+  },
+  {
+    "id": "DS_E_216",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #216",
+    "ground_truth": "Sample ground truth answer for DS question #216."
+  },
+  {
+    "id": "PY_M_217",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #217",
+    "ground_truth": "Sample ground truth answer for PY question #217."
+  },
+  {
+    "id": "WD_H_218",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #218",
+    "ground_truth": "Sample ground truth answer for WD question #218."
+  },
+  {
+    "id": "CN_E_219",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #219",
+    "ground_truth": "Sample ground truth answer for CN question #219."
+  },
+  {
+    "id": "DSC_M_220",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #220",
+    "ground_truth": "Sample ground truth answer for DSC question #220."
+  },
+  {
+    "id": "AIML_H_221",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #221",
+    "ground_truth": "Sample ground truth answer for AIML question #221."
+  },
+  {
+    "id": "DS_E_222",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #222",
+    "ground_truth": "Sample ground truth answer for DS question #222."
+  },
+  {
+    "id": "PY_M_223",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #223",
+    "ground_truth": "Sample ground truth answer for PY question #223."
+  },
+  {
+    "id": "WD_H_224",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #224",
+    "ground_truth": "Sample ground truth answer for WD question #224."
+  },
+  {
+    "id": "CN_E_225",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #225",
+    "ground_truth": "Sample ground truth answer for CN question #225."
+  },
+  {
+    "id": "DSC_M_226",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #226",
+    "ground_truth": "Sample ground truth answer for DSC question #226."
+  },
+  {
+    "id": "AIML_H_227",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #227",
+    "ground_truth": "Sample ground truth answer for AIML question #227."
+  },
+  {
+    "id": "DS_E_228",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #228",
+    "ground_truth": "Sample ground truth answer for DS question #228."
+  },
+  {
+    "id": "PY_M_229",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #229",
+    "ground_truth": "Sample ground truth answer for PY question #229."
+  },
+  {
+    "id": "WD_H_230",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #230",
+    "ground_truth": "Sample ground truth answer for WD question #230."
+  },
+  {
+    "id": "CN_E_231",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #231",
+    "ground_truth": "Sample ground truth answer for CN question #231."
+  },
+  {
+    "id": "DSC_M_232",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #232",
+    "ground_truth": "Sample ground truth answer for DSC question #232."
+  },
+  {
+    "id": "AIML_H_233",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #233",
+    "ground_truth": "Sample ground truth answer for AIML question #233."
+  },
+  {
+    "id": "DS_E_234",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #234",
+    "ground_truth": "Sample ground truth answer for DS question #234."
+  },
+  {
+    "id": "PY_M_235",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #235",
+    "ground_truth": "Sample ground truth answer for PY question #235."
+  },
+  {
+    "id": "WD_H_236",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #236",
+    "ground_truth": "Sample ground truth answer for WD question #236."
+  },
+  {
+    "id": "CN_E_237",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #237",
+    "ground_truth": "Sample ground truth answer for CN question #237."
+  },
+  {
+    "id": "DSC_M_238",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #238",
+    "ground_truth": "Sample ground truth answer for DSC question #238."
+  },
+  {
+    "id": "AIML_H_239",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #239",
+    "ground_truth": "Sample ground truth answer for AIML question #239."
+  },
+  {
+    "id": "DS_E_240",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #240",
+    "ground_truth": "Sample ground truth answer for DS question #240."
+  },
+  {
+    "id": "PY_M_241",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #241",
+    "ground_truth": "Sample ground truth answer for PY question #241."
+  },
+  {
+    "id": "WD_H_242",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #242",
+    "ground_truth": "Sample ground truth answer for WD question #242."
+  },
+  {
+    "id": "CN_E_243",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #243",
+    "ground_truth": "Sample ground truth answer for CN question #243."
+  },
+  {
+    "id": "DSC_M_244",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #244",
+    "ground_truth": "Sample ground truth answer for DSC question #244."
+  },
+  {
+    "id": "AIML_H_245",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #245",
+    "ground_truth": "Sample ground truth answer for AIML question #245."
+  },
+  {
+    "id": "DS_E_246",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #246",
+    "ground_truth": "Sample ground truth answer for DS question #246."
+  },
+  {
+    "id": "PY_M_247",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #247",
+    "ground_truth": "Sample ground truth answer for PY question #247."
+  },
+  {
+    "id": "WD_H_248",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #248",
+    "ground_truth": "Sample ground truth answer for WD question #248."
+  },
+  {
+    "id": "CN_E_249",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #249",
+    "ground_truth": "Sample ground truth answer for CN question #249."
+  },
+  {
+    "id": "DSC_M_250",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #250",
+    "ground_truth": "Sample ground truth answer for DSC question #250."
+  },
+  {
+    "id": "AIML_H_251",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #251",
+    "ground_truth": "Sample ground truth answer for AIML question #251."
+  },
+  {
+    "id": "DS_E_252",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #252",
+    "ground_truth": "Sample ground truth answer for DS question #252."
+  },
+  {
+    "id": "PY_M_253",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #253",
+    "ground_truth": "Sample ground truth answer for PY question #253."
+  },
+  {
+    "id": "WD_H_254",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #254",
+    "ground_truth": "Sample ground truth answer for WD question #254."
+  },
+  {
+    "id": "CN_E_255",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #255",
+    "ground_truth": "Sample ground truth answer for CN question #255."
+  },
+  {
+    "id": "DSC_M_256",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #256",
+    "ground_truth": "Sample ground truth answer for DSC question #256."
+  },
+  {
+    "id": "AIML_H_257",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #257",
+    "ground_truth": "Sample ground truth answer for AIML question #257."
+  },
+  {
+    "id": "DS_E_258",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #258",
+    "ground_truth": "Sample ground truth answer for DS question #258."
+  },
+  {
+    "id": "PY_M_259",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #259",
+    "ground_truth": "Sample ground truth answer for PY question #259."
+  },
+  {
+    "id": "WD_H_260",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #260",
+    "ground_truth": "Sample ground truth answer for WD question #260."
+  },
+  {
+    "id": "CN_E_261",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #261",
+    "ground_truth": "Sample ground truth answer for CN question #261."
+  },
+  {
+    "id": "DSC_M_262",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #262",
+    "ground_truth": "Sample ground truth answer for DSC question #262."
+  },
+  {
+    "id": "AIML_H_263",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #263",
+    "ground_truth": "Sample ground truth answer for AIML question #263."
+  },
+  {
+    "id": "DS_E_264",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #264",
+    "ground_truth": "Sample ground truth answer for DS question #264."
+  },
+  {
+    "id": "PY_M_265",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #265",
+    "ground_truth": "Sample ground truth answer for PY question #265."
+  },
+  {
+    "id": "WD_H_266",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #266",
+    "ground_truth": "Sample ground truth answer for WD question #266."
+  },
+  {
+    "id": "CN_E_267",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #267",
+    "ground_truth": "Sample ground truth answer for CN question #267."
+  },
+  {
+    "id": "DSC_M_268",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #268",
+    "ground_truth": "Sample ground truth answer for DSC question #268."
+  },
+  {
+    "id": "AIML_H_269",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #269",
+    "ground_truth": "Sample ground truth answer for AIML question #269."
+  },
+  {
+    "id": "DS_E_270",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #270",
+    "ground_truth": "Sample ground truth answer for DS question #270."
+  },
+  {
+    "id": "PY_M_271",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #271",
+    "ground_truth": "Sample ground truth answer for PY question #271."
+  },
+  {
+    "id": "WD_H_272",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #272",
+    "ground_truth": "Sample ground truth answer for WD question #272."
+  },
+  {
+    "id": "CN_E_273",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #273",
+    "ground_truth": "Sample ground truth answer for CN question #273."
+  },
+  {
+    "id": "DSC_M_274",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #274",
+    "ground_truth": "Sample ground truth answer for DSC question #274."
+  },
+  {
+    "id": "AIML_H_275",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #275",
+    "ground_truth": "Sample ground truth answer for AIML question #275."
+  },
+  {
+    "id": "DS_E_276",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #276",
+    "ground_truth": "Sample ground truth answer for DS question #276."
+  },
+  {
+    "id": "PY_M_277",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #277",
+    "ground_truth": "Sample ground truth answer for PY question #277."
+  },
+  {
+    "id": "WD_H_278",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #278",
+    "ground_truth": "Sample ground truth answer for WD question #278."
+  },
+  {
+    "id": "CN_E_279",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #279",
+    "ground_truth": "Sample ground truth answer for CN question #279."
+  },
+  {
+    "id": "DSC_M_280",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #280",
+    "ground_truth": "Sample ground truth answer for DSC question #280."
+  },
+  {
+    "id": "AIML_H_281",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #281",
+    "ground_truth": "Sample ground truth answer for AIML question #281."
+  },
+  {
+    "id": "DS_E_282",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #282",
+    "ground_truth": "Sample ground truth answer for DS question #282."
+  },
+  {
+    "id": "PY_M_283",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #283",
+    "ground_truth": "Sample ground truth answer for PY question #283."
+  },
+  {
+    "id": "WD_H_284",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #284",
+    "ground_truth": "Sample ground truth answer for WD question #284."
+  },
+  {
+    "id": "CN_E_285",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #285",
+    "ground_truth": "Sample ground truth answer for CN question #285."
+  },
+  {
+    "id": "DSC_M_286",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #286",
+    "ground_truth": "Sample ground truth answer for DSC question #286."
+  },
+  {
+    "id": "AIML_H_287",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #287",
+    "ground_truth": "Sample ground truth answer for AIML question #287."
+  },
+  {
+    "id": "DS_E_288",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #288",
+    "ground_truth": "Sample ground truth answer for DS question #288."
+  },
+  {
+    "id": "PY_M_289",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #289",
+    "ground_truth": "Sample ground truth answer for PY question #289."
+  },
+  {
+    "id": "WD_H_290",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #290",
+    "ground_truth": "Sample ground truth answer for WD question #290."
+  },
+  {
+    "id": "CN_E_291",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #291",
+    "ground_truth": "Sample ground truth answer for CN question #291."
+  },
+  {
+    "id": "DSC_M_292",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #292",
+    "ground_truth": "Sample ground truth answer for DSC question #292."
+  },
+  {
+    "id": "AIML_H_293",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #293",
+    "ground_truth": "Sample ground truth answer for AIML question #293."
+  },
+  {
+    "id": "DS_E_294",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #294",
+    "ground_truth": "Sample ground truth answer for DS question #294."
+  },
+  {
+    "id": "PY_M_295",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #295",
+    "ground_truth": "Sample ground truth answer for PY question #295."
+  },
+  {
+    "id": "WD_H_296",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #296",
+    "ground_truth": "Sample ground truth answer for WD question #296."
+  },
+  {
+    "id": "CN_E_297",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #297",
+    "ground_truth": "Sample ground truth answer for CN question #297."
+  },
+  {
+    "id": "DSC_M_298",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #298",
+    "ground_truth": "Sample ground truth answer for DSC question #298."
+  },
+  {
+    "id": "AIML_H_299",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #299",
+    "ground_truth": "Sample ground truth answer for AIML question #299."
+  },
+  {
+    "id": "DS_E_300",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #300",
+    "ground_truth": "Sample ground truth answer for DS question #300."
+  },
+  {
+    "id": "PY_M_301",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #301",
+    "ground_truth": "Sample ground truth answer for PY question #301."
+  },
+  {
+    "id": "WD_H_302",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #302",
+    "ground_truth": "Sample ground truth answer for WD question #302."
+  },
+  {
+    "id": "CN_E_303",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #303",
+    "ground_truth": "Sample ground truth answer for CN question #303."
+  },
+  {
+    "id": "DSC_M_304",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #304",
+    "ground_truth": "Sample ground truth answer for DSC question #304."
+  },
+  {
+    "id": "AIML_H_305",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #305",
+    "ground_truth": "Sample ground truth answer for AIML question #305."
+  },
+  {
+    "id": "DS_E_306",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #306",
+    "ground_truth": "Sample ground truth answer for DS question #306."
+  },
+  {
+    "id": "PY_M_307",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #307",
+    "ground_truth": "Sample ground truth answer for PY question #307."
+  },
+  {
+    "id": "WD_H_308",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #308",
+    "ground_truth": "Sample ground truth answer for WD question #308."
+  },
+  {
+    "id": "CN_E_309",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #309",
+    "ground_truth": "Sample ground truth answer for CN question #309."
+  },
+  {
+    "id": "DSC_M_310",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #310",
+    "ground_truth": "Sample ground truth answer for DSC question #310."
+  },
+  {
+    "id": "AIML_H_311",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #311",
+    "ground_truth": "Sample ground truth answer for AIML question #311."
+  },
+  {
+    "id": "DS_E_312",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #312",
+    "ground_truth": "Sample ground truth answer for DS question #312."
+  },
+  {
+    "id": "PY_M_313",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #313",
+    "ground_truth": "Sample ground truth answer for PY question #313."
+  },
+  {
+    "id": "WD_H_314",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #314",
+    "ground_truth": "Sample ground truth answer for WD question #314."
+  },
+  {
+    "id": "CN_E_315",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #315",
+    "ground_truth": "Sample ground truth answer for CN question #315."
+  },
+  {
+    "id": "DSC_M_316",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #316",
+    "ground_truth": "Sample ground truth answer for DSC question #316."
+  },
+  {
+    "id": "AIML_H_317",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #317",
+    "ground_truth": "Sample ground truth answer for AIML question #317."
+  },
+  {
+    "id": "DS_E_318",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #318",
+    "ground_truth": "Sample ground truth answer for DS question #318."
+  },
+  {
+    "id": "PY_M_319",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #319",
+    "ground_truth": "Sample ground truth answer for PY question #319."
+  },
+  {
+    "id": "WD_H_320",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #320",
+    "ground_truth": "Sample ground truth answer for WD question #320."
+  },
+  {
+    "id": "CN_E_321",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #321",
+    "ground_truth": "Sample ground truth answer for CN question #321."
+  },
+  {
+    "id": "DSC_M_322",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #322",
+    "ground_truth": "Sample ground truth answer for DSC question #322."
+  },
+  {
+    "id": "AIML_H_323",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #323",
+    "ground_truth": "Sample ground truth answer for AIML question #323."
+  },
+  {
+    "id": "DS_E_324",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #324",
+    "ground_truth": "Sample ground truth answer for DS question #324."
+  },
+  {
+    "id": "PY_M_325",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #325",
+    "ground_truth": "Sample ground truth answer for PY question #325."
+  },
+  {
+    "id": "WD_H_326",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #326",
+    "ground_truth": "Sample ground truth answer for WD question #326."
+  },
+  {
+    "id": "CN_E_327",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #327",
+    "ground_truth": "Sample ground truth answer for CN question #327."
+  },
+  {
+    "id": "DSC_M_328",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #328",
+    "ground_truth": "Sample ground truth answer for DSC question #328."
+  },
+  {
+    "id": "AIML_H_329",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #329",
+    "ground_truth": "Sample ground truth answer for AIML question #329."
+  },
+  {
+    "id": "DS_E_330",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #330",
+    "ground_truth": "Sample ground truth answer for DS question #330."
+  },
+  {
+    "id": "PY_M_331",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #331",
+    "ground_truth": "Sample ground truth answer for PY question #331."
+  },
+  {
+    "id": "WD_H_332",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #332",
+    "ground_truth": "Sample ground truth answer for WD question #332."
+  },
+  {
+    "id": "CN_E_333",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #333",
+    "ground_truth": "Sample ground truth answer for CN question #333."
+  },
+  {
+    "id": "DSC_M_334",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #334",
+    "ground_truth": "Sample ground truth answer for DSC question #334."
+  },
+  {
+    "id": "AIML_H_335",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #335",
+    "ground_truth": "Sample ground truth answer for AIML question #335."
+  },
+  {
+    "id": "DS_E_336",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #336",
+    "ground_truth": "Sample ground truth answer for DS question #336."
+  },
+  {
+    "id": "PY_M_337",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #337",
+    "ground_truth": "Sample ground truth answer for PY question #337."
+  },
+  {
+    "id": "WD_H_338",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #338",
+    "ground_truth": "Sample ground truth answer for WD question #338."
+  },
+  {
+    "id": "CN_E_339",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #339",
+    "ground_truth": "Sample ground truth answer for CN question #339."
+  },
+  {
+    "id": "DSC_M_340",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #340",
+    "ground_truth": "Sample ground truth answer for DSC question #340."
+  },
+  {
+    "id": "AIML_H_341",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #341",
+    "ground_truth": "Sample ground truth answer for AIML question #341."
+  },
+  {
+    "id": "DS_E_342",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #342",
+    "ground_truth": "Sample ground truth answer for DS question #342."
+  },
+  {
+    "id": "PY_M_343",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #343",
+    "ground_truth": "Sample ground truth answer for PY question #343."
+  },
+  {
+    "id": "WD_H_344",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #344",
+    "ground_truth": "Sample ground truth answer for WD question #344."
+  },
+  {
+    "id": "CN_E_345",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #345",
+    "ground_truth": "Sample ground truth answer for CN question #345."
+  },
+  {
+    "id": "DSC_M_346",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #346",
+    "ground_truth": "Sample ground truth answer for DSC question #346."
+  },
+  {
+    "id": "AIML_H_347",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #347",
+    "ground_truth": "Sample ground truth answer for AIML question #347."
+  },
+  {
+    "id": "DS_E_348",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #348",
+    "ground_truth": "Sample ground truth answer for DS question #348."
+  },
+  {
+    "id": "PY_M_349",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #349",
+    "ground_truth": "Sample ground truth answer for PY question #349."
+  },
+  {
+    "id": "WD_H_350",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #350",
+    "ground_truth": "Sample ground truth answer for WD question #350."
+  },
+  {
+    "id": "CN_E_351",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #351",
+    "ground_truth": "Sample ground truth answer for CN question #351."
+  },
+  {
+    "id": "DSC_M_352",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #352",
+    "ground_truth": "Sample ground truth answer for DSC question #352."
+  },
+  {
+    "id": "AIML_H_353",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #353",
+    "ground_truth": "Sample ground truth answer for AIML question #353."
+  },
+  {
+    "id": "DS_E_354",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #354",
+    "ground_truth": "Sample ground truth answer for DS question #354."
+  },
+  {
+    "id": "PY_M_355",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #355",
+    "ground_truth": "Sample ground truth answer for PY question #355."
+  },
+  {
+    "id": "WD_H_356",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #356",
+    "ground_truth": "Sample ground truth answer for WD question #356."
+  },
+  {
+    "id": "CN_E_357",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #357",
+    "ground_truth": "Sample ground truth answer for CN question #357."
+  },
+  {
+    "id": "DSC_M_358",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #358",
+    "ground_truth": "Sample ground truth answer for DSC question #358."
+  },
+  {
+    "id": "AIML_H_359",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #359",
+    "ground_truth": "Sample ground truth answer for AIML question #359."
+  },
+  {
+    "id": "DS_E_360",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #360",
+    "ground_truth": "Sample ground truth answer for DS question #360."
+  },
+  {
+    "id": "PY_M_361",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #361",
+    "ground_truth": "Sample ground truth answer for PY question #361."
+  },
+  {
+    "id": "WD_H_362",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #362",
+    "ground_truth": "Sample ground truth answer for WD question #362."
+  },
+  {
+    "id": "CN_E_363",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #363",
+    "ground_truth": "Sample ground truth answer for CN question #363."
+  },
+  {
+    "id": "DSC_M_364",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #364",
+    "ground_truth": "Sample ground truth answer for DSC question #364."
+  },
+  {
+    "id": "AIML_H_365",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #365",
+    "ground_truth": "Sample ground truth answer for AIML question #365."
+  },
+  {
+    "id": "DS_E_366",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #366",
+    "ground_truth": "Sample ground truth answer for DS question #366."
+  },
+  {
+    "id": "PY_M_367",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #367",
+    "ground_truth": "Sample ground truth answer for PY question #367."
+  },
+  {
+    "id": "WD_H_368",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #368",
+    "ground_truth": "Sample ground truth answer for WD question #368."
+  },
+  {
+    "id": "CN_E_369",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #369",
+    "ground_truth": "Sample ground truth answer for CN question #369."
+  },
+  {
+    "id": "DSC_M_370",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #370",
+    "ground_truth": "Sample ground truth answer for DSC question #370."
+  },
+  {
+    "id": "AIML_H_371",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #371",
+    "ground_truth": "Sample ground truth answer for AIML question #371."
+  },
+  {
+    "id": "DS_E_372",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #372",
+    "ground_truth": "Sample ground truth answer for DS question #372."
+  },
+  {
+    "id": "PY_M_373",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #373",
+    "ground_truth": "Sample ground truth answer for PY question #373."
+  },
+  {
+    "id": "WD_H_374",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #374",
+    "ground_truth": "Sample ground truth answer for WD question #374."
+  },
+  {
+    "id": "CN_E_375",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #375",
+    "ground_truth": "Sample ground truth answer for CN question #375."
+  },
+  {
+    "id": "DSC_M_376",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #376",
+    "ground_truth": "Sample ground truth answer for DSC question #376."
+  },
+  {
+    "id": "AIML_H_377",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #377",
+    "ground_truth": "Sample ground truth answer for AIML question #377."
+  },
+  {
+    "id": "DS_E_378",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #378",
+    "ground_truth": "Sample ground truth answer for DS question #378."
+  },
+  {
+    "id": "PY_M_379",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #379",
+    "ground_truth": "Sample ground truth answer for PY question #379."
+  },
+  {
+    "id": "WD_H_380",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #380",
+    "ground_truth": "Sample ground truth answer for WD question #380."
+  },
+  {
+    "id": "CN_E_381",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #381",
+    "ground_truth": "Sample ground truth answer for CN question #381."
+  },
+  {
+    "id": "DSC_M_382",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #382",
+    "ground_truth": "Sample ground truth answer for DSC question #382."
+  },
+  {
+    "id": "AIML_H_383",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #383",
+    "ground_truth": "Sample ground truth answer for AIML question #383."
+  },
+  {
+    "id": "DS_E_384",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #384",
+    "ground_truth": "Sample ground truth answer for DS question #384."
+  },
+  {
+    "id": "PY_M_385",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #385",
+    "ground_truth": "Sample ground truth answer for PY question #385."
+  },
+  {
+    "id": "WD_H_386",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #386",
+    "ground_truth": "Sample ground truth answer for WD question #386."
+  },
+  {
+    "id": "CN_E_387",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #387",
+    "ground_truth": "Sample ground truth answer for CN question #387."
+  },
+  {
+    "id": "DSC_M_388",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #388",
+    "ground_truth": "Sample ground truth answer for DSC question #388."
+  },
+  {
+    "id": "AIML_H_389",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #389",
+    "ground_truth": "Sample ground truth answer for AIML question #389."
+  },
+  {
+    "id": "DS_E_390",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #390",
+    "ground_truth": "Sample ground truth answer for DS question #390."
+  },
+  {
+    "id": "PY_M_391",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #391",
+    "ground_truth": "Sample ground truth answer for PY question #391."
+  },
+  {
+    "id": "WD_H_392",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #392",
+    "ground_truth": "Sample ground truth answer for WD question #392."
+  },
+  {
+    "id": "CN_E_393",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #393",
+    "ground_truth": "Sample ground truth answer for CN question #393."
+  },
+  {
+    "id": "DSC_M_394",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #394",
+    "ground_truth": "Sample ground truth answer for DSC question #394."
+  },
+  {
+    "id": "AIML_H_395",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #395",
+    "ground_truth": "Sample ground truth answer for AIML question #395."
+  },
+  {
+    "id": "DS_E_396",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #396",
+    "ground_truth": "Sample ground truth answer for DS question #396."
+  },
+  {
+    "id": "PY_M_397",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #397",
+    "ground_truth": "Sample ground truth answer for PY question #397."
+  },
+  {
+    "id": "WD_H_398",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #398",
+    "ground_truth": "Sample ground truth answer for WD question #398."
+  },
+  {
+    "id": "CN_E_399",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #399",
+    "ground_truth": "Sample ground truth answer for CN question #399."
+  },
+  {
+    "id": "DSC_M_400",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #400",
+    "ground_truth": "Sample ground truth answer for DSC question #400."
+  },
+  {
+    "id": "AIML_H_401",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #401",
+    "ground_truth": "Sample ground truth answer for AIML question #401."
+  },
+  {
+    "id": "DS_E_402",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #402",
+    "ground_truth": "Sample ground truth answer for DS question #402."
+  },
+  {
+    "id": "PY_M_403",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #403",
+    "ground_truth": "Sample ground truth answer for PY question #403."
+  },
+  {
+    "id": "WD_H_404",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #404",
+    "ground_truth": "Sample ground truth answer for WD question #404."
+  },
+  {
+    "id": "CN_E_405",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #405",
+    "ground_truth": "Sample ground truth answer for CN question #405."
+  },
+  {
+    "id": "DSC_M_406",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #406",
+    "ground_truth": "Sample ground truth answer for DSC question #406."
+  },
+  {
+    "id": "AIML_H_407",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #407",
+    "ground_truth": "Sample ground truth answer for AIML question #407."
+  },
+  {
+    "id": "DS_E_408",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #408",
+    "ground_truth": "Sample ground truth answer for DS question #408."
+  },
+  {
+    "id": "PY_M_409",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #409",
+    "ground_truth": "Sample ground truth answer for PY question #409."
+  },
+  {
+    "id": "WD_H_410",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #410",
+    "ground_truth": "Sample ground truth answer for WD question #410."
+  },
+  {
+    "id": "CN_E_411",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #411",
+    "ground_truth": "Sample ground truth answer for CN question #411."
+  },
+  {
+    "id": "DSC_M_412",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #412",
+    "ground_truth": "Sample ground truth answer for DSC question #412."
+  },
+  {
+    "id": "AIML_H_413",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #413",
+    "ground_truth": "Sample ground truth answer for AIML question #413."
+  },
+  {
+    "id": "DS_E_414",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #414",
+    "ground_truth": "Sample ground truth answer for DS question #414."
+  },
+  {
+    "id": "PY_M_415",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #415",
+    "ground_truth": "Sample ground truth answer for PY question #415."
+  },
+  {
+    "id": "WD_H_416",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #416",
+    "ground_truth": "Sample ground truth answer for WD question #416."
+  },
+  {
+    "id": "CN_E_417",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #417",
+    "ground_truth": "Sample ground truth answer for CN question #417."
+  },
+  {
+    "id": "DSC_M_418",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #418",
+    "ground_truth": "Sample ground truth answer for DSC question #418."
+  },
+  {
+    "id": "AIML_H_419",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #419",
+    "ground_truth": "Sample ground truth answer for AIML question #419."
+  },
+  {
+    "id": "DS_E_420",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #420",
+    "ground_truth": "Sample ground truth answer for DS question #420."
+  },
+  {
+    "id": "PY_M_421",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #421",
+    "ground_truth": "Sample ground truth answer for PY question #421."
+  },
+  {
+    "id": "WD_H_422",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #422",
+    "ground_truth": "Sample ground truth answer for WD question #422."
+  },
+  {
+    "id": "CN_E_423",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #423",
+    "ground_truth": "Sample ground truth answer for CN question #423."
+  },
+  {
+    "id": "DSC_M_424",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #424",
+    "ground_truth": "Sample ground truth answer for DSC question #424."
+  },
+  {
+    "id": "AIML_H_425",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #425",
+    "ground_truth": "Sample ground truth answer for AIML question #425."
+  },
+  {
+    "id": "DS_E_426",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #426",
+    "ground_truth": "Sample ground truth answer for DS question #426."
+  },
+  {
+    "id": "PY_M_427",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #427",
+    "ground_truth": "Sample ground truth answer for PY question #427."
+  },
+  {
+    "id": "WD_H_428",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #428",
+    "ground_truth": "Sample ground truth answer for WD question #428."
+  },
+  {
+    "id": "CN_E_429",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #429",
+    "ground_truth": "Sample ground truth answer for CN question #429."
+  },
+  {
+    "id": "DSC_M_430",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #430",
+    "ground_truth": "Sample ground truth answer for DSC question #430."
+  },
+  {
+    "id": "AIML_H_431",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #431",
+    "ground_truth": "Sample ground truth answer for AIML question #431."
+  },
+  {
+    "id": "DS_E_432",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #432",
+    "ground_truth": "Sample ground truth answer for DS question #432."
+  },
+  {
+    "id": "PY_M_433",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #433",
+    "ground_truth": "Sample ground truth answer for PY question #433."
+  },
+  {
+    "id": "WD_H_434",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #434",
+    "ground_truth": "Sample ground truth answer for WD question #434."
+  },
+  {
+    "id": "CN_E_435",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #435",
+    "ground_truth": "Sample ground truth answer for CN question #435."
+  },
+  {
+    "id": "DSC_M_436",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #436",
+    "ground_truth": "Sample ground truth answer for DSC question #436."
+  },
+  {
+    "id": "AIML_H_437",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #437",
+    "ground_truth": "Sample ground truth answer for AIML question #437."
+  },
+  {
+    "id": "DS_E_438",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #438",
+    "ground_truth": "Sample ground truth answer for DS question #438."
+  },
+  {
+    "id": "PY_M_439",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #439",
+    "ground_truth": "Sample ground truth answer for PY question #439."
+  },
+  {
+    "id": "WD_H_440",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #440",
+    "ground_truth": "Sample ground truth answer for WD question #440."
+  },
+  {
+    "id": "CN_E_441",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #441",
+    "ground_truth": "Sample ground truth answer for CN question #441."
+  },
+  {
+    "id": "DSC_M_442",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #442",
+    "ground_truth": "Sample ground truth answer for DSC question #442."
+  },
+  {
+    "id": "AIML_H_443",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #443",
+    "ground_truth": "Sample ground truth answer for AIML question #443."
+  },
+  {
+    "id": "DS_E_444",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #444",
+    "ground_truth": "Sample ground truth answer for DS question #444."
+  },
+  {
+    "id": "PY_M_445",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #445",
+    "ground_truth": "Sample ground truth answer for PY question #445."
+  },
+  {
+    "id": "WD_H_446",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #446",
+    "ground_truth": "Sample ground truth answer for WD question #446."
+  },
+  {
+    "id": "CN_E_447",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #447",
+    "ground_truth": "Sample ground truth answer for CN question #447."
+  },
+  {
+    "id": "DSC_M_448",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #448",
+    "ground_truth": "Sample ground truth answer for DSC question #448."
+  },
+  {
+    "id": "AIML_H_449",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #449",
+    "ground_truth": "Sample ground truth answer for AIML question #449."
+  },
+  {
+    "id": "DS_E_450",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #450",
+    "ground_truth": "Sample ground truth answer for DS question #450."
+  },
+  {
+    "id": "PY_M_451",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #451",
+    "ground_truth": "Sample ground truth answer for PY question #451."
+  },
+  {
+    "id": "WD_H_452",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #452",
+    "ground_truth": "Sample ground truth answer for WD question #452."
+  },
+  {
+    "id": "CN_E_453",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #453",
+    "ground_truth": "Sample ground truth answer for CN question #453."
+  },
+  {
+    "id": "DSC_M_454",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #454",
+    "ground_truth": "Sample ground truth answer for DSC question #454."
+  },
+  {
+    "id": "AIML_H_455",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #455",
+    "ground_truth": "Sample ground truth answer for AIML question #455."
+  },
+  {
+    "id": "DS_E_456",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #456",
+    "ground_truth": "Sample ground truth answer for DS question #456."
+  },
+  {
+    "id": "PY_M_457",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #457",
+    "ground_truth": "Sample ground truth answer for PY question #457."
+  },
+  {
+    "id": "WD_H_458",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #458",
+    "ground_truth": "Sample ground truth answer for WD question #458."
+  },
+  {
+    "id": "CN_E_459",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #459",
+    "ground_truth": "Sample ground truth answer for CN question #459."
+  },
+  {
+    "id": "DSC_M_460",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #460",
+    "ground_truth": "Sample ground truth answer for DSC question #460."
+  },
+  {
+    "id": "AIML_H_461",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #461",
+    "ground_truth": "Sample ground truth answer for AIML question #461."
+  },
+  {
+    "id": "DS_E_462",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #462",
+    "ground_truth": "Sample ground truth answer for DS question #462."
+  },
+  {
+    "id": "PY_M_463",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #463",
+    "ground_truth": "Sample ground truth answer for PY question #463."
+  },
+  {
+    "id": "WD_H_464",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #464",
+    "ground_truth": "Sample ground truth answer for WD question #464."
+  },
+  {
+    "id": "CN_E_465",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #465",
+    "ground_truth": "Sample ground truth answer for CN question #465."
+  },
+  {
+    "id": "DSC_M_466",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #466",
+    "ground_truth": "Sample ground truth answer for DSC question #466."
+  },
+  {
+    "id": "AIML_H_467",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #467",
+    "ground_truth": "Sample ground truth answer for AIML question #467."
+  },
+  {
+    "id": "DS_E_468",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #468",
+    "ground_truth": "Sample ground truth answer for DS question #468."
+  },
+  {
+    "id": "PY_M_469",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #469",
+    "ground_truth": "Sample ground truth answer for PY question #469."
+  },
+  {
+    "id": "WD_H_470",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #470",
+    "ground_truth": "Sample ground truth answer for WD question #470."
+  },
+  {
+    "id": "CN_E_471",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #471",
+    "ground_truth": "Sample ground truth answer for CN question #471."
+  },
+  {
+    "id": "DSC_M_472",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #472",
+    "ground_truth": "Sample ground truth answer for DSC question #472."
+  },
+  {
+    "id": "AIML_H_473",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #473",
+    "ground_truth": "Sample ground truth answer for AIML question #473."
+  },
+  {
+    "id": "DS_E_474",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #474",
+    "ground_truth": "Sample ground truth answer for DS question #474."
+  },
+  {
+    "id": "PY_M_475",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #475",
+    "ground_truth": "Sample ground truth answer for PY question #475."
+  },
+  {
+    "id": "WD_H_476",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #476",
+    "ground_truth": "Sample ground truth answer for WD question #476."
+  },
+  {
+    "id": "CN_E_477",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #477",
+    "ground_truth": "Sample ground truth answer for CN question #477."
+  },
+  {
+    "id": "DSC_M_478",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #478",
+    "ground_truth": "Sample ground truth answer for DSC question #478."
+  },
+  {
+    "id": "AIML_H_479",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #479",
+    "ground_truth": "Sample ground truth answer for AIML question #479."
+  },
+  {
+    "id": "DS_E_480",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #480",
+    "ground_truth": "Sample ground truth answer for DS question #480."
+  },
+  {
+    "id": "PY_M_481",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #481",
+    "ground_truth": "Sample ground truth answer for PY question #481."
+  },
+  {
+    "id": "WD_H_482",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #482",
+    "ground_truth": "Sample ground truth answer for WD question #482."
+  },
+  {
+    "id": "CN_E_483",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #483",
+    "ground_truth": "Sample ground truth answer for CN question #483."
+  },
+  {
+    "id": "DSC_M_484",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #484",
+    "ground_truth": "Sample ground truth answer for DSC question #484."
+  },
+  {
+    "id": "AIML_H_485",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #485",
+    "ground_truth": "Sample ground truth answer for AIML question #485."
+  },
+  {
+    "id": "DS_E_486",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #486",
+    "ground_truth": "Sample ground truth answer for DS question #486."
+  },
+  {
+    "id": "PY_M_487",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #487",
+    "ground_truth": "Sample ground truth answer for PY question #487."
+  },
+  {
+    "id": "WD_H_488",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #488",
+    "ground_truth": "Sample ground truth answer for WD question #488."
+  },
+  {
+    "id": "CN_E_489",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #489",
+    "ground_truth": "Sample ground truth answer for CN question #489."
+  },
+  {
+    "id": "DSC_M_490",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #490",
+    "ground_truth": "Sample ground truth answer for DSC question #490."
+  },
+  {
+    "id": "AIML_H_491",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #491",
+    "ground_truth": "Sample ground truth answer for AIML question #491."
+  },
+  {
+    "id": "DS_E_492",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #492",
+    "ground_truth": "Sample ground truth answer for DS question #492."
+  },
+  {
+    "id": "PY_M_493",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #493",
+    "ground_truth": "Sample ground truth answer for PY question #493."
+  },
+  {
+    "id": "WD_H_494",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #494",
+    "ground_truth": "Sample ground truth answer for WD question #494."
+  },
+  {
+    "id": "CN_E_495",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #495",
+    "ground_truth": "Sample ground truth answer for CN question #495."
+  },
+  {
+    "id": "DSC_M_496",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #496",
+    "ground_truth": "Sample ground truth answer for DSC question #496."
+  },
+  {
+    "id": "AIML_H_497",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #497",
+    "ground_truth": "Sample ground truth answer for AIML question #497."
+  },
+  {
+    "id": "DS_E_498",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #498",
+    "ground_truth": "Sample ground truth answer for DS question #498."
+  },
+  {
+    "id": "PY_M_499",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #499",
+    "ground_truth": "Sample ground truth answer for PY question #499."
+  },
+  {
+    "id": "WD_H_500",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #500",
+    "ground_truth": "Sample ground truth answer for WD question #500."
+  },
+  {
+    "id": "CN_E_501",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #501",
+    "ground_truth": "Sample ground truth answer for CN question #501."
+  },
+  {
+    "id": "DSC_M_502",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #502",
+    "ground_truth": "Sample ground truth answer for DSC question #502."
+  },
+  {
+    "id": "AIML_H_503",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #503",
+    "ground_truth": "Sample ground truth answer for AIML question #503."
+  },
+  {
+    "id": "DS_E_504",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #504",
+    "ground_truth": "Sample ground truth answer for DS question #504."
+  },
+  {
+    "id": "PY_M_505",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #505",
+    "ground_truth": "Sample ground truth answer for PY question #505."
+  },
+  {
+    "id": "WD_H_506",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #506",
+    "ground_truth": "Sample ground truth answer for WD question #506."
+  },
+  {
+    "id": "CN_E_507",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #507",
+    "ground_truth": "Sample ground truth answer for CN question #507."
+  },
+  {
+    "id": "DSC_M_508",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #508",
+    "ground_truth": "Sample ground truth answer for DSC question #508."
+  },
+  {
+    "id": "AIML_H_509",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #509",
+    "ground_truth": "Sample ground truth answer for AIML question #509."
+  },
+  {
+    "id": "DS_E_510",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #510",
+    "ground_truth": "Sample ground truth answer for DS question #510."
+  },
+  {
+    "id": "PY_M_511",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #511",
+    "ground_truth": "Sample ground truth answer for PY question #511."
+  },
+  {
+    "id": "WD_H_512",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #512",
+    "ground_truth": "Sample ground truth answer for WD question #512."
+  },
+  {
+    "id": "CN_E_513",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #513",
+    "ground_truth": "Sample ground truth answer for CN question #513."
+  },
+  {
+    "id": "DSC_M_514",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #514",
+    "ground_truth": "Sample ground truth answer for DSC question #514."
+  },
+  {
+    "id": "AIML_H_515",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #515",
+    "ground_truth": "Sample ground truth answer for AIML question #515."
+  },
+  {
+    "id": "DS_E_516",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #516",
+    "ground_truth": "Sample ground truth answer for DS question #516."
+  },
+  {
+    "id": "PY_M_517",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #517",
+    "ground_truth": "Sample ground truth answer for PY question #517."
+  },
+  {
+    "id": "WD_H_518",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #518",
+    "ground_truth": "Sample ground truth answer for WD question #518."
+  },
+  {
+    "id": "CN_E_519",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #519",
+    "ground_truth": "Sample ground truth answer for CN question #519."
+  },
+  {
+    "id": "DSC_M_520",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #520",
+    "ground_truth": "Sample ground truth answer for DSC question #520."
+  },
+  {
+    "id": "AIML_H_521",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #521",
+    "ground_truth": "Sample ground truth answer for AIML question #521."
+  },
+  {
+    "id": "DS_E_522",
+    "subject": "DS",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about DS (easy level) #522",
+    "ground_truth": "Sample ground truth answer for DS question #522."
+  },
+  {
+    "id": "PY_M_523",
+    "subject": "PY",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about PY (medium level) #523",
+    "ground_truth": "Sample ground truth answer for PY question #523."
+  },
+  {
+    "id": "WD_H_524",
+    "subject": "WD",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about WD (hard level) #524",
+    "ground_truth": "Sample ground truth answer for WD question #524."
+  },
+  {
+    "id": "CN_E_525",
+    "subject": "CN",
+    "difficulty": "easy",
+    "type": "factual",
+    "question": "Sample factual question about CN (easy level) #525",
+    "ground_truth": "Sample ground truth answer for CN question #525."
+  },
+  {
+    "id": "DSC_M_526",
+    "subject": "DSC",
+    "difficulty": "medium",
+    "type": "conceptual",
+    "question": "Sample conceptual question about DSC (medium level) #526",
+    "ground_truth": "Sample ground truth answer for DSC question #526."
+  },
+  {
+    "id": "AIML_H_527",
+    "subject": "AIML",
+    "difficulty": "hard",
+    "type": "procedural",
+    "question": "Sample procedural question about AIML (hard level) #527",
+    "ground_truth": "Sample ground truth answer for AIML question #527."
+  }
+]

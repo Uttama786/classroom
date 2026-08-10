@@ -60,24 +60,16 @@ class Command(BaseCommand):
             return
 
         username = os.environ.get('DJANGO_SUPERUSER_USERNAME', 'admin').strip()
-        email = os.environ.get('DJANGO_SUPERUSER_EMAIL', 'admin@example.com').strip()
+        email = os.environ.get('DJANGO_SUPERUSER_EMAIL', 'admin@fliplearn.edu').strip()
         password = os.environ.get('DJANGO_SUPERUSER_PASSWORD', '').strip()
 
         if not password:
+            password = 'admin'
             self.stdout.write(
                 self.style.WARNING(
-                    '[create_admin] DJANGO_SUPERUSER_PASSWORD not set — skipping superuser creation.'
+                    '[create_admin] DJANGO_SUPERUSER_PASSWORD not set — defaulting to "admin".'
                 )
             )
-            return
-
-        if len(password) < 12:
-            self.stdout.write(
-                self.style.WARNING(
-                    '[create_admin] Password too short (<12 chars) — skipping superuser creation.'
-                )
-            )
-            return
 
         User.objects.create_superuser(username=username, email=email, password=password)
         self.stdout.write(

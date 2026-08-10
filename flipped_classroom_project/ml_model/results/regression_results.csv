@@ -1,0 +1,3 @@
+Model,R2,R2_CI_lo,R2_CI_hi,RMSE,CV_R2_mean,CV_R2_std,Test_n,Train_n
+Linear Regression,0.9758,0.941,0.9887,3.618,0.9825,0.0072,24,96
+Random Forest Regressor,0.9514,0.8933,0.9746,5.1233,0.9748,0.0076,24,96

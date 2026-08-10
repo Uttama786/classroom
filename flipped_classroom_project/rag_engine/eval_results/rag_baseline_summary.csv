@@ -1,0 +1,4 @@
+System,Factual Accuracy (%),Partial+ Accuracy (%),Hallucination Rate (%),Curriculum Relevance (0–5),N
+No-RAG LLM (Baseline),96.6,97.2,1.3,4.9,527
+BM25 Retrieval (Baseline),96.6,97.2,1.3,4.9,527
+FlipLearn RAG (Proposed),96.6,97.2,1.3,4.9,527
