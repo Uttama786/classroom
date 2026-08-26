@@ -3,7 +3,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.contrib import messages
-from django.db.models import Avg, Count, Sum, FloatField, Q
+from django.db.models import Avg, Count, Sum, FloatField, IntegerField, Q, Case, When
 from django.db.models.functions import Coalesce
 from django.http import JsonResponse, HttpResponse, StreamingHttpResponse, FileResponse, Http404
 from django.conf import settings
