@@ -14,16 +14,48 @@ from flipped_app.models import (
     VideoWatchHistory,
 )
 
+FIRST_NAMES = [
+    # Male names
+    "Aarav", "Vivaan", "Aditya", "Vihaan", "Arjun", "Sai", "Reyansh", "Ayan", "Krishna", "Ishaan",
+    "Shaurya", "Atharva", "Advait", "Pranav", "Aryan", "Dhruv", "Kabir", "Ritvik", "Darsh", "Rohan",
+    "Rahul", "Amit", "Varun", "Nikhil", "Siddharth", "Harsh", "Yash", "Kunal", "Gaurav", "Mayank",
+    "Ayush", "Akash", "Chirag", "Karan", "Rishabh", "Mohit", "Alok", "Dev", "Manish", "Abhishek",
+    "Suresh", "Vikram", "Aniket", "Sanket", "Shubham", "Tejas", "Tanmay", "Omkar", "Prathamesh", "Pradeep",
+    "Dinesh", "Manoj", "Pankaj", "Sachin", "Deepak", "Vivek", "Vishal", "Ashish", "Anand", "Rajesh",
+    "Ravi", "Sanjay", "Sunil", "Ajay", "Vinay", "Hemant", "Chetan", "Tushar", "Girish", "Naveen",
+    # Female names
+    "Ananya", "Diya", "Aadhya", "Pari", "Saanvi", "Kiara", "Myra", "Riya", "Ira", "Avani",
+    "Prisha", "Riddhi", "Sneha", "Tanvi", "Anika", "Navya", "Kavya", "Ishita", "Meera", "Pooja",
+    "Neha", "Swati", "Shreya", "Divya", "Simran", "Mansi", "Payal", "Sonam", "Muskan", "Kriti",
+    "Richa", "Pallavi", "Chetna", "Jyoti", "Vandana", "Preeti", "Komal", "Garima", "Sakshi", "Nidhi",
+    "Bhavya", "Tanisha", "Shweta", "Deepika", "Shruti", "Rashmi", "Ankita", "Akanksha", "Sunita", "Monali",
+    "Pragya", "Srishti", "Ritika", "Nisha", "Meenakshi", "Shilpa", "Trisha", "Lavanya", "Charu", "Harshita",
+    "Manisha", "Urvashi", "Kavita", "Suman", "Geeta", "Anjali", "Bhumika", "Chhavi", "Devanshi", "Ekta",
+]
+
+LAST_NAMES = [
+    "Sharma", "Verma", "Gupta", "Patel", "Singh", "Kumar", "Rao", "Reddy", "Nair", "Iyer",
+    "Joshi", "Mehta", "Shah", "Agarwal", "Mishra", "Bhat", "Deshmukh", "Kulkarni", "Patil", "Banerjee",
+    "Chatterjee", "Mukherjee", "Ghosh", "Das", "Sen", "Dutta", "Roy", "Bose", "Choudhury", "Chakraborty",
+    "Pillai", "Menon", "Nambiar", "Kurian", "Thomas", "Mathew", "Varghese", "Joseph", "Fernandes", "D'Souza",
+    "Lobo", "Pinto", "Chauhan", "Rajput", "Rathore", "Solanki", "Tomar", "Yadav", "Maurya", "Saini",
+    "Jangid", "Prajapat", "Bishnoi", "Mittal", "Bansal", "Goyal", "Singhal", "Garg", "Jindal", "Goel",
+    "Mahajan", "Kapoor", "Malhotra", "Khanna", "Arora", "Sethi", "Grover", "Batra", "Anand", "Bajaj",
+    "Chopra", "Dhawan", "Kohli", "Suri", "Tandon", "Ahuja", "Lamba", "Bhasin", "Duggal", "Talwar",
+]
+
+DEPARTMENTS = ["CS", "IT", "AI", "DS", "EC", "EE", "ME", "CE"]
+
 
 class Command(BaseCommand):
-    help = "Seed dummy student and teacher users with profiles."
+    help = "Seed student and teacher users with realistic profiles."
 
     def add_arguments(self, parser):
         parser.add_argument(
             "--students",
             type=int,
             default=1000,
-            help="Number of dummy students to create (default: 1000).",
+            help="Number of students to create (default: 1000).",
         )
         parser.add_argument(
             "--target-students",
@@ -35,13 +67,13 @@ class Command(BaseCommand):
             "--teachers",
             type=int,
             default=100,
-            help="Number of dummy teachers to create (default: 100).",
+            help="Number of teachers to create (default: 100).",
         )
         parser.add_argument(
             "--password",
             type=str,
             default="Pass@123",
-            help="Password assigned to all created dummy users.",
+            help="Password assigned to all created users.",
         )
         parser.add_argument(
             "--min-watched-videos",
@@ -88,23 +120,18 @@ class Command(BaseCommand):
         subjects = list(Subject.objects.all())
         hashed_password = make_password(raw_password)
 
-        student_start = self._next_index("student_dummy_", width=4)
-        teacher_start = self._next_index("teacher_dummy_", width=3)
-
         self.stdout.write(
-            f"Creating {students_to_create} students and {teachers_to_create} teachers..."
+            f"Creating {students_to_create} students and {teachers_to_create} teachers with real names..."
         )
 
         with transaction.atomic():
             students, created_student_ids = self._create_students(
                 students_to_create,
-                student_start,
                 hashed_password,
                 subjects,
             )
             teachers = self._create_teachers(
                 teachers_to_create,
-                teacher_start,
                 hashed_password,
                 subjects,
             )
@@ -115,27 +142,53 @@ class Command(BaseCommand):
                 completion_rate,
             )
 
-        self.stdout.write(self.style.SUCCESS("Dummy user seeding complete."))
+        self.stdout.write(self.style.SUCCESS("User seeding complete."))
         self.stdout.write(
             f"Students created: {students}; Teachers created: {teachers}; "
             f"Watched rows seeded: {watched_rows}"
         )
 
-    def _create_students(self, count, start_index, hashed_password, subjects):
+    def _create_students(self, count, hashed_password, subjects):
         if count <= 0:
             return 0, []
 
+        existing_usernames = set(User.objects.values_list("username", flat=True))
+        existing_rolls = set(StudentProfile.objects.values_list("roll_number", flat=True))
+        
         users = []
         created_usernames = []
-        for i in range(start_index, start_index + count):
-            username = f"student_dummy_{i:04d}"
+        roll_map = {}
+
+        for i in range(1, count + 1):
+            fname = random.choice(FIRST_NAMES)
+            lname = random.choice(LAST_NAMES)
+            clean_first = re.sub(r'[^a-zA-Z0-9]', '', fname).lower()
+            clean_last = re.sub(r'[^a-zA-Z0-9]', '', lname).lower()
+
+            base_username = f"{clean_first}.{clean_last}"
+            username = base_username
+            num = 1
+            while username in existing_usernames:
+                num += 1
+                username = f"{base_username}{num}"
+            existing_usernames.add(username)
             created_usernames.append(username)
+
+            dept = DEPARTMENTS[i % len(DEPARTMENTS)]
+            year = 2024
+            roll = f"{year}{dept}{i:04d}"
+            while roll in existing_rolls:
+                i += 100000
+                roll = f"{year}{dept}{i:04d}"
+            existing_rolls.add(roll)
+            roll_map[username] = roll
+
             users.append(
                 User(
                     username=username,
-                    first_name="Student",
-                    last_name=f"{i:04d}",
-                    email=f"{username}@fliplearn.local",
+                    first_name=fname,
+                    last_name=lname,
+                    email=f"{username}@fliplearn.edu",
                     password=hashed_password,
                     is_staff=False,
                     is_superuser=False,
@@ -153,11 +206,10 @@ class Command(BaseCommand):
 
         profiles = []
         for user_id, username in created_users:
-            suffix = username.split("_")[-1]
             profiles.append(
                 StudentProfile(
                     user_id=user_id,
-                    roll_number=f"ROLL{suffix}",
+                    roll_number=roll_map.get(username, f"ROLL_{user_id}"),
                     semester=random.randint(1, 8),
                     previous_gpa=round(random.uniform(5.0, 9.8), 2),
                     phone=f"9{random.randint(100000000, 999999999)}",
@@ -199,7 +251,7 @@ class Command(BaseCommand):
         if not videos:
             self.stdout.write(
                 self.style.WARNING(
-                    "No active videos found; skipping watched-video dummy data."
+                    "No active videos found; skipping watched-video data."
                 )
             )
             return 0
@@ -247,21 +299,45 @@ class Command(BaseCommand):
         VideoWatchHistory.objects.bulk_create(rows, batch_size=2000, ignore_conflicts=True)
         return len(rows)
 
-    def _create_teachers(self, count, start_index, hashed_password, subjects):
+    def _create_teachers(self, count, hashed_password, subjects):
         if count <= 0:
             return 0
 
+        existing_usernames = set(User.objects.values_list("username", flat=True))
+        existing_emp_ids = set(TeacherProfile.objects.values_list("employee_id", flat=True))
+
         users = []
         created_usernames = []
-        for i in range(start_index, start_index + count):
-            username = f"teacher_dummy_{i:03d}"
+        emp_map = {}
+
+        for i in range(1, count + 1):
+            fname = random.choice(FIRST_NAMES)
+            lname = random.choice(LAST_NAMES)
+            clean_first = re.sub(r'[^a-zA-Z0-9]', '', fname).lower()
+            clean_last = re.sub(r'[^a-zA-Z0-9]', '', lname).lower()
+
+            base_username = f"prof.{clean_first}.{clean_last}"
+            username = base_username
+            num = 1
+            while username in existing_usernames:
+                num += 1
+                username = f"{base_username}{num}"
+            existing_usernames.add(username)
             created_usernames.append(username)
+
+            emp_id = f"EMP{i:04d}"
+            while emp_id in existing_emp_ids:
+                i += 1000
+                emp_id = f"EMP{i:04d}"
+            existing_emp_ids.add(emp_id)
+            emp_map[username] = emp_id
+
             users.append(
                 User(
                     username=username,
-                    first_name="Teacher",
-                    last_name=f"{i:03d}",
-                    email=f"{username}@fliplearn.local",
+                    first_name=fname,
+                    last_name=lname,
+                    email=f"{username}@fliplearn.edu",
                     password=hashed_password,
                     is_staff=True,
                     is_superuser=False,
@@ -279,11 +355,10 @@ class Command(BaseCommand):
 
         profiles = []
         for user_id, username in created_users:
-            suffix = username.split("_")[-1]
             profiles.append(
                 TeacherProfile(
                     user_id=user_id,
-                    employee_id=f"DUMMYEMP{suffix}",
+                    employee_id=emp_map.get(username, f"EMP_{user_id}"),
                     designation=random.choice(
                         [
                             "Assistant Professor",
@@ -311,16 +386,3 @@ class Command(BaseCommand):
             ThroughModel.objects.bulk_create(assignments, batch_size=2000)
 
         return len(users)
-
-    def _next_index(self, prefix, width=4):
-        usernames = User.objects.filter(username__startswith=prefix).values_list(
-            "username", flat=True
-        )
-        pattern = re.compile(rf"^{re.escape(prefix)}(\d+)$")
-        max_found = 0
-        for name in usernames:
-            match = pattern.match(name)
-            if not match:
-                continue
-            max_found = max(max_found, int(match.group(1)))
-        return max_found + 1
