@@ -765,12 +765,19 @@ def analytics_view(request):
     ).select_related('student_profile').order_by('first_name', 'last_name', 'username')[:300]
 
     # ── Filters ────────────────────────────────────────────────────────────────
+    q_search        = request.GET.get('q', '').strip()
     subject_id      = request.GET.get('subject', '').strip()
     label_filter    = request.GET.get('label', '').strip()
     risk_only       = request.GET.get('risk_only', '').strip()
-    selected_student = request.GET.get('student', '').strip()   # user pk
     sort_by         = request.GET.get('sort', '').strip()
 
+    if q_search:
+        performances = performances.filter(
+            Q(student__first_name__icontains=q_search) |
+            Q(student__last_name__icontains=q_search) |
+            Q(student__username__icontains=q_search) |
+            Q(student__student_profile__roll_number__icontains=q_search)
+        )
     if subject_id:
         performances = performances.filter(subject_id=subject_id)
     if label_filter:
@@ -779,8 +786,6 @@ def analytics_view(request):
         )
     if risk_only == '1':
         performances = performances.filter(is_at_risk=True)
-    if selected_student:
-        performances = performances.filter(student_id=selected_student)
     if sort_by == 'score_asc':
         performances = performances.order_by('final_exam_score')
     elif sort_by == 'score_desc':
@@ -816,11 +821,10 @@ def analytics_view(request):
         'performances':       page_obj.object_list,
         'page_obj':           page_obj,
         'subjects':           subjects,
-        'all_students':       all_students,
+        'q_search':           q_search,
         'selected_subject':   subject_id,
         'selected_label':     label_filter,
         'risk_only':          risk_only,
-        'selected_student':   selected_student,
         'sort_by':            sort_by,
         'avg_score':         round(avg_score, 2),
         'at_risk_count':     at_risk_count,
