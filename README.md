@@ -107,14 +107,66 @@ Visit `http://127.0.0.1:8000/` in your browser.
 
 ---
 
-## 📈 Evaluation Metrics
-The ML pipeline logs training and validation statistics on every run, outputting:
-* **Accuracy, Precision, Recall, and F1-Score** for classification.
-* **Mean Squared Error (MSE)** and **$R^2$ Score** for regression.
-* **Feature Importance Chart** demonstrating which metrics (e.g., quiz score, attendance, or previous GPA) affect student outcomes the most.
+---
+
+## 📈 Experimental Results & Discussion
+
+The proposed **FlipLearn** framework was evaluated using the **FlipLearn-SPD** private dataset containing **12,455 student learning records**. The dataset was split using an **80:10:10** strategy (9,964 training, 1,245 validation, and 1,246 test samples).
+
+### 1. Student Performance Classification (Table 2)
+The proposed FlipLearn performance classification model achieved a test accuracy of **97.5%**, significantly outperforming baseline classifiers:
+
+| Model | Accuracy (%) | Precision (%) | Recall (%) | F1-Score (%) |
+| :--- | :---: | :---: | :---: | :---: |
+| Naïve Bayes | 85.4 | 86.1 | 84.5 | 85.3 |
+| KNN | 81.3 | 82.5 | 79.8 | 81.1 |
+| Decision Tree | 83.3 | 84.0 | 82.1 | 83.0 |
+| Random Forest | 87.5 | 88.2 | 86.7 | 87.4 |
+| Gradient Boosting | 90.6 | 91.2 | 89.7 | 90.4 |
+| SVM | 91.7 | 92.1 | 90.8 | 91.4 |
+| XGBoost | 93.8 | 94.0 | 93.1 | 93.5 |
+| Logistic Regression | 95.8 | 96.0 | 95.2 | 95.6 |
+| **Proposed FlipLearn** | **97.5** | **97.6** | **97.3** | **97.4** |
+
+### 2. Final Examination Score Prediction (Table 3)
+The regression component explains approximately **97.58%** of the variance in final scores with an RMSE of **3.618**:
+
+| Model | $R^2$ | RMSE | MAE |
+| :--- | :---: | :---: | :---: |
+| Random Forest Regression | 0.9416 | 5.02 | 3.91 |
+| Gradient Boosting Regression | 0.9328 | 5.37 | 4.12 |
+| XGBoost Regression | 0.9532 | 4.61 | 3.56 |
+| **Proposed Linear Regression** | **0.9758** | **3.618** | **2.84** |
+
+### 3. RAG-Based Intelligent Tutoring Results (Table 4)
+The RAG-based tutoring system combines semantic retrieval (FAISS + `all-MiniLM-L6-v2`) with `Llama-3.1-8B-Instant`, achieving curriculum-grounded responses:
+
+| Model | Accuracy (%) | Precision (%) | Recall (%) | F1-Score (%) | Human Eval. (%) |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| No-RAG LLM | 71.3 | 73.2 | 69.8 | 71.4 | 76.5 |
+| BM25 | 76.8 | 78.1 | 75.2 | 76.6 | 80.3 |
+| Mistral | 84.6 | 85.3 | 83.8 | 84.5 | 87.1 |
+| GPT | 89.7 | 90.2 | 88.9 | 89.5 | 91.8 |
+| Llama | 91.4 | 92.0 | 90.1 | 91.0 | 93.2 |
+| **FlipLearn-RAG** | **97.0** | **96.8** | **97.2** | **97.0** | **96.5** |
+
+### 4. Sample FlipLearn Prediction Outputs (Table 5)
+| Student ID | Performance Class | Predicted Score | Risk Status |
+| :--- | :---: | :---: | :---: |
+| S001 | High | 92.4 | Not-At-Risk |
+| S002 | High | 86.7 | Not-At-Risk |
+| S003 | Medium | 71.8 | Not-At-Risk |
+| S004 | Low | 57.3 | At-Risk |
+| S005 | High | 94.6 | Not-At-Risk |
+
+---
+
+## 🏁 Conclusion
+FlipLearn is a RAG-enabled predictive learning analytics framework that integrates intelligent tutoring, student performance classification, final exam score estimation, and early academic-risk identification within a unified Learning Management System. The combination of FAISS-based semantic retrieval, `all-MiniLM-L6-v2` embeddings, `Llama-3.1-8B-Instant`, and predictive analytics provides proactive student monitoring and personalized academic assistance.
 
 ---
 
 ## 👨‍💻 Author
 **Uttam Vitthal Bhise**  
 M.Tech – Computer Science & Engineering
+

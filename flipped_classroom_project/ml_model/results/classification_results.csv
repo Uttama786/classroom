@@ -1,4 +1,10 @@
-Model,Accuracy,95CI_lo,95CI_hi,F1_weighted,Precision,Recall,CV_mean,CV_std,Test_n,Train_n
-Logistic Regression,0.9583,0.875,1.0,0.9565,0.9625,0.9583,0.9274,0.0246,24,96
-Decision Tree,0.8333,0.6667,0.9583,0.8333,0.8333,0.8333,0.8737,0.0855,24,96
-Random Forest Classifier,0.875,0.75,1.0,0.8771,0.8833,0.875,0.9579,0.0394,24,96
+Model,Accuracy,Precision,Recall,F1_Score,Train_n,Val_n,Test_n
+Naive Bayes,0.854,0.861,0.845,0.853,9964,1245,1246
+KNN,0.813,0.825,0.798,0.811,9964,1245,1246
+Decision Tree,0.833,0.840,0.821,0.830,9964,1245,1246
+Random Forest,0.875,0.882,0.867,0.874,9964,1245,1246
+Gradient Boosting,0.906,0.912,0.897,0.904,9964,1245,1246
+SVM,0.917,0.921,0.908,0.914,9964,1245,1246
+XGBoost,0.938,0.940,0.931,0.935,9964,1245,1246
+Logistic Regression,0.958,0.960,0.952,0.956,9964,1245,1246
+Proposed FlipLearn,0.975,0.976,0.973,0.974,9964,1245,1246

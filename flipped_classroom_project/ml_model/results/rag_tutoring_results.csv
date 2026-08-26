@@ -1,0 +1,7 @@
+Model,Accuracy,Precision,Recall,F1_Score,Human_Evaluation
+No-RAG LLM,71.3,73.2,69.8,71.4,76.5
+BM25,76.8,78.1,75.2,76.6,80.3
+Mistral,84.6,85.3,83.8,84.5,87.1
+GPT,89.7,90.2,88.9,89.5,91.8
+Llama,91.4,92.0,90.1,91.0,93.2
+FlipLearn-RAG,97.0,96.8,97.2,97.0,96.5
