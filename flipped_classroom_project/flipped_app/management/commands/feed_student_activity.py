@@ -56,28 +56,32 @@ class Command(BaseCommand):
         parser.add_argument(
             "--max-students",
             type=int,
-            default=2000,
-            help="Maximum number of students to populate with rich activity (default: 2000 for fast seeding).",
+            default=0,
+            help="Maximum number of students to populate (default: 0 = ALL students).",
         )
 
     def handle(self, *args, **options):
-        max_students = options["max_students"]
+        max_students = options.get("max_students", 0)
         rng = random.Random(42)
 
         self.stdout.write("Fetching enrolled students and subjects...")
-        profiles = list(
+        profiles_qs = (
             StudentProfile.objects.select_related("user")
             .prefetch_related("enrolled_subjects")
             .filter(enrolled_subjects__isnull=False)
-            .distinct()[:max_students]
+            .distinct()
         )
+        if max_students and max_students > 0:
+            profiles = list(profiles_qs[:max_students])
+        else:
+            profiles = list(profiles_qs)
 
         total_students = len(profiles)
         if total_students == 0:
             self.stdout.write(self.style.WARNING("No enrolled students found. Run seed_dummy_users first."))
             return
 
-        self.stdout.write(f"Populating activity data for {total_students} students...")
+        self.stdout.write(f"Populating activity and performance records for all {total_students} students...")
 
         # Pre-fetch resources by subject
         subjects = list(Subject.objects.all())
@@ -265,34 +269,30 @@ class Command(BaseCommand):
                 ])
                 feedback_batch.append(Feedback(author=user, category=cat, rating=rating, message=msg))
 
-        self.stdout.write(f"Writing records to database in batches...")
-        with transaction.atomic():
-            if watch_history_batch:
-                self.stdout.write(f" - Saving {len(watch_history_batch)} VideoWatchHistory entries...")
-                VideoWatchHistory.objects.bulk_create(watch_history_batch, batch_size=2000, ignore_conflicts=True)
+            # Periodically flush every 1000 students to keep memory low
+            if (idx + 1) % 1000 == 0 or (idx + 1) == total_students:
+                self.stdout.write(f"Processed {idx + 1}/{total_students} students. Writing batch to DB...")
+                with transaction.atomic():
+                    if watch_history_batch:
+                        VideoWatchHistory.objects.bulk_create(watch_history_batch, batch_size=2000, ignore_conflicts=True)
+                        watch_history_batch.clear()
+                    if quiz_attempts_batch:
+                        QuizAttempt.objects.bulk_create(quiz_attempts_batch, batch_size=2000, ignore_conflicts=True)
+                        quiz_attempts_batch.clear()
+                    if submissions_batch:
+                        AssignmentSubmission.objects.bulk_create(submissions_batch, batch_size=2000, ignore_conflicts=True)
+                        submissions_batch.clear()
+                    if attendance_batch:
+                        Attendance.objects.bulk_create(attendance_batch, batch_size=3000, ignore_conflicts=True)
+                        attendance_batch.clear()
+                    if performance_batch:
+                        StudentPerformance.objects.bulk_create(performance_batch, batch_size=2000, ignore_conflicts=True)
+                        performance_batch.clear()
+                    if chat_batch:
+                        ChatMessage.objects.bulk_create(chat_batch, batch_size=1000, ignore_conflicts=True)
+                        chat_batch.clear()
+                    if feedback_batch:
+                        Feedback.objects.bulk_create(feedback_batch, batch_size=500, ignore_conflicts=True)
+                        feedback_batch.clear()
 
-            if quiz_attempts_batch:
-                self.stdout.write(f" - Saving {len(quiz_attempts_batch)} QuizAttempt entries...")
-                QuizAttempt.objects.bulk_create(quiz_attempts_batch, batch_size=2000, ignore_conflicts=True)
-
-            if submissions_batch:
-                self.stdout.write(f" - Saving {len(submissions_batch)} AssignmentSubmission entries...")
-                AssignmentSubmission.objects.bulk_create(submissions_batch, batch_size=2000, ignore_conflicts=True)
-
-            if attendance_batch:
-                self.stdout.write(f" - Saving {len(attendance_batch)} Attendance records...")
-                Attendance.objects.bulk_create(attendance_batch, batch_size=3000, ignore_conflicts=True)
-
-            if performance_batch:
-                self.stdout.write(f" - Saving {len(performance_batch)} StudentPerformance records...")
-                StudentPerformance.objects.bulk_create(performance_batch, batch_size=2000, ignore_conflicts=True)
-
-            if chat_batch:
-                self.stdout.write(f" - Saving {len(chat_batch)} ChatMessage entries...")
-                ChatMessage.objects.bulk_create(chat_batch, batch_size=1000, ignore_conflicts=True)
-
-            if feedback_batch:
-                self.stdout.write(f" - Saving {len(feedback_batch)} Feedback entries...")
-                Feedback.objects.bulk_create(feedback_batch, batch_size=500, ignore_conflicts=True)
-
-        self.stdout.write(self.style.SUCCESS("Student activity, quiz, assignment, attendance, and performance feeding COMPLETE!"))
+        self.stdout.write(self.style.SUCCESS("All student activity, quiz, assignment, attendance, and performance feeding COMPLETE!"))
