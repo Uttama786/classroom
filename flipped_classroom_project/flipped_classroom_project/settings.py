@@ -43,20 +43,6 @@ ALLOWED_HOSTS = [
     for h in _raw_hosts.split(',') if h.strip()
 ]
 
-# ── CSRF Trusted Origins ──────────────────────────────────────────────────
-_csrf_origins = os.environ.get('CSRF_TRUSTED_ORIGINS', '')
-if _csrf_origins:
-    CSRF_TRUSTED_ORIGINS = [o.strip() for o in _csrf_origins.split(',') if o.strip()]
-else:
-    CSRF_TRUSTED_ORIGINS = [
-        'http://127.0.0.1:8000',
-        'http://localhost:8000',
-        'http://127.0.0.1',
-        'http://localhost',
-        'https://*.up.railway.app',
-        'https://*.onrender.com',
-    ]
-
 # ── Production Security Settings (auto-enabled when DEBUG=False) ──────────
 if not DEBUG:
     # Railway (and most PaaS) terminate SSL at the proxy; the app receives plain HTTP.
@@ -71,6 +57,17 @@ if not DEBUG:
     # Secure cookies
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+    # Trusted origins for CSRF when behind a proxy / HTTPS.
+    # Build from env var, or fall back to https:// prefix of every ALLOWED_HOST.
+    _csrf_origins = os.environ.get('CSRF_TRUSTED_ORIGINS', '')
+    if _csrf_origins:
+        CSRF_TRUSTED_ORIGINS = [o.strip() for o in _csrf_origins.split(',') if o.strip()]
+    else:
+        # Auto-build from ALLOWED_HOSTS so POST requests work without manual config
+        CSRF_TRUSTED_ORIGINS = [
+            f'https://{h}' for h in ALLOWED_HOSTS
+            if h not in ('*', 'localhost', '127.0.0.1')
+        ] or ['https://*.up.railway.app', 'https://*.onrender.com']
     # Prevent browsers from sniffing MIME types
     SECURE_CONTENT_TYPE_NOSNIFF = True
     # Note: SECURE_BROWSER_XSS_FILTER was removed in Django 4.0 (deprecated header,

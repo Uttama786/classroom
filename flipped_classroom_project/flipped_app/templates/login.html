@@ -180,7 +180,7 @@
       {% endfor %}
       {% endif %}
 
-      <form method="post" action="{% url 'login' %}">
+      <form method="post">
         {% csrf_token %}
         <div class="mb-3">
           <label class="auth-label" for="id_login_user">Username</label>

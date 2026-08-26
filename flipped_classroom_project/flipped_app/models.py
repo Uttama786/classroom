@@ -15,9 +15,9 @@ class Subject(models.Model):
 
 class StudentProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='student_profile')
-    roll_number = models.CharField(max_length=20, unique=True, db_index=True)
+    roll_number = models.CharField(max_length=20, unique=True)
     department = models.CharField(max_length=100, default='Computer Science & Engineering')
-    semester = models.IntegerField(default=1, validators=[MinValueValidator(1), MaxValueValidator(8)], db_index=True)
+    semester = models.IntegerField(default=1, validators=[MinValueValidator(1), MaxValueValidator(8)])
     profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
     phone = models.CharField(max_length=15, blank=True)
     enrolled_subjects = models.ManyToManyField(Subject, blank=True)
@@ -189,14 +189,11 @@ class VideoWatchHistory(models.Model):
 class Attendance(models.Model):
     student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='attendance_records')
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
-    date = models.DateField(db_index=True)
+    date = models.DateField()
     present = models.BooleanField(default=True)
 
     class Meta:
         unique_together = ('student', 'subject', 'date')
-        indexes = [
-            models.Index(fields=['subject', 'date']),
-        ]
 
     def __str__(self):
         status = 'Present' if self.present else 'Absent'
@@ -233,22 +230,16 @@ class StudentPerformance(models.Model):
     previous_gpa = models.FloatField(default=0)
 
     # Outcome
-    final_exam_score = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)], db_index=True)
-    performance_label = models.CharField(max_length=10, choices=PERFORMANCE_LABEL, blank=True, db_index=True)
-    predicted_score = models.FloatField(null=True, blank=True, db_index=True)
-    predicted_label = models.CharField(max_length=10, blank=True, db_index=True)
-    is_at_risk = models.BooleanField(default=False, db_index=True)
+    final_exam_score = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
+    performance_label = models.CharField(max_length=10, choices=PERFORMANCE_LABEL, blank=True)
+    predicted_score = models.FloatField(null=True, blank=True)
+    predicted_label = models.CharField(max_length=10, blank=True)
+    is_at_risk = models.BooleanField(default=False)
 
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         unique_together = ('student', 'subject')
-        indexes = [
-            models.Index(fields=['subject', 'is_at_risk']),
-            models.Index(fields=['predicted_label']),
-            models.Index(fields=['final_exam_score']),
-            models.Index(fields=['student', 'subject']),
-        ]
 
     def __str__(self):
         return f"{self.student.username} - {self.subject.name} [{self.performance_label}]"
