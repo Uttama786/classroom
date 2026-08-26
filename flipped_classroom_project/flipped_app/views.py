@@ -754,13 +754,15 @@ def assignment_submissions_view(request, assignment_id):
 @login_required
 @user_passes_test(is_teacher)
 def analytics_view(request):
-    performances = StudentPerformance.objects.select_related('student', 'subject').all()
+    from django.core.paginator import Paginator
+
+    performances = StudentPerformance.objects.select_related('student', 'student__student_profile', 'subject').all()
     subjects = Subject.objects.all()
 
-    # ── All students for dropdown ──────────────────────────────────────────────
+    # ── All students for dropdown (efficient query with limit) ─────────────────
     all_students = User.objects.filter(
         student_profile__isnull=False
-    ).order_by('first_name', 'last_name', 'username')
+    ).select_related('student_profile').order_by('first_name', 'last_name', 'username')[:300]
 
     # ── Filters ────────────────────────────────────────────────────────────────
     subject_id      = request.GET.get('subject', '').strip()
@@ -772,7 +774,9 @@ def analytics_view(request):
     if subject_id:
         performances = performances.filter(subject_id=subject_id)
     if label_filter:
-        performances = performances.filter(predicted_label=label_filter)
+        performances = performances.filter(
+            Q(predicted_label=label_filter) | Q(performance_label=label_filter)
+        )
     if risk_only == '1':
         performances = performances.filter(is_at_risk=True)
     if selected_student:
@@ -786,24 +790,31 @@ def analytics_view(request):
     elif sort_by == 'predicted_desc':
         performances = performances.order_by('-predicted_score')
     else:
-        performances = performances.order_by('student__username')
+        performances = performances.order_by('student__first_name', 'student__last_name', 'student__username')
 
     # ── Summary stats ──────────────────────────────────────────────────────────
+    total_count = performances.count()
     avg_score = performances.aggregate(Avg('final_exam_score'))['final_exam_score__avg'] or 0
-    at_risk   = performances.filter(is_at_risk=True)
+    at_risk_count = performances.filter(is_at_risk=True).count()
 
     flipped_avg     = avg_score
     traditional_avg = max(0, avg_score - 12)
 
     label_counts = {
-        'High':    performances.filter(predicted_label='High').count(),
-        'Medium':  performances.filter(predicted_label='Medium').count(),
-        'Low':     performances.filter(predicted_label='Low').count(),
-        'At-Risk': performances.filter(predicted_label='At-Risk').count(),
+        'High':    performances.filter(Q(predicted_label='High') | Q(performance_label='High')).count(),
+        'Medium':  performances.filter(Q(predicted_label='Medium') | Q(performance_label='Medium')).count(),
+        'Low':     performances.filter(Q(predicted_label='Low') | Q(performance_label='Low')).count(),
+        'At-Risk': performances.filter(is_at_risk=True).count(),
     }
 
+    # ── Pagination (50 rows per page for fast browser rendering) ───────────────
+    page_number = request.GET.get('page', 1)
+    paginator = Paginator(performances, 50)
+    page_obj = paginator.get_page(page_number)
+
     return render(request, 'analytics.html', {
-        'performances':       performances,
+        'performances':       page_obj.object_list,
+        'page_obj':           page_obj,
         'subjects':           subjects,
         'all_students':       all_students,
         'selected_subject':   subject_id,
@@ -812,12 +823,12 @@ def analytics_view(request):
         'selected_student':   selected_student,
         'sort_by':            sort_by,
         'avg_score':         round(avg_score, 2),
-        'at_risk':           at_risk,
+        'at_risk_count':     at_risk_count,
         'flipped_avg':       round(flipped_avg, 2),
         'traditional_avg':   round(traditional_avg, 2),
         'label_counts':      json.dumps(label_counts),
         'label_counts_raw':  label_counts,
-        'total_records':     performances.count(),
+        'total_records':     total_count,
     })
 
 

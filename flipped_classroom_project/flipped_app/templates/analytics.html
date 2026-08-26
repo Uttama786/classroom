@@ -127,7 +127,7 @@
   <div class="col-6 col-md-3">
     <div class="card border-0 shadow-sm text-center py-3">
       <i class="bi bi-exclamation-triangle-fill fs-3 text-danger d-block mb-1"></i>
-      <div class="fw-bold fs-4">{{ at_risk|length }}</div>
+      <div class="fw-bold fs-4">{{ at_risk_count }}</div>
       <small class="text-muted">At-Risk (filtered)</small>
     </div>
   </div>
@@ -135,7 +135,7 @@
     <div class="card border-0 shadow-sm text-center py-3">
       <i class="bi bi-people-fill fs-3 text-primary d-block mb-1"></i>
       <div class="fw-bold fs-4">{{ total_records }}</div>
-      <small class="text-muted">Records Shown</small>
+      <small class="text-muted">Records Found</small>
     </div>
   </div>
   <div class="col-6 col-md-3">
@@ -156,7 +156,9 @@
           <i class="bi bi-pie-chart-fill me-2 text-primary"></i>ML Label Distribution
           <small class="text-muted fw-normal">(filtered)</small>
         </h6>
-        <canvas id="labelChart"></canvas>
+        <div style="height:220px; position:relative;" class="d-flex align-items-center justify-content-center">
+          <canvas id="labelChart"></canvas>
+        </div>
         <div class="mt-3 small">
           <div class="d-flex justify-content-between border-bottom pb-1 mb-1">
             <span class="text-success fw-semibold">High</span><span class="fw-bold">{{ label_counts_raw.High }}</span>
@@ -168,7 +170,7 @@
             <span class="text-warning fw-semibold">Low</span><span class="fw-bold">{{ label_counts_raw.Low }}</span>
           </div>
           <div class="d-flex justify-content-between">
-            <span class="text-danger fw-semibold">At-Risk</span><span class="fw-bold">{{ at_risk|length }}</span>
+            <span class="text-danger fw-semibold">At-Risk</span><span class="fw-bold">{{ at_risk_count }}</span>
           </div>
         </div>
       </div>
@@ -182,7 +184,7 @@
         <h6 class="fw-bold mb-0">
           <i class="bi bi-table me-2 text-secondary"></i>Student Records
         </h6>
-        <span class="badge bg-secondary">{{ total_records }} records</span>
+        <span class="badge bg-secondary">{{ total_records }} total records</span>
       </div>
       <div class="card-body p-0">
         <div class="table-responsive">
@@ -212,7 +214,10 @@
             <tbody>
               {% for p in performances %}
               <tr {% if p.is_at_risk %}class="table-danger"{% endif %}>
-                <td class="small fw-semibold">{{ p.student.get_full_name|default:p.student.username }}</td>
+                <td class="small fw-semibold">
+                  <div>{{ p.student.get_full_name|default:p.student.username }}</div>
+                  <small class="text-muted" style="font-size:0.75rem">@{{ p.student.username }}</small>
+                </td>
                 <td><span class="badge bg-light text-dark border">{{ p.subject.code }}</span></td>
                 <td><span class="fw-bold">{{ p.final_exam_score|default:"—" }}</span></td>
                 <td>
@@ -246,7 +251,7 @@
                   {% endif %}
                 </td>
                 <td>
-                  <a href="{% url 'student_analytics' p.student.id %}" class="btn btn-sm btn-outline-primary py-0">
+                  <a href="{% url 'student_analytics' p.student.id %}" class="btn btn-sm btn-outline-primary py-0" title="View details">
                     <i class="bi bi-eye"></i>
                   </a>
                 </td>
@@ -263,6 +268,41 @@
             </tbody>
           </table>
         </div>
+
+        <!-- Pagination Controls -->
+        {% if page_obj.has_other_pages %}
+        <div class="d-flex justify-content-between align-items-center p-3 border-top">
+          <small class="text-muted">
+            Showing {{ page_obj.start_index }}–{{ page_obj.end_index }} of {{ total_records }}
+          </small>
+          <nav aria-label="Page navigation">
+            <ul class="pagination pagination-sm mb-0">
+              {% if page_obj.has_previous %}
+              <li class="page-item">
+                <a class="page-link" href="?page=1&student={{ selected_student }}&subject={{ selected_subject }}&label={{ selected_label }}&risk_only={{ risk_only }}&sort={{ sort_by }}">&laquo; First</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}&student={{ selected_student }}&subject={{ selected_subject }}&label={{ selected_label }}&risk_only={{ risk_only }}&sort={{ sort_by }}">Prev</a>
+              </li>
+              {% endif %}
+
+              <li class="page-item active">
+                <span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+              </li>
+
+              {% if page_obj.has_next %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}&student={{ selected_student }}&subject={{ selected_subject }}&label={{ selected_label }}&risk_only={{ risk_only }}&sort={{ sort_by }}">Next</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&student={{ selected_student }}&subject={{ selected_subject }}&label={{ selected_label }}&risk_only={{ risk_only }}&sort={{ sort_by }}">Last &raquo;</a>
+              </li>
+              {% endif %}
+            </ul>
+          </nav>
+        </div>
+        {% endif %}
+
       </div>
     </div>
   </div>
@@ -271,23 +311,26 @@
 <script>
 const labelData = {{ label_counts|safe }};
 const ctx = document.getElementById('labelChart');
-new Chart(ctx, {
-  type: 'doughnut',
-  data: {
-    labels: Object.keys(labelData),
-    datasets: [{
-      data: Object.values(labelData),
-      backgroundColor: ['#28a745', '#0d6efd', '#ffc107', '#dc3545'],
-      borderWidth: 2,
-    }]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } }
+if (ctx && typeof Chart !== 'undefined') {
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: Object.keys(labelData),
+      datasets: [{
+        data: Object.values(labelData),
+        backgroundColor: ['#28a745', '#0d6efd', '#ffc107', '#dc3545'],
+        borderWidth: 2,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } }
+      }
     }
-  }
-});
+  });
+}
 
 function makeSelectSearchable(searchInputId, selectId) {
   const searchInput = document.getElementById(searchInputId);

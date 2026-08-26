@@ -87,7 +87,7 @@ def predict_student(features_dict: dict, models_tuple=None) -> dict:
 def predict_all_students():
     """
     Run ML prediction for all StudentPerformance records in the database.
-    Updates predicted_score, predicted_label, and is_at_risk fields.
+    Updates predicted_score, predicted_label, and is_at_risk fields in fast vectorized batch.
 
     Returns list of result dicts.
     """
@@ -95,7 +95,6 @@ def predict_all_students():
     import sys
     import os
 
-    # Ensure Django is set up when called standalone
     project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     if project_root not in sys.path:
         sys.path.insert(0, project_root)
@@ -104,7 +103,7 @@ def predict_all_students():
     try:
         django.setup()
     except RuntimeError:
-        pass  # Already set up
+        pass
 
     from flipped_app.models import StudentPerformance, Notification
 
@@ -115,11 +114,13 @@ def predict_all_students():
             "Trained models not found. Run model_training.py first."
         )
 
-    records = StudentPerformance.objects.all()
-    results = []
+    records = list(StudentPerformance.objects.select_related('student', 'subject').all())
+    if not records:
+        return []
 
-    for perf in records:
-        features_dict = {
+    # Vectorized feature matrix extraction
+    df = pd.DataFrame([
+        {
             'videos_watched':           perf.videos_watched,
             'total_video_time_minutes': perf.total_video_time_minutes,
             'quiz_avg_score':           perf.quiz_avg_score,
@@ -128,36 +129,63 @@ def predict_all_students():
             'participation_score':      perf.participation_score,
             'previous_gpa':             perf.previous_gpa,
         }
+        for perf in records
+    ], columns=FEATURES, dtype=float)
 
-        prediction = predict_student(features_dict, models_tuple=(scaler, le, rf_reg, rf_cls))
+    X_scaled = scaler.transform(df)
 
-        perf.predicted_score = prediction['predicted_score']
-        perf.predicted_label = prediction['predicted_label']
-        perf.is_at_risk      = prediction['is_at_risk']
-        perf.save(update_fields=['predicted_score', 'predicted_label', 'is_at_risk'])
+    pred_scores = np.clip(rf_reg.predict(X_scaled), 0, 100).round(2)
+    pred_cls = rf_cls.predict(X_scaled)
+    pred_labels = le.inverse_transform(pred_cls)
 
-        # Send notification if at-risk — only create if no unread alert already exists
-        if prediction['is_at_risk']:
-            already_notified = Notification.objects.filter(
-                recipient=perf.student,
-                is_read=False,
-                message__icontains=perf.subject.name,
-            ).exists()
-            if not already_notified:
-                Notification.objects.create(
+    results = []
+    notifications_to_create = []
+    
+    # Pre-fetch existing unread alerts to avoid duplicate notifications
+    existing_alerts = set(
+        Notification.objects.filter(is_read=False, message__icontains='⚠️ Alert:')
+        .values_list('recipient_id', flat=True)
+    )
+
+    for i, perf in enumerate(records):
+        score = float(pred_scores[i])
+        label = str(pred_labels[i])
+        at_risk = label in ('At-Risk', 'Low') or score < 40
+
+        perf.predicted_score = score
+        perf.predicted_label = label
+        perf.is_at_risk = at_risk
+
+        if at_risk and perf.student_id not in existing_alerts:
+            notifications_to_create.append(
+                Notification(
                     recipient=perf.student,
                     message=(
                         f"⚠️ Alert: Your performance in {perf.subject.name} is below expected level. "
-                        f"Predicted score: {prediction['predicted_score']}. "
+                        f"Predicted score: {score}. "
                         "Please watch more videos and attempt quizzes."
-                    ),
+                    )
                 )
+            )
+            existing_alerts.add(perf.student_id)
 
         results.append({
-            'student': perf.student.get_full_name(),
+            'student': perf.student.get_full_name() or perf.student.username,
             'subject': perf.subject.name,
-            **prediction,
+            'predicted_score': score,
+            'predicted_label': label,
+            'is_at_risk': at_risk,
         })
+
+    # Bulk update all records in 1 transaction
+    StudentPerformance.objects.bulk_update(
+        records,
+        fields=['predicted_score', 'predicted_label', 'is_at_risk'],
+        batch_size=1000
+    )
+
+    if notifications_to_create:
+        Notification.objects.bulk_create(notifications_to_create, batch_size=500, ignore_conflicts=True)
 
     return results
 
