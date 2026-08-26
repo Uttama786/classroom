@@ -231,7 +231,7 @@
           {% with sp=s.student_profile %}
           <tr>
             <!-- Index -->
-            <td class="text-muted small">{{ forloop.counter }}</td>
+            <td class="text-muted small">{{ forloop.counter0|add:page_obj.start_index }}</td>
 
             <!-- Name + avatar -->
             <td>
@@ -325,6 +325,41 @@
         </tbody>
       </table>
     </div>
+
+    <!-- ── Pagination bar ──────────────────────────────────────── -->
+    {% if page_obj.paginator.num_pages > 1 %}
+    <div class="card-footer bg-white border-top d-flex flex-wrap justify-content-between align-items-center py-2 px-3 gap-2">
+      <small class="text-muted">
+        Showing <strong>{{ page_obj.start_index }}–{{ page_obj.end_index }}</strong> of <strong>{{ total }}</strong> students
+      </small>
+      <nav aria-label="Student pagination">
+        <ul class="pagination pagination-sm mb-0">
+          {% if page_obj.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page=1&q={{ search_q }}&subject={{ selected_subject }}&semester={{ selected_sem }}&sort={{ sort_by }}">&laquo; First</a>
+          </li>
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}&q={{ search_q }}&subject={{ selected_subject }}&semester={{ selected_sem }}&sort={{ sort_by }}">Prev</a>
+          </li>
+          {% endif %}
+
+          <li class="page-item active">
+            <span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+          </li>
+
+          {% if page_obj.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}&q={{ search_q }}&subject={{ selected_subject }}&semester={{ selected_sem }}&sort={{ sort_by }}">Next</a>
+          </li>
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&q={{ search_q }}&subject={{ selected_subject }}&semester={{ selected_sem }}&sort={{ sort_by }}">Last &raquo;</a>
+          </li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+    {% endif %}
+
   </div>
 </div>
 

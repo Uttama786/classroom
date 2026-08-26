@@ -168,26 +168,42 @@ def dashboard_view(request):
         total_materials = StudyMaterial.objects.count()
         total_quizzes   = Quiz.objects.count()
         total_assignments = Assignment.objects.count()
-        at_risk         = StudentPerformance.objects.filter(is_at_risk=True).count()
         pending_grades  = AssignmentSubmission.objects.filter(is_graded=False).count()
         recent_users    = User.objects.order_by('-date_joined')[:8]
+
+        perf_agg = StudentPerformance.objects.aggregate(
+            high=Count(Case(When(Q(performance_label='High') | Q(predicted_label='High'), then=1), output_field=IntegerField())),
+            medium=Count(Case(When(Q(performance_label='Medium') | Q(predicted_label='Medium'), then=1), output_field=IntegerField())),
+            low=Count(Case(When(Q(performance_label='Low') | Q(predicted_label='Low'), then=1), output_field=IntegerField())),
+            at_risk=Count(Case(When(is_at_risk=True, then=1), output_field=IntegerField())),
+        )
         perf_distribution = {
-            'High':    StudentPerformance.objects.filter(Q(performance_label='High') | Q(performance_label__in=[None, ''], predicted_label='High')).count(),
-            'Medium':  StudentPerformance.objects.filter(Q(performance_label='Medium') | Q(performance_label__in=[None, ''], predicted_label='Medium')).count(),
-            'Low':     StudentPerformance.objects.filter(Q(performance_label='Low') | Q(performance_label__in=[None, ''], predicted_label='Low')).count(),
-            'At-Risk': StudentPerformance.objects.filter(Q(performance_label='At-Risk') | Q(performance_label__in=[None, ''], predicted_label='At-Risk')).count(),
+            'High':    perf_agg['high'] or 0,
+            'Medium':  perf_agg['medium'] or 0,
+            'Low':     perf_agg['low'] or 0,
+            'At-Risk': perf_agg['at_risk'] or 0,
         }
+        at_risk = perf_distribution['At-Risk']
+
+        # Annotated subject stats in a single query
+        annotated_subjects = Subject.objects.annotate(
+            videos_cnt=Count('videos', distinct=True),
+            materials_cnt=Count('materials', distinct=True),
+            quizzes_cnt=Count('quizzes', distinct=True),
+            assignments_cnt=Count('assignments', distinct=True),
+            enrolled_cnt=Count('studentprofile', distinct=True),
+        )
         subject_stats = [
             {
                 'name':        s.name,
                 'code':        s.code if hasattr(s, 'code') else '',
-                'videos':      VideoLecture.objects.filter(subject=s).count(),
-                'materials':   StudyMaterial.objects.filter(subject=s).count(),
-                'quizzes':     Quiz.objects.filter(subject=s).count(),
-                'assignments': Assignment.objects.filter(subject=s).count(),
-                'enrolled':    s.studentprofile_set.count() if hasattr(s, 'studentprofile_set') else 0,
+                'videos':      s.videos_cnt,
+                'materials':   s.materials_cnt,
+                'quizzes':     s.quizzes_cnt,
+                'assignments': s.assignments_cnt,
+                'enrolled':    s.enrolled_cnt,
             }
-            for s in Subject.objects.all()
+            for s in annotated_subjects
         ]
         context.update({
             'role': 'admin',
@@ -208,32 +224,39 @@ def dashboard_view(request):
 
     # ── Teacher dashboard ────────────────────────────────────
     if is_teacher(user):
-        students = User.objects.filter(student_profile__isnull=False)
+        students_count  = User.objects.filter(student_profile__isnull=False).count()
         total_videos    = VideoLecture.objects.count()
         total_quizzes   = Quiz.objects.count()
         total_assignments = Assignment.objects.count()
-        at_risk         = StudentPerformance.objects.filter(is_at_risk=True).count()
         pending_grades  = AssignmentSubmission.objects.filter(is_graded=False).count()
         recent_submissions = AssignmentSubmission.objects.order_by('-submitted_at')[:8]
         quiz_attempts_recent = QuizAttempt.objects.order_by('-attempted_at')[:8]
+
+        perf_agg = StudentPerformance.objects.aggregate(
+            high=Count(Case(When(Q(performance_label='High') | Q(predicted_label='High'), then=1), output_field=IntegerField())),
+            medium=Count(Case(When(Q(performance_label='Medium') | Q(predicted_label='Medium'), then=1), output_field=IntegerField())),
+            low=Count(Case(When(Q(performance_label='Low') | Q(predicted_label='Low'), then=1), output_field=IntegerField())),
+            at_risk=Count(Case(When(is_at_risk=True, then=1), output_field=IntegerField())),
+        )
         perf_distribution = {
-            'High':    StudentPerformance.objects.filter(Q(performance_label='High') | Q(performance_label__in=[None, ''], predicted_label='High')).count(),
-            'Medium':  StudentPerformance.objects.filter(Q(performance_label='Medium') | Q(performance_label__in=[None, ''], predicted_label='Medium')).count(),
-            'Low':     StudentPerformance.objects.filter(Q(performance_label='Low') | Q(performance_label__in=[None, ''], predicted_label='Low')).count(),
-            'At-Risk': StudentPerformance.objects.filter(Q(performance_label='At-Risk') | Q(performance_label__in=[None, ''], predicted_label='At-Risk')).count(),
+            'High':    perf_agg['high'] or 0,
+            'Medium':  perf_agg['medium'] or 0,
+            'Low':     perf_agg['low'] or 0,
+            'At-Risk': perf_agg['at_risk'] or 0,
         }
+        at_risk = perf_distribution['At-Risk']
         teacher_notifications = Notification.objects.filter(recipient=user, is_read=False)
 
         # Subject-wise breakdown of enrolled students
         subject_enrollment = [
-            {'subject': s, 'count': s.studentprofile_set.count()}
-            for s in Subject.objects.all()
+            {'subject': s, 'count': s.enrolled_cnt}
+            for s in Subject.objects.annotate(enrolled_cnt=Count('studentprofile', distinct=True))
         ]
 
         context.update({
             'role': 'teacher',
             'is_teacher': True,
-            'total_students':    students.count(),
+            'total_students':    students_count,
             'total_videos':      total_videos,
             'total_quizzes':     total_quizzes,
             'total_assignments': total_assignments,
@@ -797,19 +820,27 @@ def analytics_view(request):
     else:
         performances = performances.order_by('student__first_name', 'student__last_name', 'student__username')
 
-    # ── Summary stats ──────────────────────────────────────────────────────────
-    total_count = performances.count()
-    avg_score = performances.aggregate(Avg('final_exam_score'))['final_exam_score__avg'] or 0
-    at_risk_count = performances.filter(is_at_risk=True).count()
+    # ── Summary stats (single-pass fast SQL aggregation) ───────────────────────
+    stats = performances.aggregate(
+        total_cnt=Count('id'),
+        avg_score=Avg('final_exam_score'),
+        at_risk_cnt=Count(Case(When(is_at_risk=True, then=1), output_field=IntegerField())),
+        high_cnt=Count(Case(When(Q(predicted_label='High') | Q(performance_label='High'), then=1), output_field=IntegerField())),
+        medium_cnt=Count(Case(When(Q(predicted_label='Medium') | Q(performance_label='Medium'), then=1), output_field=IntegerField())),
+        low_cnt=Count(Case(When(Q(predicted_label='Low') | Q(performance_label='Low'), then=1), output_field=IntegerField())),
+    )
 
+    total_count     = stats['total_cnt'] or 0
+    avg_score       = stats['avg_score'] or 0.0
+    at_risk_count   = stats['at_risk_cnt'] or 0
     flipped_avg     = avg_score
     traditional_avg = max(0, avg_score - 12)
 
     label_counts = {
-        'High':    performances.filter(Q(predicted_label='High') | Q(performance_label='High')).count(),
-        'Medium':  performances.filter(Q(predicted_label='Medium') | Q(performance_label='Medium')).count(),
-        'Low':     performances.filter(Q(predicted_label='Low') | Q(performance_label='Low')).count(),
-        'At-Risk': performances.filter(is_at_risk=True).count(),
+        'High':    stats['high_cnt'] or 0,
+        'Medium':  stats['medium_cnt'] or 0,
+        'Low':     stats['low_cnt'] or 0,
+        'At-Risk': at_risk_count,
     }
 
     # ── Pagination (50 rows per page for fast browser rendering) ───────────────
@@ -1666,18 +1697,26 @@ def student_accounts_view(request):
     }
     students = students.order_by(sort_map.get(sort_by, 'first_name'))
 
+    from django.core.paginator import Paginator
+
     subjects   = Subject.objects.all()
     semesters  = list(range(1, 9))
+    total_count = students.count()
+
+    page_number = request.GET.get('page', 1)
+    paginator = Paginator(students, 50)
+    page_obj = paginator.get_page(page_number)
 
     return render(request, 'student_accounts.html', {
-        'students':       students,
+        'students':       page_obj.object_list,
+        'page_obj':       page_obj,
         'subjects':       subjects,
         'semesters':      semesters,
         'search_q':       search_q,
         'selected_subject': subject_id,
         'selected_sem':   sem_filter,
         'sort_by':        sort_by,
-        'total':          students.count(),
+        'total':          total_count,
     })
 
 
