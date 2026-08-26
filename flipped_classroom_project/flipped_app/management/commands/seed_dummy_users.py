@@ -26,6 +26,12 @@ class Command(BaseCommand):
             help="Number of dummy students to create (default: 1000).",
         )
         parser.add_argument(
+            "--target-students",
+            type=int,
+            default=None,
+            help="Ensure database has at least this total number of students (creates difference).",
+        )
+        parser.add_argument(
             "--teachers",
             type=int,
             default=100,
@@ -57,7 +63,18 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        students_to_create = max(0, options["students"])
+        if options.get("target_students") is not None:
+            current_count = StudentProfile.objects.count()
+            target = max(0, options["target_students"])
+            if current_count >= target:
+                self.stdout.write(self.style.SUCCESS(
+                    f"Already at {current_count} students (target={target}) — skipping."
+                ))
+                return
+            students_to_create = target - current_count
+            self.stdout.write(f"Current students: {current_count}. Creating {students_to_create} to reach {target}...")
+        else:
+            students_to_create = max(0, options["students"])
         teachers_to_create = max(0, options["teachers"])
         raw_password = options["password"]
         min_watched = max(0, options["min_watched_videos"])

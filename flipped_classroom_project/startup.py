@@ -150,6 +150,12 @@ if __name__ == '__main__':
         print("   Fix: Render Shell → python manage.py load_content_fixture --force")
     else:
         print("✅ Platform content load completed!")
+
+    # Ensure dataset contains 12,455 students (FlipLearn-SPD evaluation dataset)
+    seed_users_cmd = 'python manage.py seed_dummy_users --target-students 12455 --teachers 0'
+    print(f"\n🚀 Ensuring student dataset (12,455 records)...")
+    print(f"   Command: {seed_users_cmd}")
+    subprocess.run(seed_users_cmd, shell=True)
     
     # Start Gunicorn
     print("\n" + "=" * 70)
