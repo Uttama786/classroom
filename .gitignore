@@ -35,5 +35,7 @@ build/
 
 # ML plots (generated output, not needed in repo)
 ml_model/plots/
+**/ml_model/plots/
+*.tmp
 # Trained model binaries ARE committed so deployment works without a training step
 # ml_model/saved_models/
