@@ -150,12 +150,18 @@ class Command(BaseCommand):
         StudentProfile.objects.bulk_create(profiles, batch_size=500)
 
         if subjects:
+            ThroughModel = StudentProfile.enrolled_subjects.through
             student_profiles = list(
-                StudentProfile.objects.filter(user__username__in=created_usernames)
+                StudentProfile.objects.filter(user__username__in=created_usernames).values_list('id', flat=True)
             )
-            for profile in student_profiles:
+            enrollments = []
+            for profile_id in student_profiles:
                 pick = random.sample(subjects, k=min(len(subjects), random.randint(2, 4)))
-                profile.enrolled_subjects.add(*pick)
+                for s in pick:
+                    enrollments.append(
+                        ThroughModel(studentprofile_id=profile_id, subject_id=s.id)
+                    )
+            ThroughModel.objects.bulk_create(enrollments, batch_size=2000)
 
         created_user_ids = [user_id for user_id, _ in created_users]
         return len(users), created_user_ids
@@ -221,7 +227,7 @@ class Command(BaseCommand):
         if not rows:
             return 0
 
-        VideoWatchHistory.objects.bulk_create(rows, batch_size=1000, ignore_conflicts=True)
+        VideoWatchHistory.objects.bulk_create(rows, batch_size=2000, ignore_conflicts=True)
         return len(rows)
 
     def _create_teachers(self, count, start_index, hashed_password, subjects):
@@ -246,7 +252,7 @@ class Command(BaseCommand):
                 )
             )
 
-        User.objects.bulk_create(users, batch_size=200)
+        User.objects.bulk_create(users, batch_size=500)
 
         created_users = list(
             User.objects.filter(username__in=created_usernames)
@@ -271,23 +277,29 @@ class Command(BaseCommand):
                 )
             )
 
-        TeacherProfile.objects.bulk_create(profiles, batch_size=200)
+        TeacherProfile.objects.bulk_create(profiles, batch_size=500)
 
         if subjects:
+            ThroughModel = TeacherProfile.subjects.through
             teacher_profiles = list(
-                TeacherProfile.objects.filter(user__username__in=created_usernames)
+                TeacherProfile.objects.filter(user__username__in=created_usernames).values_list('id', flat=True)
             )
-            for profile in teacher_profiles:
+            assignments = []
+            for profile_id in teacher_profiles:
                 pick = random.sample(subjects, k=min(len(subjects), random.randint(1, 3)))
-                profile.subjects.add(*pick)
+                for s in pick:
+                    assignments.append(
+                        ThroughModel(teacherprofile_id=profile_id, subject_id=s.id)
+                    )
+            ThroughModel.objects.bulk_create(assignments, batch_size=2000)
 
         return len(users)
 
-    def _next_index(self, prefix, width):
+    def _next_index(self, prefix, width=4):
         usernames = User.objects.filter(username__startswith=prefix).values_list(
             "username", flat=True
         )
-        pattern = re.compile(rf"^{re.escape(prefix)}(\d{{{width}}})$")
+        pattern = re.compile(rf"^{re.escape(prefix)}(\d+)$")
         max_found = 0
         for name in usernames:
             match = pattern.match(name)
