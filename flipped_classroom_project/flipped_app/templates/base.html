@@ -1102,34 +1102,46 @@
     scrollBottom();
   }
 
-  /* ── Typewriter engine ─────────────────────────────────────────────
+  /* ── Typewriter engine (Ultra Fast & Adaptive) ──────────────────
      Returns { push(text), finish(), abort(html) }.
-     Drips characters smoothly into textDiv at ~SPEED chars/frame.
-     On finish(), types remaining chars then does final MD render.
+     Dynamically scales speed to match fast token streaming seamlessly.
   ── */
   function makeTypewriter(textDiv, onFinish) {
-    const SPEED = 5;   // chars revealed per animation frame (~300 chars/s @ 60fps)
     let target    = ''; // full raw text accumulated from server
     let displayed = 0;  // how many chars are currently rendered
     let isDone    = false;
     let rafId     = null;
+    let lastRenderTime = 0;
 
-    function tick() {
+    function tick(now) {
       rafId = null;
-      // Advance displayed pointer toward target length
-      if (displayed < target.length) {
-        displayed = Math.min(displayed + SPEED, target.length);
+      const remaining = target.length - displayed;
+
+      if (remaining > 0) {
+        // Adaptive speed:
+        // - Base speed: 25 chars/frame (~1500 chars/s)
+        // - If lagging behind stream: catch up by taking 40% of buffer per frame
+        // - If stream is finished: flush out remaining instantly in 1-2 frames
+        const speed = isDone ? Math.max(80, remaining) : Math.max(25, Math.ceil(remaining * 0.4));
+        displayed = Math.min(displayed + speed, target.length);
+
         const slice = target.slice(0, displayed);
         textDiv.classList.add('chat-streaming');
-        // Render markdown slice + blinking cursor
-        textDiv.innerHTML = renderMd(slice) + '<span class="chat-cursor"></span>';
-        scrollBottom();
+
+        // Throttle DOM rebuild to smooth 30-40ms intervals to prevent frame drops
+        if (!lastRenderTime || now - lastRenderTime >= 25 || displayed >= target.length) {
+          lastRenderTime = now;
+          textDiv.innerHTML = renderMd(slice) + (displayed < target.length || !isDone ? '<span class="chat-cursor"></span>' : '');
+          scrollBottom();
+        }
       }
+
       // Still catching up or server still sending → keep looping
       if (displayed < target.length || !isDone) {
         rafId = requestAnimationFrame(tick);
         return;
       }
+
       // All chars typed AND server is done → final highlighted render
       textDiv.classList.remove('chat-streaming');
       textDiv.classList.add('chat-render-done');
@@ -1157,6 +1169,7 @@
         if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
         textDiv.classList.remove('chat-streaming');
         textDiv.innerHTML = html;
+        if (onFinish) onFinish();
       }
     };
   }

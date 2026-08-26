@@ -64,9 +64,14 @@ def _condense_query(
     if not chat_history:
         return user_query
 
-    # Filter chat history to actual user/assistant conversational turns
-    history_turns = [m for m in chat_history if m.get("role") in ("user", "assistant")]
-    if not history_turns:
+    # Fast-path: Check if user query is already standalone / complete
+    # Avoid extra 1-2 second blocking LLM roundtrip when follow-up query is self-contained
+    words = user_query.strip().lower().split()
+    pronouns = {"it", "this", "that", "these", "those", "its", "above", "them", "he", "she", "they", "former", "latter", "again", "more", "also"}
+    has_pronouns = any(w.strip("?,.!:;\"'") in pronouns for w in words)
+    is_short = len(words) <= 3
+
+    if not has_pronouns and not is_short:
         return user_query
 
     # Convert last few turns (max 4) into a text transcript
