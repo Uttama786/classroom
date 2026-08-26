@@ -140,8 +140,17 @@ class Command(BaseCommand):
             self.stderr.write(self.style.ERROR(f'loaddata failed: {exc}'))
             raise
 
+        # Ensure all teachers and students are enrolled in subjects
+        all_subjects = list(Subject.objects.all())
+        for tp in TeacherProfile.objects.all():
+            tp.subjects.set(all_subjects)
+        for sp in StudentProfile.objects.all():
+            sp.enrolled_subjects.set(all_subjects)
+
         self.stdout.write(self.style.SUCCESS(
             f'Loaded. videos={VideoLecture.objects.count()} '
             f'materials={StudyMaterial.objects.count()} '
-            f'subjects={Subject.objects.count()}'
+            f'subjects={Subject.objects.count()} '
+            f'quizzes={Quiz.objects.count()} '
+            f'assignments={Assignment.objects.count()}'
         ))
